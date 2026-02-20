@@ -90,13 +90,30 @@
         .club-x { color: var(--text-muted); margin: 0 0.4rem; }
 
         /* Countdown */
+        .countdown-wrapper {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
         .countdown-section {
             background: linear-gradient(135deg, rgba(224,64,64,0.12), rgba(46,204,113,0.08));
             border: 1px solid rgba(224,64,64,0.3);
             border-radius: 12px;
             padding: 1.2rem;
-            margin: 0 auto;
-            max-width: 500px;
+            flex: 1;
+            max-width: 340px;
+        }
+
+        .countdown-section.rl {
+            background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(46,204,113,0.08));
+            border: 1px solid rgba(74,158,255,0.3);
+        }
+
+        .countdown-section.rl .countdown-label {
+            color: var(--accent-blue);
         }
 
         .countdown-label {
@@ -639,6 +656,8 @@
 
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.4rem; }
+            .countdown-wrapper { flex-direction: column; align-items: center; }
+            .countdown-section { max-width: 100%; }
             .countdown-number { font-size: 1.6rem; }
             .stats-grid { gap: 0.5rem; }
             .stat-number { font-size: 1.4rem; }
@@ -814,22 +833,43 @@
             <span class="club-blue">SV Stahl Hennigsdorf</span>
         </div>
 
-        <div class="countdown-section">
-            <div class="countdown-label">Nächstes Spiel</div>
-            <div class="countdown-opponent" id="next-game-title">Sa. 7. März — vs Rugby Club Leipzig</div>
-            <div class="countdown-location" id="next-game-location">HEIMSPIEL — 14:00 Uhr</div>
-            <div class="countdown-grid">
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-days">--</span>
-                    <span class="countdown-unit">Tage</span>
+        <div class="countdown-wrapper">
+            <div class="countdown-section">
+                <div class="countdown-label">1. XV — Nächstes Spiel</div>
+                <div class="countdown-opponent" id="next-game-title">Sa. 7. März — vs Rugby Club Leipzig</div>
+                <div class="countdown-location" id="next-game-location">HEIMSPIEL — 14:00 Uhr</div>
+                <div class="countdown-grid">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-days">--</span>
+                        <span class="countdown-unit">Tage</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-hours">--</span>
+                        <span class="countdown-unit">Std</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-trainings">--</span>
+                        <span class="countdown-unit">Trainings</span>
+                    </div>
                 </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-hours">--</span>
-                    <span class="countdown-unit">Std</span>
-                </div>
-                <div class="countdown-item">
-                    <span class="countdown-number" id="cd-trainings">--</span>
-                    <span class="countdown-unit">Trainings</span>
+            </div>
+            <div class="countdown-section rl">
+                <div class="countdown-label">2. XV — Nächstes Spiel</div>
+                <div class="countdown-opponent" id="next-game-title-rl">So. 29. März — bei Oranien Raptors</div>
+                <div class="countdown-location" id="next-game-location-rl" style="color: var(--away);">AUSWÄRTS — 15:00 Uhr</div>
+                <div class="countdown-grid">
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-days-rl">--</span>
+                        <span class="countdown-unit">Tage</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-hours-rl">--</span>
+                        <span class="countdown-unit">Std</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number" id="cd-trainings-rl">--</span>
+                        <span class="countdown-unit">Trainings</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1397,18 +1437,6 @@
                 <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                     <div class="game-date">
                         <div class="game-weekday">Sa</div>
-                        <div class="game-daynum away">28</div>
-                        <div class="game-month">Mär</div>
-                    </div>
-                    <div class="game-info">
-                        <div class="game-title">Auswärtsfahrt Hamburg</div>
-                        <div class="game-detail">bei Hamburger RC — Bus geplant (alternativ 9. Mai)</div>
-                    </div>
-                    <span class="game-badge badge-away">BUS?</span>
-                </div>
-                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                    <div class="game-date">
-                        <div class="game-weekday">Sa</div>
                         <div class="game-daynum away">9</div>
                         <div class="game-month">Mai</div>
                     </div>
@@ -1556,6 +1584,15 @@
             return null;
         }
 
+        function getNextGameRL() {
+            const now = new Date();
+            for (const g of gamesRL) {
+                const d = new Date(g.date + 'T' + g.time + ':00');
+                if (d > now) return { ...g, dateObj: d };
+            }
+            return null;
+        }
+
         function countTrainings(from, to) {
             let count = 0;
             let d = new Date(from);
@@ -1568,29 +1605,52 @@
         }
 
         function updateCountdown() {
-            const next = getNextGame();
-            if (!next) return;
-
-            const now = new Date();
-            const diff = next.dateObj - now;
-
-            const days = Math.floor(diff / (1000*60*60*24));
-            const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-            const trainings = countTrainings(now, next.dateObj);
-
-            document.getElementById('cd-days').textContent = days;
-            document.getElementById('cd-hours').textContent = hours;
-            document.getElementById('cd-trainings').textContent = trainings;
-            document.getElementById('stat-trainings').textContent = trainings;
-
             const months = ['Jan','Feb','März','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-            const dateStr = `Sa. ${next.dateObj.getDate()}. ${months[next.dateObj.getMonth()]}`;
-            const prefix = next.home ? 'vs' : 'bei';
-            document.getElementById('next-game-title').textContent = `${dateStr} — ${prefix} ${next.opponent}`;
-            document.getElementById('next-game-location').textContent =
-                next.home ? `HEIMSPIEL — ${next.time} Uhr` : `AUSWÄRTS — ${next.time} Uhr`;
-            document.getElementById('next-game-location').style.color =
-                next.home ? 'var(--home)' : 'var(--away)';
+            const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+            const now = new Date();
+
+            // 1. XV
+            const next = getNextGame();
+            if (next) {
+                const diff = next.dateObj - now;
+                const days = Math.floor(diff / (1000*60*60*24));
+                const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+                const trainings = countTrainings(now, next.dateObj);
+
+                document.getElementById('cd-days').textContent = days;
+                document.getElementById('cd-hours').textContent = hours;
+                document.getElementById('cd-trainings').textContent = trainings;
+                document.getElementById('stat-trainings').textContent = trainings;
+
+                const dateStr = `${dayNames[next.dateObj.getDay()]}. ${next.dateObj.getDate()}. ${months[next.dateObj.getMonth()]}`;
+                const prefix = next.home ? 'vs' : 'bei';
+                document.getElementById('next-game-title').textContent = `${dateStr} — ${prefix} ${next.opponent}`;
+                document.getElementById('next-game-location').textContent =
+                    next.home ? `HEIMSPIEL — ${next.time} Uhr` : `AUSWÄRTS — ${next.time} Uhr`;
+                document.getElementById('next-game-location').style.color =
+                    next.home ? 'var(--home)' : 'var(--away)';
+            }
+
+            // 2. XV
+            const nextRL = getNextGameRL();
+            if (nextRL) {
+                const diffRL = nextRL.dateObj - now;
+                const daysRL = Math.floor(diffRL / (1000*60*60*24));
+                const hoursRL = Math.floor((diffRL % (1000*60*60*24)) / (1000*60*60));
+                const trainingsRL = countTrainings(now, nextRL.dateObj);
+
+                document.getElementById('cd-days-rl').textContent = daysRL;
+                document.getElementById('cd-hours-rl').textContent = hoursRL;
+                document.getElementById('cd-trainings-rl').textContent = trainingsRL;
+
+                const dateStr = `${dayNames[nextRL.dateObj.getDay()]}. ${nextRL.dateObj.getDate()}. ${months[nextRL.dateObj.getMonth()]}`;
+                const prefix = nextRL.home ? 'vs' : 'bei';
+                document.getElementById('next-game-title-rl').textContent = `${dateStr} — ${prefix} ${nextRL.opponent}`;
+                document.getElementById('next-game-location-rl').textContent =
+                    nextRL.home ? `HEIMSPIEL — ${nextRL.time} Uhr` : `AUSWÄRTS — ${nextRL.time} Uhr`;
+                document.getElementById('next-game-location-rl').style.color =
+                    nextRL.home ? 'var(--home)' : 'var(--away)';
+            }
         }
 
         function generateSchedule() {
