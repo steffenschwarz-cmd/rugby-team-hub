@@ -348,6 +348,11 @@
             color: var(--warning);
         }
 
+        .badge-social {
+            background: rgba(255,180,50,0.15);
+            color: #f0b030;
+        }
+
         .badge-bl {
             background: rgba(46,204,113,0.15);
             color: var(--accent);
@@ -737,6 +742,7 @@
             <a href="#sec-training">Training</a>
             <a href="#sec-ziele">Ziele</a>
             <a href="#sec-massnahmen">Massnahmen</a>
+            <a href="#sec-events">Events</a>
             <a href="#sec-rat">Mannschaftsrat</a>
             <a href="#sec-teams">Teams</a>
         </div>
@@ -1003,8 +1009,8 @@
                 </div>
                 <div style="margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
                     <div style="background: rgba(224,64,64,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 0.75rem; color: var(--danger); font-weight: 600; text-transform: uppercase;">Letzte Woche</div>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--danger);">?</div>
+                        <div style="font-size: 0.75rem; color: var(--danger); font-weight: 600; text-transform: uppercase;">Wintervorbereitung</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--danger);">10–13</div>
                         <div style="font-size: 0.7rem; color: var(--text-muted);">Durchschnitt</div>
                     </div>
                     <div style="background: rgba(64,192,96,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
@@ -1077,7 +1083,21 @@
                     <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
                     <div class="goal-text">
                         <div class="goal-label">Klassenerhalt sichern</div>
-                        <div class="goal-detail">2. Bundesliga Nord</div>
+                        <div class="goal-detail">2. Bundesliga Nord — Punkte holen in der Rückrunde</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Standardsituationen verbessern</div>
+                        <div class="goal-detail">Gedränge &amp; Gassen — regelmäßig 6–8 gleiche Stürmer im Training! Letzte Saison Spiele durch Standards verloren.</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Kontakthärte aufbauen</div>
+                        <div class="goal-detail">Mehr Vollkontakt &amp; Echtzeit-Übungen — dem hohen Niveau der Gegner gerecht werden</div>
                     </div>
                 </div>
                 <div class="goal-row">
@@ -1085,13 +1105,6 @@
                     <div class="goal-text">
                         <div class="goal-label">Heimspiel-Festung</div>
                         <div class="goal-detail">Alle 3 Heimspiele gewinnen (Leipzig, Victoria Linden, Hamburg)</div>
-                    </div>
-                </div>
-                <div class="goal-row">
-                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
-                    <div class="goal-text">
-                        <div class="goal-label">Set Piece dominieren</div>
-                        <div class="goal-detail">Gedränge &amp; Gasse als Waffe nutzen</div>
                     </div>
                 </div>
             </div>
@@ -1124,33 +1137,132 @@
                 <div class="massnahme">
                     <div class="massnahme-num">1</div>
                     <div class="massnahme-content">
-                        <div class="massnahme-title">Persönliche Ansprache</div>
-                        <div class="massnahme-desc">Jedes Teamrat-Mitglied ruft seine zugeteilten Spieler persönlich an. Nachfragen, motivieren, Hindernisse klären.</div>
+                        <div class="massnahme-title">Keine Absagen in der Gruppe posten</div>
+                        <div class="massnahme-desc">Absagen demotivieren andere. Ab sofort nur noch über die SpielerPlus-App oder persönlich beim Trainer absagen — nicht in der WhatsApp-Gruppe.</div>
                     </div>
                 </div>
                 <div class="massnahme">
                     <div class="massnahme-num">2</div>
                     <div class="massnahme-content">
-                        <div class="massnahme-title">SpielerPlus Pflicht</div>
-                        <div class="massnahme-desc">Ab sofort: Wer sich nicht rechtzeitig an-/abmeldet, wird direkt vom Teamrat angesprochen.</div>
+                        <div class="massnahme-title">Persönliche Ansprache fehlender Spieler</div>
+                        <div class="massnahme-desc">Steffen (Trainer), Jonas, Rico und Anton sprechen Spieler, die nicht regelmäßig erscheinen, einzeln und persönlich an. Nicht per WhatsApp — Anruf!</div>
                     </div>
                 </div>
                 <div class="massnahme">
                     <div class="massnahme-num">3</div>
                     <div class="massnahme-content">
-                        <div class="massnahme-title">Gemeinsames Team-Event</div>
-                        <div class="massnahme-desc">Mannschaftsabend organisieren. Zusammenhalt stärken abseits des Platzes.</div>
+                        <div class="massnahme-title">Mehr Spielsituationen im Training</div>
+                        <div class="massnahme-desc">Mehr spielerische Elemente und Vollkontakt-Spielsituationen am Trainingsende einbauen — das macht Bock und erhöht die Beteiligung.</div>
                     </div>
                 </div>
                 <div class="massnahme">
                     <div class="massnahme-num">4</div>
                     <div class="massnahme-content">
-                        <div class="massnahme-title">Countdown sichtbar machen</div>
-                        <div class="massnahme-desc">Diese Seite in der WhatsApp-Gruppe teilen. Jeder soll wissen: Es zählt jedes Training!</div>
+                        <div class="massnahme-title">SpielerPlus ist Pflicht</div>
+                        <div class="massnahme-desc">An-/Abmeldung über die App ist ab sofort verpflichtend für jedes Training und Spiel. Keine Ausnahmen.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">5</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Stammtisch & Themenabend</div>
+                        <div class="massnahme-desc">Jeden Dienstag nach dem Training: Stammtisch im Club Hohen Neuendorf. Jeden 1. Freitag im Monat: Themenabend im Club Hennigsdorf.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">6</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Dienstag = Pflichttraining</div>
+                        <div class="massnahme-desc">Nächsten Dienstag: Vollkontakt und Match-Situationen. Wer nicht arbeiten muss, ist da — keine Ausreden. Wir brauchen Fortschritte!</div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- EVENTS & SOZIALES -->
+        <section class="section" id="sec-events">
+            <div class="section-header">
+                <div class="section-icon">&#127881;</div>
+                <div class="section-title">Events & Soziales</div>
+            </div>
+
+            <div class="card" style="border-left: 3px solid var(--accent); margin-bottom: 0.8rem;">
+                <div style="font-weight: 700; margin-bottom: 0.5rem;">Regelmäßige Treffen</div>
+                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div class="game-date">
+                        <div class="game-weekday">Jeden</div>
+                        <div class="game-daynum home" style="font-size: 1.1rem;">Di</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">Stammtisch nach dem Training</div>
+                        <div class="game-detail">Club in Hohen Neuendorf — wer kann, kommt mit!</div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">1.</div>
+                        <div class="game-daynum" style="color: var(--accent-blue); font-size: 1.1rem;">Fr</div>
+                        <div class="game-month">/Monat</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">Themenabend</div>
+                        <div class="game-detail">Club in Hennigsdorf — jeden 1. Freitag im Monat</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: 700; margin-bottom: 0.5rem;">Saison-Highlights</div>
+                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">28</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">Auswärtsfahrt Hamburg</div>
+                        <div class="game-detail">bei Hamburger RC — Bus geplant (alternativ 9. Mai)</div>
+                    </div>
+                    <span class="game-badge badge-away">BUS?</span>
+                </div>
+                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">9</div>
+                        <div class="game-month">Mai</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">Letztes Saisonspiel — Hamburg</div>
+                        <div class="game-detail">bei FC St. Pauli Rugby — Busfahrt als Saisonabschluss?</div>
+                    </div>
+                    <span class="game-badge badge-away">BUS?</span>
+                </div>
+                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div class="game-date">
+                        <div class="game-weekday">Fr-Sa</div>
+                        <div class="game-daynum home">26</div>
+                        <div class="game-month">Jun</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">120-Jahr-Feier Dahlenburg</div>
+                        <div class="game-detail">26.–27. Juni — beschlossen, wir fahren hin!</div>
+                    </div>
+                    <span class="game-badge badge-home" style="background: rgba(46,204,113,0.2);">FEST</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum" style="color: var(--warning);">11</div>
+                        <div class="game-month">Jul</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">Beach-Turnier Warnemünde</div>
+                        <div class="game-detail">Mind. 7–10 Teilnehmer nötig — wer ist dabei?</div>
+                    </div>
+                    <span class="game-badge" style="background: rgba(232,160,32,0.15); color: var(--warning);">OPTIONAL</span>
+                </div>
+            </div>
+        </section>
 
         <!-- MANNSCHAFTSRAT -->
         <div class="section" id="sec-rat">
@@ -1170,6 +1282,16 @@
                     <div class="member-role">Captain</div>
                 </div>
                 <div class="teamrat-member">
+                    <div class="member-avatar">JJ</div>
+                    <div class="member-name">Jonas</div>
+                    <div class="member-role">Captain</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">AA</div>
+                    <div class="member-name">Anton</div>
+                    <div class="member-role">Captain</div>
+                </div>
+                <div class="teamrat-member">
                     <div class="member-avatar">LL</div>
                     <div class="member-name">Lukas</div>
                     <div class="member-role">Mannschaftsrat</div>
@@ -1177,16 +1299,6 @@
                 <div class="teamrat-member">
                     <div class="member-avatar">TT</div>
                     <div class="member-name">Tom</div>
-                    <div class="member-role">Mannschaftsrat</div>
-                </div>
-                <div class="teamrat-member">
-                    <div class="member-avatar">AA</div>
-                    <div class="member-name">Anton</div>
-                    <div class="member-role">Mannschaftsrat</div>
-                </div>
-                <div class="teamrat-member">
-                    <div class="member-avatar">JJ</div>
-                    <div class="member-name">Jonas</div>
                     <div class="member-role">Mannschaftsrat</div>
                 </div>
             </div>
@@ -1323,6 +1435,37 @@
                 d.setDate(d.getDate() + 1);
             }
 
+            // Add Stammtisch (every Tuesday after training)
+            let dSt = new Date(now);
+            dSt.setHours(0,0,0,0);
+            while (dSt <= endDate) {
+                if (dSt.getDay() === 2) {
+                    events.push({
+                        date: new Date(dSt.getFullYear(), dSt.getMonth(), dSt.getDate(), 20, 30),
+                        title: 'Stammtisch',
+                        detail: 'Nach dem Training — Club Hohen Neuendorf',
+                        type: 'social'
+                    });
+                }
+                dSt.setDate(dSt.getDate() + 1);
+            }
+
+            // Add Themenabend (1st Friday of each month)
+            for (let m = now.getMonth(); m <= endDate.getMonth() + (endDate.getFullYear() - now.getFullYear()) * 12; m++) {
+                const year = now.getFullYear() + Math.floor(m / 12);
+                const month = m % 12;
+                let firstFri = new Date(year, month, 1);
+                while (firstFri.getDay() !== 5) firstFri.setDate(firstFri.getDate() + 1);
+                if (firstFri > now && firstFri <= endDate) {
+                    events.push({
+                        date: new Date(firstFri.getFullYear(), firstFri.getMonth(), firstFri.getDate(), 19, 0),
+                        title: 'Themenabend',
+                        detail: 'Club Hennigsdorf — 1. Freitag im Monat',
+                        type: 'social'
+                    });
+                }
+            }
+
             // Add all games (both teams)
             allGames.forEach(g => {
                 const gDate = new Date(g.date + 'T' + g.time + ':00');
@@ -1353,6 +1496,9 @@
                     const tbClass = e.teamTag === 'BL' ? 'badge-bl' : 'badge-rl';
                     const tbLabel = e.teamTag === 'BL' ? '1.XV' : '2.XV';
                     teamBadge = `<div class="team-indicator ${tbClass}" style="width:38px;text-align:center;font-size:0.65rem;font-weight:700;padding:0.25rem 0.3rem;border-radius:6px;flex-shrink:0;">${tbLabel}</div>`;
+                } else if (e.type === 'social') {
+                    badgeClass = 'badge-social';
+                    badgeText = e.title === 'Stammtisch' ? 'STAMMTISCH' : 'THEMENABEND';
                 } else {
                     badgeClass = 'badge-training';
                     badgeText = 'Training';
