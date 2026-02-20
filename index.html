@@ -666,6 +666,50 @@
 
         .app-content { display: none; }
         .app-content.visible { display: block; }
+
+        /* Sticky Nav */
+        .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12,20,32,0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem;
+            display: none;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .topnav.visible { display: flex; }
+
+        .topnav-inner {
+            display: flex;
+            gap: 0.3rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .topnav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .topnav a:hover, .topnav a.active {
+            color: var(--text);
+            background: rgba(255,255,255,0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+        section[id] { scroll-margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -684,6 +728,19 @@
             <div class="login-error" id="login-error">Falsches Passwort</div>
         </div>
     </div>
+
+    <!-- STICKY NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="#sec-spielplan">Spielplan</a>
+            <a href="#sec-termine">Termine</a>
+            <a href="#sec-training">Training</a>
+            <a href="#sec-ziele">Ziele</a>
+            <a href="#sec-massnahmen">Massnahmen</a>
+            <a href="#sec-rat">Mannschaftsrat</a>
+            <a href="#sec-teams">Teams</a>
+        </div>
+    </nav>
 
     <div class="app-content" id="app-content">
 
@@ -743,7 +800,7 @@
         </div>
 
         <!-- SPIELPLÄNE NEBENEINANDER -->
-        <div class="spielplan-grid">
+        <div class="spielplan-grid" id="sec-spielplan">
 
         <!-- SPIELPLAN RÜCKRUNDE — 2. BL -->
         <div class="section">
@@ -915,7 +972,7 @@
         </div><!-- /spielplan-grid -->
 
         <!-- NÄCHSTE TERMINE (Trainings + Spiele gemischt) -->
-        <div class="section">
+        <div class="section" id="sec-termine">
             <div class="section-header">
                 <div class="section-icon">&#128197;</div>
                 <div class="section-title">Nächste Termine</div>
@@ -926,7 +983,7 @@
         </div>
 
         <!-- TRAININGSBETEILIGUNG -->
-        <div class="section">
+        <div class="section" id="sec-training">
             <div class="section-header">
                 <div class="section-icon">&#128200;</div>
                 <div class="section-title">Trainingsbeteiligung</div>
@@ -960,7 +1017,7 @@
         </div>
 
         <!-- SAISONZIELE -->
-        <div class="section">
+        <div class="section" id="sec-ziele">
             <div class="section-header">
                 <div class="section-icon">&#127942;</div>
                 <div class="section-title">Saisonziele Rückrunde</div>
@@ -1058,7 +1115,7 @@
         </div>
 
         <!-- MAßNAHMEN -->
-        <div class="section">
+        <div class="section" id="sec-massnahmen">
             <div class="section-header">
                 <div class="section-icon">&#9889;</div>
                 <div class="section-title">Unsere Maßnahmen</div>
@@ -1095,11 +1152,11 @@
             </div>
         </div>
 
-        <!-- TEAMRAT -->
-        <div class="section">
+        <!-- MANNSCHAFTSRAT -->
+        <div class="section" id="sec-rat">
             <div class="section-header">
                 <div class="section-icon">&#128101;</div>
-                <div class="section-title">Teamrat</div>
+                <div class="section-title">Mannschaftsrat</div>
             </div>
             <div class="teamrat-grid">
                 <div class="teamrat-member">
@@ -1115,23 +1172,28 @@
                 <div class="teamrat-member">
                     <div class="member-avatar">LL</div>
                     <div class="member-name">Lukas</div>
-                    <div class="member-role">Teamrat</div>
+                    <div class="member-role">Mannschaftsrat</div>
                 </div>
                 <div class="teamrat-member">
                     <div class="member-avatar">TT</div>
                     <div class="member-name">Tom</div>
-                    <div class="member-role">Teamrat</div>
+                    <div class="member-role">Mannschaftsrat</div>
                 </div>
                 <div class="teamrat-member">
                     <div class="member-avatar">AA</div>
                     <div class="member-name">Anton</div>
-                    <div class="member-role">Teamrat</div>
+                    <div class="member-role">Mannschaftsrat</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">JJ</div>
+                    <div class="member-name">Jonas</div>
+                    <div class="member-role">Mannschaftsrat</div>
                 </div>
             </div>
         </div>
 
         <!-- MANNSCHAFTEN -->
-        <div class="section">
+        <div class="section" id="sec-teams">
             <div class="section-header">
                 <div class="section-icon">&#127941;</div>
                 <div class="section-title">Unsere Mannschaften</div>
@@ -1353,6 +1415,7 @@
             document.getElementById('login-gate').classList.add('hidden');
             document.getElementById('app-content').classList.add('visible');
             document.getElementById('app-footer').classList.add('visible');
+            document.getElementById('topnav').classList.add('visible');
             // Init app
             updateCountdown();
             generateSchedule();
