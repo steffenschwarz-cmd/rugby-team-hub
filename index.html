@@ -149,10 +149,24 @@
 
         /* Container */
         .container {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 1.5rem;
         }
+
+        .spielplan-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .spielplan-grid .section { margin-bottom: 0; }
+
+        .spielplan-grid .game-title { font-size: 0.85rem; }
+        .spielplan-grid .game-detail { font-size: 0.72rem; }
+        .spielplan-grid .game-daynum { font-size: 1.2rem; }
+        .spielplan-grid .game-badge { font-size: 0.6rem; padding: 0.15rem 0.4rem; }
 
         /* Section */
         .section { margin-bottom: 2rem; }
@@ -556,6 +570,14 @@
         .footer a:hover { text-decoration: underline; }
 
         /* Responsive */
+        @media (max-width: 768px) {
+            .spielplan-grid { grid-template-columns: 1fr; }
+            .spielplan-grid .game-title { font-size: 0.95rem; }
+            .spielplan-grid .game-detail { font-size: 0.8rem; }
+            .spielplan-grid .game-daynum { font-size: 1.4rem; }
+            .spielplan-grid .game-badge { font-size: 0.65rem; padding: 0.2rem 0.5rem; }
+        }
+
         @media (max-width: 480px) {
             .hero h1 { font-size: 1.4rem; }
             .countdown-number { font-size: 1.6rem; }
@@ -623,11 +645,14 @@
             <div class="motivation-author">— Jeder Einzelne zählt. Sei dabei.</div>
         </div>
 
-        <!-- SPIELPLAN RÜCKRUNDE -->
+        <!-- SPIELPLÄNE NEBENEINANDER -->
+        <div class="spielplan-grid">
+
+        <!-- SPIELPLAN RÜCKRUNDE — 2. BL -->
         <div class="section">
             <div class="section-header">
                 <div class="section-icon">&#127944;</div>
-                <div class="section-title">Spielplan Rückrunde — 2. Bundesliga Nord</div>
+                <div class="section-title">2. Bundesliga Nord</div>
             </div>
             <div class="card">
                 <div class="game-card">
@@ -721,7 +746,7 @@
         <div class="section">
             <div class="section-header">
                 <div class="section-icon">&#127941;</div>
-                <div class="section-title">Spielplan Rückrunde — Regionalliga Ost</div>
+                <div class="section-title">Regionalliga Ost</div>
             </div>
             <div class="card">
                 <div class="game-card">
@@ -789,6 +814,8 @@
                 SG Oberhavel — Spielplan via <a href="https://www.rl-no.de" target="_blank" style="color: var(--accent-blue); text-decoration: none;">rl-no.de</a> &middot; RC Dresden verlegt wegen Platzsperre
             </div>
         </div>
+
+        </div><!-- /spielplan-grid -->
 
         <!-- NÄCHSTE TERMINE (Trainings + Spiele gemischt) -->
         <div class="section">
