@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teamrat-Sitzung — 20. Februar 2026</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f0;
+            color: #1a1a1a;
+            line-height: 1.5;
+            padding: 16px;
+            -webkit-text-size-adjust: 100%;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 3px solid #1a5632;
+            margin-bottom: 24px;
+        }
+        header h1 {
+            font-size: 1.4em;
+            color: #1a5632;
+            margin-bottom: 4px;
+        }
+        header .subtitle {
+            font-size: 0.95em;
+            color: #555;
+        }
+        header .meta {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 8px;
+        }
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            font-size: 1.1em;
+            color: #1a5632;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section h2 .num {
+            background: #1a5632;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            flex-shrink: 0;
+        }
+        .section h2 .time {
+            font-size: 0.75em;
+            color: #999;
+            font-weight: normal;
+            margin-left: auto;
+        }
+        .section h3 {
+            font-size: 0.95em;
+            color: #333;
+            margin: 14px 0 8px;
+        }
+        .section ul {
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+        .section li {
+            margin-bottom: 4px;
+            font-size: 0.9em;
+            color: #444;
+        }
+        .section p {
+            font-size: 0.9em;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        .highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 14px;
+            border-radius: 0 8px 8px 0;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        .highlight strong { color: #856404; }
+        textarea {
+            width: 100%;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 0.95em;
+            line-height: 1.5;
+            resize: vertical;
+            background: #fafafa;
+            color: #1a1a1a;
+            -webkit-appearance: none;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #1a5632;
+            background: #fff;
+        }
+        textarea::placeholder {
+            color: #aaa;
+        }
+        .note-label {
+            font-size: 0.8em;
+            color: #1a5632;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .note-group {
+            margin-top: 12px;
+        }
+        .massnahme-row {
+            display: grid;
+            grid-template-columns: 1fr 100px 100px;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .massnahme-row input {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 0.9em;
+            background: #fafafa;
+            -webkit-appearance: none;
+        }
+        .massnahme-row input:focus {
+            outline: none;
+            border-color: #1a5632;
+            background: #fff;
+        }
+        .massnahme-row input::placeholder { color: #aaa; }
+        .massnahme-label {
+            display: grid;
+            grid-template-columns: 1fr 100px 100px;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .massnahme-label span {
+            font-size: 0.75em;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 14px 0;
+        }
+        .quote {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            padding: 20px;
+            font-size: 0.9em;
+        }
+        .save-status {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            background: #1a5632;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .save-status.show { opacity: 1; }
+        @media (max-width: 600px) {
+            .massnahme-row {
+                grid-template-columns: 1fr;
+            }
+            .massnahme-label {
+                display: none;
+            }
+            .massnahme-row input:nth-child(2)::placeholder { content: 'Wer?'; }
+            .massnahme-row input:nth-child(3)::placeholder { content: 'Bis wann?'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Teamrat-Sitzung</h1>
+            <div class="subtitle">SG Rugby Union Hohen Neuendorf / Stahl Hennigsdorf</div>
+            <div class="meta">20. Februar 2026 &bull; Steffen, Rico, Lukas, Tom, Anton, Jonas &bull; ca. 60–75 Min</div>
+        </header>
+
+        <!-- 1. Check-in -->
+        <div class="section">
+            <h2><span class="num">1</span> Check-in & Stimmungsbild <span class="time">5 Min</span></h2>
+            <ul>
+                <li>Kurze Runde: Wie geht's jedem? Wie war die Winterpause persönlich?</li>
+                <li>Ziel: Ankommen, ehrliche Atmosphäre schaffen</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Notizen</div>
+                <textarea rows="3" placeholder="Stimmung, wichtige Aussagen..." data-key="checkin"></textarea>
+            </div>
+        </div>
+
+        <!-- 2. Bestandsaufnahme -->
+        <div class="section">
+            <h2><span class="num">2</span> Bestandsaufnahme <span class="time">10 Min</span></h2>
+            <div class="highlight">
+                <strong>Erstes Spiel: 07. März 2026</strong> — nur noch <strong>15 Tage!</strong><br>
+                Lange Winterpause mit viel Schnee → viel Hallentraining → geringe Beteiligung
+            </div>
+            <h3>Leitfragen:</h3>
+            <ul>
+                <li>Sind wir spielfähig am 07.03.?</li>
+                <li>Wie viele Spieler waren regelmäßig beim Training?</li>
+                <li>Wer hat komplett gefehlt?</li>
+                <li>Fitnesszustand der Mannschaft realistisch einschätzen</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Trainingsbeteiligung & Fitness-Einschätzung</div>
+                <textarea rows="4" placeholder="Zahlen, Namen, ehrliche Einschätzung..." data-key="bestand"></textarea>
+            </div>
+        </div>
+
+        <!-- 3. Saisonziele -->
+        <div class="section">
+            <h2><span class="num">3</span> Saisonziele definieren <span class="time">15 Min</span></h2>
+
+            <h3>1. Mannschaft — 2. Bundesliga Nord</h3>
+            <ul>
+                <li>Tabellenplatz-Ziel? (Klassenerhalt? Obere Hälfte?)</li>
+                <li>Wie viele Siege brauchen wir realistisch?</li>
+                <li>Heimspiel-Bilanz vs. Auswärts?</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Ziele 1. XV</div>
+                <textarea rows="3" placeholder="Tabellenplatz, Siege, Heimbilanz..." data-key="ziele1xv"></textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>2. Mannschaft — Regionalliga Ost</h3>
+            <ul>
+                <li>Was ist das Ziel für die Zweite?</li>
+                <li>Wie verzahnen wir 1. und 2. Mannschaft besser?</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Ziele 2. XV</div>
+                <textarea rows="3" placeholder="Ziel, Verzahnung..." data-key="ziele2xv"></textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>Teamziele (nicht nur sportlich)</h3>
+            <ul>
+                <li>Trainingsbeteiligung: Was ist unser Ziel? (z.B. mind. 20 Spieler?)</li>
+                <li>Teamkultur: Was soll uns als Mannschaft ausmachen?</li>
+                <li>Zusammenhalt: Wie oft treffen wir uns außerhalb des Platzes?</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Teamziele</div>
+                <textarea rows="3" placeholder="Beteiligung, Kultur, Zusammenhalt..." data-key="teamziele"></textarea>
+            </div>
+        </div>
+
+        <!-- 4. Kernproblem -->
+        <div class="section">
+            <h2><span class="num">4</span> Wie kriegen wir alle zurück? <span class="time">20 Min</span></h2>
+
+            <h3>Ursachenanalyse — Warum kommen Spieler nicht?</h3>
+            <p>Brainstorming — mögliche Gründe:</p>
+            <ul>
+                <li>Hallentraining macht keinen Spaß?</li>
+                <li>Kein Ziel vor Augen in der Winterpause?</li>
+                <li>Beruf / Studium / Privat?</li>
+                <li>Fehlende Kommunikation?</li>
+                <li>SpielerPlus wird nicht genutzt?</li>
+                <li>Gruppendynamik: "Wenn die nicht kommen, komm ich auch nicht"</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Gesammelte Gründe</div>
+                <textarea rows="4" placeholder="Was sagt die Runde? Welche Gründe fallen auf?" data-key="gruende"></textarea>
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>Lösungsideen sammeln</h3>
+            <ul>
+                <li><strong>Kommunikation:</strong> Persönliche Ansprache statt WhatsApp</li>
+                <li><strong>Anreize:</strong> Mini-Challenges, Wettbewerbe, Belohnung?</li>
+                <li><strong>Team-Events:</strong> Gemeinsames Essen, Mannschaftsabend?</li>
+                <li><strong>Verbindlichkeit:</strong> Klare Erwartungen, Abmeldefrist?</li>
+                <li><strong>SpielerPlus:</strong> Konsequent nutzen — wie durchsetzen?</li>
+                <li><strong>Training:</strong> Was ändern, damit es Bock macht?</li>
+                <li><strong>Sichtbarkeit:</strong> Countdown, Ziele sichtbar machen</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Ideen</div>
+                <textarea rows="4" placeholder="Alle Lösungsideen sammeln..." data-key="ideen"></textarea>
+            </div>
+        </div>
+
+        <!-- 5. Top 3 & Verantwortlichkeiten -->
+        <div class="section">
+            <h2><span class="num">5</span> Top 3 Maßnahmen & Verantwortlichkeiten <span class="time">10 Min</span></h2>
+            <p>Aus allen Ideen die <strong>3 wichtigsten</strong> auswählen, die wir SOFORT umsetzen:</p>
+
+            <div class="massnahme-label">
+                <span>Maßnahme</span>
+                <span>Wer?</span>
+                <span>Bis wann?</span>
+            </div>
+            <div class="massnahme-row">
+                <input type="text" placeholder="Maßnahme 1..." data-key="m1">
+                <input type="text" placeholder="Wer?" data-key="m1wer">
+                <input type="text" placeholder="Bis wann?" data-key="m1bis">
+            </div>
+            <div class="massnahme-row">
+                <input type="text" placeholder="Maßnahme 2..." data-key="m2">
+                <input type="text" placeholder="Wer?" data-key="m2wer">
+                <input type="text" placeholder="Bis wann?" data-key="m2bis">
+            </div>
+            <div class="massnahme-row">
+                <input type="text" placeholder="Maßnahme 3..." data-key="m3">
+                <input type="text" placeholder="Wer?" data-key="m3wer">
+                <input type="text" placeholder="Bis wann?" data-key="m3bis">
+            </div>
+
+            <div class="divider"></div>
+
+            <h3>Persönliche Ansprache aufteilen</h3>
+            <p>Jedes Teamrat-Mitglied kontaktiert 5–7 Spieler <strong>persönlich (Anruf!)</strong></p>
+            <div class="massnahme-label">
+                <span>Person</span>
+                <span colspan="2">Zugewiesene Spieler</span>
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Steffen" data-key="a1name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a1spieler">
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Rico" data-key="a2name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a2spieler">
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Lukas" data-key="a3name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a3spieler">
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Tom" data-key="a4name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a4spieler">
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Anton" data-key="a5name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a5spieler">
+            </div>
+            <div class="massnahme-row" style="grid-template-columns: 120px 1fr;">
+                <input type="text" value="Jonas" data-key="a6name" style="font-weight:600;">
+                <input type="text" placeholder="Spieler..." data-key="a6spieler">
+            </div>
+        </div>
+
+        <!-- 6. Nächste Schritte -->
+        <div class="section">
+            <h2><span class="num">6</span> Nächste Schritte <span class="time">5 Min</span></h2>
+            <ul>
+                <li>Nächstes Teamrat-Treffen: Wann?</li>
+                <li>Team-Plattform vorstellen (Webseite mit Countdown, Zielen etc.)</li>
+                <li>Termin für Mannschaftsabend / Team-Event festlegen</li>
+                <li>Alle Maßnahmen in der kommenden Woche starten</li>
+                <li>Vor dem 1. Spiel (07.03.): Mind. 3 volle Trainingseinheiten als Ziel</li>
+            </ul>
+            <div class="note-group">
+                <div class="note-label">&#9998; Beschlüsse & Termine</div>
+                <textarea rows="4" placeholder="Nächstes Treffen, Events, Termine..." data-key="next"></textarea>
+            </div>
+        </div>
+
+        <!-- Abschluss -->
+        <div class="section">
+            <h2>Offene Fragen</h2>
+            <div class="note-group">
+                <textarea rows="3" placeholder="Was ist noch ungeklärt?" data-key="offen"></textarea>
+            </div>
+        </div>
+
+        <div class="quote">
+            „Es gewinnt nicht das Team mit den besten Spielern — es gewinnt das Team, das am besten zusammenspielt."
+        </div>
+    </div>
+
+    <div class="save-status" id="saveStatus">Gespeichert &#10003;</div>
+
+    <script>
+        const STORAGE_KEY = 'teamrat_agenda_2026_02_20';
+
+        // Load saved data
+        function loadData() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                document.querySelectorAll('[data-key]').forEach(el => {
+                    if (saved[el.dataset.key] !== undefined) {
+                        el.value = saved[el.dataset.key];
+                    }
+                });
+            } catch(e) {}
+        }
+
+        // Save all data
+        function saveData() {
+            const data = {};
+            document.querySelectorAll('[data-key]').forEach(el => {
+                data[el.dataset.key] = el.value;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showSaved();
+        }
+
+        // Show save indicator
+        function showSaved() {
+            const el = document.getElementById('saveStatus');
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 1500);
+        }
+
+        // Auto-save on input
+        let saveTimeout;
+        document.addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveData, 500);
+        });
+
+        // Auto-resize textareas
+        document.querySelectorAll('textarea').forEach(ta => {
+            ta.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
+
+        loadData();
+    </script>
+</body>
+</html>
