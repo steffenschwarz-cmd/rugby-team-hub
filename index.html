@@ -1117,10 +1117,10 @@
             const now = new Date();
             const events = [];
 
-            // Add trainings (Tue + Thu) until end of May
+            // Add trainings (Tue + Fri) until end of March
             let d = new Date(now);
             d.setHours(0,0,0,0);
-            const endDate = new Date('2026-05-10');
+            const endDate = new Date('2026-03-31');
 
             while (d <= endDate) {
                 const day = d.getDay();
@@ -1150,9 +1150,9 @@
                 });
             });
 
-            // Sort and take next 14 events
+            // Sort and filter until end of March
             events.sort((a, b) => a.date - b.date);
-            const upcoming = events.filter(e => e.date > now).slice(0, 30);
+            const upcoming = events.filter(e => e.date > now && e.date <= endDate);
 
             const weekdays = ['So','Mo','Di','Mi','Do','Fr','Sa'];
             const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
@@ -1163,7 +1163,8 @@
                     badgeClass = e.home ? 'badge-home' : 'badge-away';
                     badgeText = e.home ? 'HEIM' : 'AUSWÄRTS';
                     const tbClass = e.teamTag === 'BL' ? 'badge-bl' : 'badge-rl';
-                    teamBadge = `<span class="game-badge ${tbClass}" style="margin-right:0.3rem;font-size:0.6rem;">${e.teamTag}</span>`;
+                    const tbLabel = e.teamTag === 'BL' ? '1.XV' : '2.XV';
+                    teamBadge = `<div class="team-indicator ${tbClass}" style="width:38px;text-align:center;font-size:0.65rem;font-weight:700;padding:0.25rem 0.3rem;border-radius:6px;flex-shrink:0;">${tbLabel}</div>`;
                 } else {
                     badgeClass = 'badge-training';
                     badgeText = 'Training';
@@ -1178,14 +1179,12 @@
                         <div class="game-daynum ${dayClass}">${e.date.getDate()}</div>
                         <div class="game-month">${months[e.date.getMonth()]}</div>
                     </div>
+                    ${teamBadge}
                     <div class="game-info">
                         <div class="game-title">${e.title}</div>
                         <div class="game-detail">${e.detail}</div>
                     </div>
-                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.2rem;">
-                        ${teamBadge}
-                        <span class="game-badge ${badgeClass}">${badgeText}</span>
-                    </div>
+                    <span class="game-badge ${badgeClass}">${badgeText}</span>
                 </div>`;
             }).join('');
         }
