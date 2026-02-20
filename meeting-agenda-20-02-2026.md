@@ -2,7 +2,7 @@
 
 **SG Rugby Union Hohen Neuendorf / Stahl Hennigsdorf**
 
-**Teilnehmer:** Steffen Schwarz (Trainer), Rico Schomaker (Captain), Lukas Leatsch, Tom, Anton
+**Teilnehmer:** Steffen Schwarz (Trainer), Rico Schomaker (Captain), Lukas Leatsch, Tom, Anton, Jonas
 
 **Dauer:** ca. 60–75 Minuten
 
