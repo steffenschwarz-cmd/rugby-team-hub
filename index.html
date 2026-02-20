@@ -1080,7 +1080,7 @@
             let d = new Date(from);
             d.setHours(0,0,0,0);
             while (d < to) {
-                if (d.getDay() === 2 || d.getDay() === 4) count++;
+                if (d.getDay() === 2 || d.getDay() === 5) count++;
                 d.setDate(d.getDate() + 1);
             }
             return count;
@@ -1124,11 +1124,11 @@
 
             while (d <= endDate) {
                 const day = d.getDay();
-                if (day === 2 || day === 4) {
+                if (day === 2 || day === 5) {
                     events.push({
                         date: new Date(d),
                         title: 'Training',
-                        detail: day === 2 ? 'Di 19:00' : 'Do 19:00',
+                        detail: day === 2 ? 'Di 19:00' : 'Fr 19:00',
                         type: 'training'
                     });
                 }
