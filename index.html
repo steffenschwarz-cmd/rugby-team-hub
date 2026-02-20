@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Rugbyunion Hohen Neuendorf — Team Hub</title>
+    <style>
+        :root {
+            /* Blend: RU Hohen Neuendorf (Grün) + Stahl Hennigsdorf (Blau) */
+            --green: #1b8a3e;
+            --green-dark: #145a2a;
+            --blue: #1a5fb4;
+            --blue-dark: #0f3d7a;
+            --primary: #152030;
+            --primary-light: #1c3048;
+            --accent: #2ecc71;
+            --accent-blue: #4a9eff;
+            --bg: #0c1420;
+            --bg-card: #131f30;
+            --bg-card-hover: #1a2a40;
+            --text: #e8ecf0;
+            --text-muted: #7a90a8;
+            --danger: #e04040;
+            --success: #40c060;
+            --warning: #e8a020;
+            --home: #2ecc71;
+            --away: #4a9eff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(30,140,62,0.1) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(26,95,180,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(46,204,113,0.12);
+            border: 1px solid rgba(46,204,113,0.4);
+            color: var(--accent);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero-clubs {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .club-green { color: var(--accent); }
+        .club-blue { color: var(--accent-blue); }
+        .club-x { color: var(--text-muted); margin: 0 0.4rem; }
+
+        /* Countdown */
+        .countdown-section {
+            background: linear-gradient(135deg, rgba(224,64,64,0.12), rgba(46,204,113,0.08));
+            border: 1px solid rgba(224,64,64,0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .countdown-label {
+            font-size: 0.85rem;
+            color: var(--danger);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+
+        .countdown-opponent {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .countdown-location {
+            font-size: 0.8rem;
+            color: var(--home);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+        }
+
+        .countdown-item { text-align: center; }
+
+        .countdown-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .countdown-unit {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Section */
+        .section { margin-bottom: 2rem; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--green-dark), var(--blue-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            transition: background 0.2s;
+        }
+
+        .card:hover { background: var(--bg-card-hover); }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.3rem;
+        }
+
+        /* Motivation */
+        .motivation {
+            background: linear-gradient(135deg, var(--green-dark), var(--primary), var(--blue-dark));
+            border: 1px solid;
+            border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .motivation-quote {
+            font-size: 1.1rem;
+            font-weight: 600;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .motivation-author {
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+
+        /* Game Cards */
+        .game-card {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .game-card:last-child { border-bottom: none; }
+
+        .game-date {
+            width: 50px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .game-weekday {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .game-daynum {
+            font-size: 1.4rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .game-daynum.home { color: var(--home); }
+        .game-daynum.away { color: var(--away); }
+
+        .game-month {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .game-info { flex: 1; }
+
+        .game-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .game-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .game-badge {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .badge-home {
+            background: rgba(46,204,113,0.15);
+            color: var(--home);
+        }
+
+        .badge-away {
+            background: rgba(74,158,255,0.15);
+            color: var(--away);
+        }
+
+        .badge-training {
+            background: rgba(255,255,255,0.06);
+            color: var(--text-muted);
+        }
+
+        .badge-gameday {
+            background: rgba(224,64,64,0.15);
+            color: var(--danger);
+            animation: pulse 2s infinite;
+        }
+
+        .badge-postponed {
+            background: rgba(232,160,32,0.15);
+            color: var(--warning);
+        }
+
+        .badge-bl {
+            background: rgba(46,204,113,0.15);
+            color: var(--accent);
+        }
+
+        .badge-rl {
+            background: rgba(74,158,255,0.15);
+            color: var(--accent-blue);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Liga badge */
+        .liga-badge {
+            font-size: 0.6rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-left: 0.4rem;
+            vertical-align: middle;
+        }
+
+        .liga-bl { background: rgba(46,204,113,0.12); color: var(--accent); }
+        .liga-rl { background: rgba(74,158,255,0.12); color: var(--accent-blue); }
+
+        /* Goals */
+        .goal-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .goal-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .goal-row:first-child { padding-top: 0; }
+
+        .goal-check {
+            width: 22px; height: 22px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .goal-check.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .goal-check.checked::after {
+            content: '\2713';
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .goal-text { flex: 1; }
+        .goal-label { font-weight: 600; font-size: 0.95rem; }
+        .goal-detail { font-size: 0.8rem; color: var(--text-muted); }
+
+        .goal-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tag-team1 { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .tag-team2 { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+        .tag-all { background: rgba(255,255,255,0.08); color: var(--text); }
+
+        /* Progress */
+        .progress-container { margin-top: 0.6rem; }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .progress-label { font-size: 0.85rem; font-weight: 600; }
+        .progress-value { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, var(--green), var(--accent-blue));
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .tab:hover { color: var(--text); }
+        .tab.active {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white;
+            border-color: transparent;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Teamrat */
+        .teamrat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.8rem;
+        }
+
+        .teamrat-member {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .teamrat-member:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .member-avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 auto 0.6rem;
+        }
+
+        .member-name { font-weight: 600; font-size: 0.9rem; }
+        .member-role { font-size: 0.75rem; color: var(--accent); font-weight: 500; }
+
+        /* Massnahmen */
+        .massnahme {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .massnahme:last-child { border-bottom: none; }
+
+        .massnahme-num {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .massnahme-content { flex: 1; }
+        .massnahme-title { font-weight: 600; font-size: 0.95rem; }
+        .massnahme-desc { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Mannschaften */
+        .team-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .footer a { color: var(--accent); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.4rem; }
+            .countdown-number { font-size: 1.6rem; }
+            .stats-grid { gap: 0.5rem; }
+            .stat-number { font-size: 1.4rem; }
+            .teamrat-grid { grid-template-columns: repeat(2, 1fr); }
+            .team-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-badge">Saison 2025/26 — Rückrunde</div>
+        <h1>SG Rugbyunion Hohen Neuendorf</h1>
+        <div class="hero-clubs">
+            <span class="club-green">Rugby Union Hohen Neuendorf</span>
+            <span class="club-x">&times;</span>
+            <span class="club-blue">SV Stahl Hennigsdorf</span>
+        </div>
+
+        <div class="countdown-section">
+            <div class="countdown-label">Nächstes Spiel</div>
+            <div class="countdown-opponent" id="next-game-title">Sa. 7. März — vs Rugby Club Leipzig</div>
+            <div class="countdown-location" id="next-game-location">HEIMSPIEL — 14:00 Uhr</div>
+            <div class="countdown-grid">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="cd-days">--</span>
+                    <span class="countdown-unit">Tage</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="cd-hours">--</span>
+                    <span class="countdown-unit">Std</span>
+                </div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="cd-trainings">--</span>
+                    <span class="countdown-unit">Trainings</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- QUICK STATS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Spieler Kader</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Spiele Rückrunde</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-trainings">0</div>
+                <div class="stat-label">Trainings bis Spieltag</div>
+            </div>
+        </div>
+
+        <!-- MOTIVATION -->
+        <div class="motivation">
+            <div class="motivation-quote">"We are one. One Club. One Family."</div>
+            <div class="motivation-author">— Jeder Einzelne zählt. Sei dabei.</div>
+        </div>
+
+        <!-- SPIELPLAN RÜCKRUNDE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#127944;</div>
+                <div class="section-title">Spielplan Rückrunde — 2. Bundesliga Nord</div>
+            </div>
+            <div class="card">
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum home">7</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs Rugby Club Leipzig</div>
+                        <div class="game-detail">14:00 Uhr — Rudolf-Harbig-Sportplatz</div>
+                    </div>
+                    <span class="game-badge badge-home">HEIM</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum home">14</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs TSV Victoria Linden</div>
+                        <div class="game-detail">14:00 Uhr — Rudolf-Harbig-Sportplatz</div>
+                    </div>
+                    <span class="game-badge badge-home">HEIM</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">21</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei Rugby Klub 03 Berlin</div>
+                        <div class="game-detail">14:00 Uhr — Berlin</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">28</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei Hamburger Rugby-Club</div>
+                        <div class="game-detail">13:00 Uhr — Hamburg</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">18</div>
+                        <div class="game-month">Apr</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei BSV 1892 Rugby</div>
+                        <div class="game-detail">15:00 Uhr — Berlin</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum home">2</div>
+                        <div class="game-month">Mai</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs Hamburger Rugby-Club</div>
+                        <div class="game-detail">15:00 Uhr — Rudolf-Harbig-Sportplatz</div>
+                    </div>
+                    <span class="game-badge badge-home">HEIM</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum away">9</div>
+                        <div class="game-month">Mai</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei FC St. Pauli Rugby</div>
+                        <div class="game-detail">15:00 Uhr — Hamburg</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPIELPLAN SG OBERHAVEL — REGIONALLIGA OST -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#127941;</div>
+                <div class="section-title">Spielplan Rückrunde — Regionalliga Ost</div>
+            </div>
+            <div class="card">
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">Sa</div>
+                        <div class="game-daynum home">14</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs RC Dresden</div>
+                        <div class="game-detail">14:00 Uhr — Hohen Neuendorf</div>
+                    </div>
+                    <span class="game-badge badge-postponed">VERLEGT</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">So</div>
+                        <div class="game-daynum away">29</div>
+                        <div class="game-month">Mär</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei Oranien Raptors</div>
+                        <div class="game-detail">15:00 Uhr</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">So</div>
+                        <div class="game-daynum home">12</div>
+                        <div class="game-month">Apr</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs SC Siemensstadt</div>
+                        <div class="game-detail">15:00 Uhr — Hohen Neuendorf</div>
+                    </div>
+                    <span class="game-badge badge-home">HEIM</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">So</div>
+                        <div class="game-daynum away">19</div>
+                        <div class="game-month">Apr</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">bei USV Potsdam</div>
+                        <div class="game-detail">15:00 Uhr — Potsdam</div>
+                    </div>
+                    <span class="game-badge badge-away">AUSWÄRTS</span>
+                </div>
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">So</div>
+                        <div class="game-daynum home">26</div>
+                        <div class="game-month">Apr</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">vs Berliner RC II</div>
+                        <div class="game-detail">15:00 Uhr — Hohen Neuendorf</div>
+                    </div>
+                    <span class="game-badge badge-home">HEIM</span>
+                </div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
+                SG Oberhavel — Spielplan via <a href="https://www.rl-no.de" target="_blank" style="color: var(--accent-blue); text-decoration: none;">rl-no.de</a> &middot; RC Dresden verlegt wegen Platzsperre
+            </div>
+        </div>
+
+        <!-- NÄCHSTE TERMINE (Trainings + Spiele gemischt) -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128197;</div>
+                <div class="section-title">Nächste Termine</div>
+            </div>
+            <div class="card" id="schedule-card">
+                <!-- Dynamisch generiert -->
+            </div>
+        </div>
+
+        <!-- TRAININGSBETEILIGUNG -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128200;</div>
+                <div class="section-title">Trainingsbeteiligung</div>
+            </div>
+            <div class="card">
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-label">Ziel: 20+ Spieler pro Training</span>
+                        <span class="progress-value">? / 30+</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                    Wird nach jedem Training aktualisiert. Tragt euch in <strong>SpielerPlus</strong> ein!
+                </div>
+                <div style="margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                    <div style="background: rgba(224,64,64,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--danger); font-weight: 600; text-transform: uppercase;">Letzte Woche</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--danger);">?</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Durchschnitt</div>
+                    </div>
+                    <div style="background: rgba(64,192,96,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.75rem; color: var(--success); font-weight: 600; text-transform: uppercase;">Ziel diese Woche</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--success);">20+</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Spieler</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAISONZIELE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#127942;</div>
+                <div class="section-title">Saisonziele Rückrunde</div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="goals-all">Alle</div>
+                <div class="tab" data-tab="goals-team1">1. XV</div>
+                <div class="tab" data-tab="goals-team2">2. XV</div>
+            </div>
+
+            <div class="card tab-content active" id="goals-all">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Trainingsbeteiligung steigern</div>
+                        <div class="goal-detail">Mind. 20 Spieler pro Trainingseinheit</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Team-Spirit aufbauen</div>
+                        <div class="goal-detail">Mind. 1 Team-Event pro Monat</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">SpielerPlus konsequent nutzen</div>
+                        <div class="goal-detail">100% An-/Abmeldung vor jedem Training &amp; Spiel</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Rückrunde: Punkte holen</div>
+                        <div class="goal-detail">2. Bundesliga Nord — Klassenerhalt sichern</div>
+                    </div>
+                    <span class="goal-tag tag-team1">1. XV</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Spielpraxis für alle</div>
+                        <div class="goal-detail">Regionalliga Ost — Jeder bekommt Einsatzzeit</div>
+                    </div>
+                    <span class="goal-tag tag-team2">2. XV</span>
+                </div>
+            </div>
+
+            <div class="card tab-content" id="goals-team1">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Klassenerhalt sichern</div>
+                        <div class="goal-detail">2. Bundesliga Nord</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Heimspiel-Festung</div>
+                        <div class="goal-detail">Alle 3 Heimspiele gewinnen (Leipzig, Victoria Linden, Hamburg)</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Set Piece dominieren</div>
+                        <div class="goal-detail">Gedränge &amp; Gasse als Waffe nutzen</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card tab-content" id="goals-team2">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Spielpraxis für alle</div>
+                        <div class="goal-detail">Jeder Kaderspieler bekommt Einsatzzeit</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Aufbau-Saison</div>
+                        <div class="goal-detail">Regionalliga Ost — Entwicklung &gt; Ergebnis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAßNAHMEN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#9889;</div>
+                <div class="section-title">Unsere Maßnahmen</div>
+            </div>
+            <div class="card">
+                <div class="massnahme">
+                    <div class="massnahme-num">1</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Persönliche Ansprache</div>
+                        <div class="massnahme-desc">Jedes Teamrat-Mitglied ruft seine zugeteilten Spieler persönlich an. Nachfragen, motivieren, Hindernisse klären.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">2</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">SpielerPlus Pflicht</div>
+                        <div class="massnahme-desc">Ab sofort: Wer sich nicht rechtzeitig an-/abmeldet, wird direkt vom Teamrat angesprochen.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">3</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Gemeinsames Team-Event</div>
+                        <div class="massnahme-desc">Mannschaftsabend organisieren. Zusammenhalt stärken abseits des Platzes.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">4</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Countdown sichtbar machen</div>
+                        <div class="massnahme-desc">Diese Seite in der WhatsApp-Gruppe teilen. Jeder soll wissen: Es zählt jedes Training!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEAMRAT -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128101;</div>
+                <div class="section-title">Teamrat</div>
+            </div>
+            <div class="teamrat-grid">
+                <div class="teamrat-member">
+                    <div class="member-avatar">SS</div>
+                    <div class="member-name">Steffen</div>
+                    <div class="member-role">Trainer</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">RS</div>
+                    <div class="member-name">Rico</div>
+                    <div class="member-role">Captain</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">LL</div>
+                    <div class="member-name">Lukas</div>
+                    <div class="member-role">Teamrat</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">TT</div>
+                    <div class="member-name">Tom</div>
+                    <div class="member-role">Teamrat</div>
+                </div>
+                <div class="teamrat-member">
+                    <div class="member-avatar">AA</div>
+                    <div class="member-name">Anton</div>
+                    <div class="member-role">Teamrat</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANNSCHAFTEN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#127941;</div>
+                <div class="section-title">Unsere Mannschaften</div>
+            </div>
+            <div class="team-cards">
+                <div class="card" style="border-left: 3px solid var(--accent);">
+                    <div style="font-weight: 700; margin-bottom: 0.3rem;">1. Mannschaft</div>
+                    <div style="font-size: 0.8rem; color: var(--accent); font-weight: 600;">2. Bundesliga Nord</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">7 Spiele Rückrunde</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">3 Heim / 4 Auswärts</div>
+                </div>
+                <div class="card" style="border-left: 3px solid var(--accent-blue);">
+                    <div style="font-weight: 700; margin-bottom: 0.3rem;">2. Mannschaft</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.2rem;">SG Oberhavel</div>
+                    <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">Regionalliga Ost</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">5 Spiele Rückrunde</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">3 Heim / 2 Auswärts</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span class="club-green">Rugby Union Hohen Neuendorf</span>
+        <span class="club-x">&times;</span>
+        <span class="club-blue">SV Stahl Hennigsdorf</span>
+        <br>Saison 2025/26 &mdash; Letztes Update: <span id="last-update"></span>
+        <br><br>
+        <a href="https://www.rugbyunion.de" target="_blank">rugbyunion.de</a> &middot;
+        <a href="https://www.rugby-hennigsdorf.de" target="_blank">rugby-hennigsdorf.de</a> &middot;
+        <a href="https://www.rugbybundesliga.de/spiele" target="_blank">Bundesliga Spielplan</a>
+    </footer>
+
+    <script>
+        // All Rückrunde games — 1. XV (2. Bundesliga Nord)
+        const games = [
+            { date: '2026-03-07', time: '14:00', opponent: 'Rugby Club Leipzig', home: true, team: '1. XV' },
+            { date: '2026-03-14', time: '14:00', opponent: 'TSV Victoria Linden', home: true, team: '1. XV' },
+            { date: '2026-03-21', time: '14:00', opponent: 'Rugby Klub 03 Berlin', home: false, team: '1. XV' },
+            { date: '2026-03-28', time: '13:00', opponent: 'Hamburger Rugby-Club', home: false, team: '1. XV' },
+            { date: '2026-04-18', time: '15:00', opponent: 'BSV 1892 Rugby', home: false, team: '1. XV' },
+            { date: '2026-05-02', time: '15:00', opponent: 'Hamburger Rugby-Club', home: true, team: '1. XV' },
+            { date: '2026-05-09', time: '15:00', opponent: 'FC St. Pauli Rugby', home: false, team: '1. XV' },
+        ];
+
+        // SG Oberhavel — 2. XV (Regionalliga Ost)
+        const gamesRL = [
+            // { date: '2026-03-14', time: '14:00', opponent: 'RC Dresden', home: true, team: '2. XV', note: 'verlegt' },
+            { date: '2026-03-29', time: '15:00', opponent: 'Oranien Raptors', home: false, team: '2. XV' },
+            { date: '2026-04-12', time: '15:00', opponent: 'SC Siemensstadt', home: true, team: '2. XV' },
+            { date: '2026-04-19', time: '15:00', opponent: 'USV Potsdam', home: false, team: '2. XV' },
+            { date: '2026-04-26', time: '15:00', opponent: 'Berliner RC II', home: true, team: '2. XV' },
+        ];
+
+        const allGames = [...games, ...gamesRL];
+
+        function getNextGame() {
+            const now = new Date();
+            for (const g of games) {
+                const d = new Date(g.date + 'T' + g.time + ':00');
+                if (d > now) return { ...g, dateObj: d };
+            }
+            return null;
+        }
+
+        function countTrainings(from, to) {
+            let count = 0;
+            let d = new Date(from);
+            d.setHours(0,0,0,0);
+            while (d < to) {
+                if (d.getDay() === 2 || d.getDay() === 4) count++;
+                d.setDate(d.getDate() + 1);
+            }
+            return count;
+        }
+
+        function updateCountdown() {
+            const next = getNextGame();
+            if (!next) return;
+
+            const now = new Date();
+            const diff = next.dateObj - now;
+
+            const days = Math.floor(diff / (1000*60*60*24));
+            const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            const trainings = countTrainings(now, next.dateObj);
+
+            document.getElementById('cd-days').textContent = days;
+            document.getElementById('cd-hours').textContent = hours;
+            document.getElementById('cd-trainings').textContent = trainings;
+            document.getElementById('stat-trainings').textContent = trainings;
+
+            const months = ['Jan','Feb','März','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+            const dateStr = `Sa. ${next.dateObj.getDate()}. ${months[next.dateObj.getMonth()]}`;
+            const prefix = next.home ? 'vs' : 'bei';
+            document.getElementById('next-game-title').textContent = `${dateStr} — ${prefix} ${next.opponent}`;
+            document.getElementById('next-game-location').textContent =
+                next.home ? `HEIMSPIEL — ${next.time} Uhr` : `AUSWÄRTS — ${next.time} Uhr`;
+            document.getElementById('next-game-location').style.color =
+                next.home ? 'var(--home)' : 'var(--away)';
+        }
+
+        function generateSchedule() {
+            const container = document.getElementById('schedule-card');
+            const now = new Date();
+            const events = [];
+
+            // Add trainings (Tue + Thu) until end of May
+            let d = new Date(now);
+            d.setHours(0,0,0,0);
+            const endDate = new Date('2026-05-10');
+
+            while (d <= endDate) {
+                const day = d.getDay();
+                if (day === 2 || day === 4) {
+                    events.push({
+                        date: new Date(d),
+                        title: 'Training',
+                        detail: day === 2 ? 'Di 19:00' : 'Do 19:00',
+                        type: 'training'
+                    });
+                }
+                d.setDate(d.getDate() + 1);
+            }
+
+            // Add all games (both teams)
+            allGames.forEach(g => {
+                const gDate = new Date(g.date + 'T' + g.time + ':00');
+                const teamTag = g.team === '1. XV' ? 'BL' : 'RL';
+                events.push({
+                    date: gDate,
+                    title: (g.home ? 'vs ' : 'bei ') + g.opponent,
+                    detail: `${g.time} Uhr — ${g.home ? 'HEIM' : 'Auswärts'}`,
+                    type: 'game',
+                    home: g.home,
+                    team: g.team,
+                    teamTag: teamTag
+                });
+            });
+
+            // Sort and take next 14 events
+            events.sort((a, b) => a.date - b.date);
+            const upcoming = events.filter(e => e.date > now).slice(0, 14);
+
+            const weekdays = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+            const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+            container.innerHTML = upcoming.map(e => {
+                let badgeClass, badgeText, teamBadge = '';
+                if (e.type === 'game') {
+                    badgeClass = e.home ? 'badge-home' : 'badge-away';
+                    badgeText = e.home ? 'HEIM' : 'AUSWÄRTS';
+                    const tbClass = e.teamTag === 'BL' ? 'badge-bl' : 'badge-rl';
+                    teamBadge = `<span class="game-badge ${tbClass}" style="margin-right:0.3rem;font-size:0.6rem;">${e.teamTag}</span>`;
+                } else {
+                    badgeClass = 'badge-training';
+                    badgeText = 'Training';
+                }
+
+                const dayClass = e.type === 'game' ? (e.home ? 'home' : 'away') : '';
+
+                return `
+                <div class="game-card">
+                    <div class="game-date">
+                        <div class="game-weekday">${weekdays[e.date.getDay()]}</div>
+                        <div class="game-daynum ${dayClass}">${e.date.getDate()}</div>
+                        <div class="game-month">${months[e.date.getMonth()]}</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">${e.title}</div>
+                        <div class="game-detail">${e.detail}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.2rem;">
+                        ${teamBadge}
+                        <span class="game-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const group = tab.parentElement;
+                const section = group.parentElement;
+                group.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                section.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Last update
+        document.getElementById('last-update').textContent = new Date().toLocaleDateString('de-DE', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+
+        // Init
+        updateCountdown();
+        generateSchedule();
+        setInterval(updateCountdown, 60000);
+    </script>
+
+</body>
+</html>
