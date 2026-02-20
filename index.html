@@ -214,6 +214,14 @@
             text-align: center;
         }
 
+        .game-result { font-weight: 800; font-size: 0.95rem; letter-spacing: 0.03em; }
+        .result-win { color: var(--accent); }
+        .result-loss { color: #e74c3c; }
+        .badge-result-win { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .badge-result-loss { background: rgba(231,76,60,0.12); color: #e74c3c; }
+        .hinrunde-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.4rem; margin-top: 0.2rem; opacity: 0.7; }
+        .game-card-played { opacity: 0.85; }
+
         /* Section */
         .section { margin-bottom: 2rem; }
 
@@ -860,8 +868,35 @@
         </div>
         <div class="liga-row">
             <div class="section">
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan Rückrunde</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan</div>
                 <div class="card">
+                    <div class="hinrunde-label">Hinrunde</div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">6</div><div class="game-month">Sep</div></div>
+                        <div class="game-info"><div class="game-title">bei TSV Victoria Linden</div><div class="game-detail">06.09.2025</div></div>
+                        <span class="game-result result-loss">20:24</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">13</div><div class="game-month">Sep</div></div>
+                        <div class="game-info"><div class="game-title">vs RK 03 Berlin</div><div class="game-detail">13.09.2025</div></div>
+                        <span class="game-result result-loss">16:24</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">18</div><div class="game-month">Okt</div></div>
+                        <div class="game-info"><div class="game-title">vs BSV 1892 Rugby</div><div class="game-detail">18.10.2025</div></div>
+                        <span class="game-result result-loss">28:41</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">8</div><div class="game-month">Nov</div></div>
+                        <div class="game-info"><div class="game-title">bei RC Leipzig</div><div class="game-detail">08.11.2025</div></div>
+                        <span class="game-result result-loss">24:48</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">15</div><div class="game-month">Nov</div></div>
+                        <div class="game-info"><div class="game-title">vs FC St. Pauli</div><div class="game-detail">15.11.2025</div></div>
+                        <span class="game-result result-loss">7:8</span>
+                    </div>
+                    <div class="hinrunde-label" style="margin-top: 0.8rem;">Rückrunde</div>
                     <div class="game-card">
                         <div class="game-date">
                             <div class="game-weekday">Sa</div>
@@ -989,6 +1024,38 @@
             <div class="section">
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan SG Oberhavel</div>
                 <div class="card">
+                    <div class="hinrunde-label">Hinrunde</div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">14</div><div class="game-month">Sep</div></div>
+                        <div class="game-info"><div class="game-title">vs RK 03 Berlin II</div><div class="game-detail">14.09.2025</div></div>
+                        <span class="game-result result-loss">22:24</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum away">21</div><div class="game-month">Sep</div></div>
+                        <div class="game-info"><div class="game-title">bei Berlin Irish</div><div class="game-detail">21.09.2025</div></div>
+                        <span class="game-result result-win">26:12</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">19</div><div class="game-month">Okt</div></div>
+                        <div class="game-info"><div class="game-title">vs SG Halle/Leipzig II</div><div class="game-detail">19.10.2025</div></div>
+                        <span class="game-result result-loss">24:34</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">25</div><div class="game-month">Okt</div></div>
+                        <div class="game-info"><div class="game-title">bei SG Jena/Erfurt</div><div class="game-detail">25.10.2025</div></div>
+                        <span class="game-result result-win">73:19</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">1</div><div class="game-month">Nov</div></div>
+                        <div class="game-info"><div class="game-title">bei Berliner SC</div><div class="game-detail">01.11.2025</div></div>
+                        <span class="game-result result-loss">24:34</span>
+                    </div>
+                    <div class="game-card game-card-played">
+                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">16</div><div class="game-month">Nov</div></div>
+                        <div class="game-info"><div class="game-title">vs Berliner SV II</div><div class="game-detail">16.11.2025</div></div>
+                        <span class="game-result result-loss">7:36</span>
+                    </div>
+                    <div class="hinrunde-label" style="margin-top: 0.8rem;">Rückrunde</div>
                     <div class="game-card">
                         <div class="game-date">
                             <div class="game-weekday">Sa</div>
@@ -1536,33 +1603,28 @@
             d.setHours(0,0,0,0);
             const endDate = new Date('2026-03-31');
 
-            while (d <= endDate) {
-                const day = d.getDay();
-                if (day === 2 || day === 5) {
-                    events.push({
-                        date: new Date(d),
-                        title: day === 2 ? 'Training + Stammtisch' : 'Training',
-                        detail: day === 2 ? 'Di 19:00 — danach Stammtisch im Club' : 'Fr 19:00',
-                        type: 'training'
-                    });
-                }
-                d.setDate(d.getDate() + 1);
-            }
-
-            // Add Teamabend (1st Friday of each month)
+            // Precompute 1st Fridays for Teamabend
+            const firstFridays = new Set();
             for (let m = now.getMonth(); m <= endDate.getMonth() + (endDate.getFullYear() - now.getFullYear()) * 12; m++) {
                 const year = now.getFullYear() + Math.floor(m / 12);
                 const month = m % 12;
-                let firstFri = new Date(year, month, 1);
-                while (firstFri.getDay() !== 5) firstFri.setDate(firstFri.getDate() + 1);
-                if (firstFri > now && firstFri <= endDate) {
+                let ff = new Date(year, month, 1);
+                while (ff.getDay() !== 5) ff.setDate(ff.getDate() + 1);
+                firstFridays.add(ff.toDateString());
+            }
+
+            while (d <= endDate) {
+                const day = d.getDay();
+                if (day === 2 || day === 5) {
+                    const isFirstFri = day === 5 && firstFridays.has(d.toDateString());
                     events.push({
-                        date: new Date(firstFri.getFullYear(), firstFri.getMonth(), firstFri.getDate(), 19, 0),
-                        title: 'Teamabend',
-                        detail: 'Club Hennigsdorf — 1. Freitag im Monat',
-                        type: 'social'
+                        date: new Date(d),
+                        title: day === 2 ? 'Training + Stammtisch' : (isFirstFri ? 'Training + Teamabend' : 'Training'),
+                        detail: day === 2 ? 'Di 19:00 — danach Stammtisch im Club' : (isFirstFri ? 'Fr 19:00 — danach Teamabend im Club Hennigsdorf' : 'Fr 19:00'),
+                        type: isFirstFri ? 'training-social' : 'training'
                     });
                 }
+                d.setDate(d.getDate() + 1);
             }
 
             // Add all games (both teams)
@@ -1595,7 +1657,7 @@
                     const tbClass = e.teamTag === 'BL' ? 'badge-bl' : 'badge-rl';
                     const tbLabel = e.teamTag === 'BL' ? '1.XV' : '2.XV';
                     teamBadge = `<div class="team-indicator ${tbClass}" style="width:38px;text-align:center;font-size:0.65rem;font-weight:700;padding:0.25rem 0.3rem;border-radius:6px;flex-shrink:0;">${tbLabel}</div>`;
-                } else if (e.type === 'social') {
+                } else if (e.type === 'training-social') {
                     badgeClass = 'badge-social';
                     badgeText = 'TEAMABEND';
                 } else {
