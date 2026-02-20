@@ -1215,32 +1215,7 @@
                 <div class="section-icon">&#128200;</div>
                 <div class="section-title">Trainingsbeteiligung</div>
             </div>
-            <div class="card">
-                <div class="progress-container">
-                    <div class="progress-header">
-                        <span class="progress-label">Ziel: 20+ Spieler pro Training</span>
-                        <span class="progress-value">Schnitt 17 / 30+</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 57%"></div>
-                    </div>
-                </div>
-                <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
-                    KW 8 (18.–20.02.) — Daten aus <strong>SpielerPlus</strong>
-                </div>
-                <div style="margin-top: 1.2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-                    <div style="background: rgba(224,64,64,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 0.75rem; color: var(--danger); font-weight: 600; text-transform: uppercase;">Mi 18.02.</div>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--danger);">13</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">Zusagen (+3 Vielleicht)</div>
-                    </div>
-                    <div style="background: rgba(64,192,96,0.08); padding: 0.8rem; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 0.75rem; color: var(--success); font-weight: 600; text-transform: uppercase;">Fr 20.02.</div>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--success);">21</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">Zusagen (+4 Vielleicht)</div>
-                    </div>
-                </div>
-            </div>
+            <div class="card" id="training-attendance"></div>
         </div>
 
         <!-- SAISONZIELE -->
@@ -1453,10 +1428,10 @@
                         <div class="game-month">Jun</div>
                     </div>
                     <div class="game-info">
-                        <div class="game-title">120-Jahr-Feier Dahlenburg</div>
-                        <div class="game-detail">26.–27. Juni — beschlossen, wir fahren hin!</div>
+                        <div class="game-title">120-Jahr-Feier VfR Döhren Hannover</div>
+                        <div class="game-detail">26.–27. Juni — Rugby-Turnier, wir fahren hin!</div>
                     </div>
-                    <span class="game-badge badge-home" style="background: rgba(46,204,113,0.2);">FEST</span>
+                    <span class="game-badge badge-away">TURNIER</span>
                 </div>
                 <div class="game-card">
                     <div class="game-date">
@@ -1771,6 +1746,92 @@
             return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
+        // Trainingsbeteiligung — Daten pro Woche (neueste zuerst)
+        // Zum Aktualisieren: neuen Eintrag oben einfügen
+        const attendanceData = [
+            {
+                kw: 8, label: 'KW 8', range: '18.–20.02.',
+                sessions: [
+                    { day: 'Mi', date: '18.02.', yes: 13, maybe: 3, no: 16 },
+                    { day: 'Fr', date: '20.02.', yes: 21, maybe: 4, no: 8 },
+                ]
+            },
+        ];
+
+        function renderAttendance() {
+            const container = document.getElementById('training-attendance');
+            if (!container || attendanceData.length === 0) return;
+
+            const goal = 20;
+            const latest = attendanceData[0];
+            const latestAvg = Math.round(latest.sessions.reduce((s, x) => s + x.yes, 0) / latest.sessions.length);
+            const pct = Math.min(100, Math.round((latestAvg / 30) * 100));
+
+            let html = `
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-label">Ziel: ${goal}+ Spieler pro Training</span>
+                        <span class="progress-value">Schnitt ${latestAvg} / 30+</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${pct}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Render week function
+            function renderWeek(week, isCurrent) {
+                let w = `<div style="margin-top: ${isCurrent ? '1rem' : '0.8rem'}; font-size: 0.85rem; color: var(--text-muted);">
+                    ${week.label} (${week.range}) — Daten aus <strong>SpielerPlus</strong>
+                </div>
+                <div style="margin-top: 0.8rem; display: grid; grid-template-columns: repeat(${week.sessions.length}, 1fr); gap: 0.8rem;">`;
+                for (const s of week.sessions) {
+                    const hit = s.yes >= goal;
+                    const col = hit ? 'var(--success)' : 'var(--danger)';
+                    const bg = hit ? 'rgba(64,192,96,0.08)' : 'rgba(224,64,64,0.08)';
+                    w += `<div style="background: ${bg}; padding: 0.8rem; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 0.75rem; color: ${col}; font-weight: 600; text-transform: uppercase;">${s.day} ${s.date}</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: ${col};">${s.yes}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Zusagen (+${s.maybe} Vielleicht)</div>
+                    </div>`;
+                }
+                w += '</div>';
+                return w;
+            }
+
+            // Current week
+            html += renderWeek(latest, true);
+
+            // History (past weeks)
+            if (attendanceData.length > 1) {
+                html += `
+                    <div style="margin-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.8rem;">
+                        <div id="history-toggle" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" onclick="toggleHistory()">
+                            <span id="history-arrow" style="transition: transform 0.2s;">&#9654;</span>
+                            Vergangene Wochen (${attendanceData.length - 1})
+                        </div>
+                        <div id="history-content" style="display: none;">`;
+                for (let i = 1; i < attendanceData.length; i++) {
+                    html += renderWeek(attendanceData[i], false);
+                }
+                html += '</div></div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function toggleHistory() {
+            const content = document.getElementById('history-content');
+            const arrow = document.getElementById('history-arrow');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                arrow.style.transform = 'rotate(90deg)';
+            } else {
+                content.style.display = 'none';
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
         async function checkLogin() {
             const stored = localStorage.getItem('sgrhn_auth');
             if (stored === await hashPw('oberhavel2025')) {
@@ -1786,6 +1847,7 @@
             // Init app
             updateCountdown();
             generateSchedule();
+            renderAttendance();
             setInterval(updateCountdown, 60000);
         }
 
