@@ -1152,7 +1152,7 @@
 
             // Sort and take next 14 events
             events.sort((a, b) => a.date - b.date);
-            const upcoming = events.filter(e => e.date > now).slice(0, 14);
+            const upcoming = events.filter(e => e.date > now).slice(0, 30);
 
             const weekdays = ['So','Mo','Di','Mi','Do','Fr','Sa'];
             const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
