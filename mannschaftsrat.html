@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mannschaftsrat — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e; --green-dark: #145a2a;
+            --blue: #1a5fb4; --blue-dark: #0f3d7a;
+            --primary: #152030; --primary-light: #1c3048;
+            --accent: #2ecc71; --accent-blue: #4a9eff;
+            --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
+            --text: #e8ecf0; --text-muted: #7a90a8;
+            --danger: #e04040; --warning: #e8a020;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+        }
+
+        /* Login Gate */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center;
+        }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); } .club-x { margin: 0 0.3rem; } .club-blue { color: var(--accent-blue); }
+        .login-input {
+            width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 0.8rem; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* Nav */
+        .topnav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(12,20,32,0.92); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem; display: none;
+        }
+        .topnav.visible { display: flex; }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; align-items: center;
+            max-width: 1100px; margin: 0 auto; width: 100%;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem;
+            font-weight: 600; padding: 0.4rem 0.7rem; border-radius: 6px;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .topnav a:hover, .topnav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.2rem 1rem; text-align: center;
+            border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .page-header .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        /* Container */
+        .container { max-width: 900px; margin: 0 auto; padding: 1rem 1rem 2rem; }
+
+        /* Members Overview */
+        .members-bar {
+            display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;
+            padding: 1rem 0;
+        }
+        .member-chip {
+            display: flex; align-items: center; gap: 0.4rem;
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 0.3rem 0.8rem 0.3rem 0.4rem;
+            font-size: 0.78rem; font-weight: 600;
+        }
+        .member-chip .avatar {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.55rem; font-weight: 700; color: white;
+        }
+        .member-chip .count {
+            background: rgba(46,204,113,0.15); color: var(--accent);
+            border-radius: 10px; padding: 0.1rem 0.4rem;
+            font-size: 0.65rem; margin-left: 0.3rem;
+        }
+
+        /* Save indicator */
+        .save-indicator {
+            font-size: 0.7rem; color: var(--accent); opacity: 0;
+            transition: opacity 0.3s; text-align: center; padding: 0.3rem;
+        }
+        .save-indicator.show { opacity: 1; }
+
+        /* Assignment Table */
+        .assign-table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+        }
+        .assign-table th {
+            text-align: left; font-size: 0.7rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 0.5rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .assign-table td {
+            padding: 0.35rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 0.85rem;
+        }
+        .assign-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .player-name-cell { font-weight: 600; }
+
+        .assign-select {
+            width: 100%; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px; background: var(--bg-card); color: var(--text);
+            font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.5rem;
+            font-family: inherit; cursor: pointer; outline: none;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
+        }
+        .assign-select:focus { border-color: var(--accent); }
+        .assign-select option { background: #1a2a40; color: var(--text); }
+
+        .select-wrap {
+            position: relative;
+        }
+        .select-wrap::after {
+            content: '';
+            position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+            border: 4px solid transparent; border-top: 5px solid var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Filter */
+        .filter-row {
+            display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 0.8rem;
+        }
+        .filter-btn {
+            padding: 0.3rem 0.7rem; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted);
+            font-size: 0.72rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-btn.active {
+            background: rgba(46,204,113,0.15); border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 1.5rem; font-size: 0.7rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06); margin-top: 1rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        @media (max-width: 480px) {
+            .page-header h1 { font-size: 1.2rem; }
+            .assign-table { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">Rugby Union Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">SV Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <button class="login-btn" id="login-btn">Einloggen</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+            <a href="mannschaftsrat.html" class="active">Mannschaftsrat</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="page-header app-content">
+        <h1>Mannschaftsrat</h1>
+        <div class="subtitle">Spieler-Zuordnung &amp; Verantwortlichkeiten</div>
+    </header>
+
+    <!-- MAIN -->
+    <div class="container app-content">
+
+        <!-- Members overview with counts -->
+        <div class="members-bar" id="members-bar"></div>
+
+        <div class="save-indicator" id="save-indicator">Gespeichert</div>
+
+        <!-- Filter by member -->
+        <div class="filter-row" id="filter-row"></div>
+
+        <!-- Assignment table -->
+        <table class="assign-table">
+            <thead>
+                <tr>
+                    <th style="width:45%">Spieler</th>
+                    <th style="width:55%">Zuständig</th>
+                </tr>
+            </thead>
+            <tbody id="assign-body"></tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-content">
+        Rugby Union Hohen Neuendorf &times; SV Stahl Hennigsdorf<br>
+        <a href="index.html">&larr; Zurück zum Team Hub</a>
+    </footer>
+
+<script>
+    // --- MANNSCHAFTSRAT MEMBERS ---
+    const members = [
+        { id: 'ss', name: 'Steffen Schwarz', initials: 'SS', role: 'Trainer' },
+        { id: 'rs', name: 'Rico Schomacker', initials: 'RS', role: 'Captain' },
+        { id: 'll', name: 'Lukas Laetsch', initials: 'LL', role: 'Vice-Captain' },
+        { id: 'jh', name: 'Jonas Hinz', initials: 'JH', role: 'Vice-Captain' },
+        { id: 'ah', name: 'Anton Hanetzok', initials: 'AH', role: 'Vice-Captain' },
+        { id: 'tk', name: 'Tom König', initials: 'TK', role: 'Mannschaftsrat' },
+        { id: 'ts', name: 'Theo Schmidt', initials: 'TS', role: 'Mannschaftsrat' },
+    ];
+
+    // --- PLAYER DATA ---
+    const players = [
+        { id:18, v:'Angelo', n:'Galster' },
+        { id:24, v:'Anton', n:'Hanetzok' },
+        { id:68, v:'Ben', n:'Johnston' },
+        { id:6, v:'Christopher', n:'Bunge' },
+        { id:46, v:'Connor', n:'Peise' },
+        { id:31, v:'Daniel', n:'Kainer' },
+        { id:59, v:'Enrico Marco', n:'Stenzel' },
+        { id:64, v:'Fabian', n:'Wendt' },
+        { id:4, v:'Felix', n:'Berg' },
+        { id:44, v:'Florian', n:'Neumann' },
+        { id:40, v:'Fynn', n:'Lauer' },
+        { id:45, v:'Gustav', n:'Palm' },
+        { id:3, v:'Hannes', n:'Bartelt' },
+        { id:29, v:'Jonas', n:'Hinz' },
+        { id:63, v:'Joshua', n:'Walker' },
+        { id:37, v:'Julius', n:'Laetsch' },
+        { id:15, v:'Kai', n:'Friesicke' },
+        { id:14, v:'Keno', n:'Filietz' },
+        { id:47, v:'Kevin', n:'Pilz' },
+        { id:10, v:'Kimi', n:'Döpke' },
+        { id:5, v:'Luca Karim', n:'Borgwardt' },
+        { id:11, v:'Lucas', n:'Eichler' },
+        { id:38, v:'Lukas', n:'Laetsch' },
+        { id:21, v:'Marcel', n:'Grabow' },
+        { id:13, v:'Matti Erik', n:'Eschwe' },
+        { id:52, v:'Maurice Peter', n:'Sankeralli' },
+        { id:39, v:'Max', n:'Langer' },
+        { id:28, v:'Maximilian', n:'Hildebrandt' },
+        { id:17, v:'Michael', n:'Galster' },
+        { id:19, v:'Moritz', n:'Gollnick' },
+        { id:30, v:'Moritz', n:'Janosch' },
+        { id:35, v:'Norman Guido', n:'Kranert' },
+        { id:25, v:'Oliver', n:'Herrmann' },
+        { id:61, v:'Oliver', n:'Tschetsch' },
+        { id:7, v:'Paul', n:'Chukwu' },
+        { id:67, v:'Paul', n:'Zyparth' },
+        { id:58, v:'Philip', n:'Simon' },
+        { id:55, v:'Rico', n:'Schomacker' },
+        { id:66, v:'Robert', n:'Woelki' },
+        { id:51, v:'Ronny', n:'Sager' },
+        { id:2, v:'Sarvan', n:'Aziz' },
+        { id:34, v:'Sascha', n:'Kosanke' },
+        { id:26, v:'Sebastian', n:'Hildebrandt' },
+        { id:1, v:'Shawn', n:'Ahrens' },
+        { id:49, v:'Silas', n:'Rathke' },
+        { id:8, v:'Simon', n:'Csehan' },
+        { id:57, v:'Steffen', n:'Schwarz' },
+        { id:43, v:'Steven', n:'Müller' },
+        { id:53, v:'Theo', n:'Schmidt' },
+        { id:16, v:'Tim', n:'Förster' },
+        { id:54, v:'Timo', n:'Schmidt' },
+        { id:12, v:'Tobias', n:'Ehrlich' },
+        { id:33, v:'Tom', n:'König' },
+        { id:41, v:'Tom', n:'Lebus' },
+        { id:56, v:'Tristan', n:'Schöntag' },
+        { id:27, v:'Wolf-Dietrich', n:'Hildebrandt' },
+        { id:42, v:'Xavier', n:'Mbrim A Fiediek' },
+    ];
+    players.sort((a, b) => a.v.localeCompare(b.v, 'de') || a.n.localeCompare(b.n, 'de'));
+
+    // --- STATE ---
+    let assignments = {};  // playerId -> memberId
+    let activeFilter = 'alle';
+
+    // --- STORAGE ---
+    function save() {
+        localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
+        const ind = document.getElementById('save-indicator');
+        ind.classList.add('show');
+        setTimeout(() => ind.classList.remove('show'), 1500);
+    }
+
+    function load() {
+        const stored = localStorage.getItem('sgrhn_rat_assign');
+        if (stored) {
+            try { assignments = JSON.parse(stored); } catch(e) {}
+        }
+    }
+
+    // --- RENDER ---
+    function getCounts() {
+        const counts = {};
+        for (const m of members) counts[m.id] = 0;
+        counts['none'] = 0;
+        for (const p of players) {
+            const mid = assignments[p.id];
+            if (mid && counts[mid] !== undefined) counts[mid]++;
+            else counts['none']++;
+        }
+        return counts;
+    }
+
+    function renderMembers() {
+        const counts = getCounts();
+        document.getElementById('members-bar').innerHTML = members.map(m => `
+            <div class="member-chip">
+                <div class="avatar">${m.initials}</div>
+                ${m.name.split(' ')[0]}
+                <span class="count">${counts[m.id]}</span>
+            </div>
+        `).join('');
+    }
+
+    function renderFilters() {
+        let html = '<button class="filter-btn active" data-filter="alle">Alle</button>';
+        html += '<button class="filter-btn" data-filter="none">Nicht zugeordnet</button>';
+        for (const m of members) {
+            html += `<button class="filter-btn" data-filter="${m.id}">${m.name.split(' ')[0]}</button>`;
+        }
+        document.getElementById('filter-row').innerHTML = html;
+
+        document.getElementById('filter-row').addEventListener('click', e => {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.filter;
+            renderTable();
+        });
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('assign-body');
+
+        const filtered = players.filter(p => {
+            if (activeFilter === 'alle') return true;
+            if (activeFilter === 'none') return !assignments[p.id];
+            return assignments[p.id] === activeFilter;
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;color:var(--text-muted);padding:2rem;">Keine Spieler in dieser Ansicht.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(p => {
+            const current = assignments[p.id] || '';
+            let options = '<option value="">— zuordnen —</option>';
+            for (const m of members) {
+                options += `<option value="${m.id}" ${current === m.id ? 'selected' : ''}>${m.name.split(' ')[0]}</option>`;
+            }
+            return `
+                <tr>
+                    <td class="player-name-cell">${p.v} ${p.n}</td>
+                    <td>
+                        <div class="select-wrap">
+                            <select class="assign-select" data-player="${p.id}">
+                                ${options}
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        tbody.querySelectorAll('.assign-select').forEach(sel => {
+            sel.addEventListener('change', e => {
+                const pid = parseInt(e.target.dataset.player);
+                const val = e.target.value;
+                if (val) {
+                    assignments[pid] = val;
+                } else {
+                    delete assignments[pid];
+                }
+                save();
+                renderMembers();
+            });
+        });
+    }
+
+    function renderAll() {
+        renderMembers();
+        renderTable();
+    }
+
+    // --- LOGIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        load();
+        renderAll();
+    }
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_auth');
+        if (stored === await hashPw('oberhavel2025')) unlock();
+    }
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        const hash = await hashPw(pw);
+        const correctHash = await hashPw('oberhavel2025');
+        if (hash === correctHash) {
+            localStorage.setItem('sgrhn_auth', hash);
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    checkLogin();
+    renderFilters();
+</script>
+</body>
+</html>
