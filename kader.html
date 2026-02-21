@@ -221,6 +221,8 @@
         .badge-p { background: rgba(192,104,48,0.2); color: #e8a050; }
         .badge-er { background: rgba(232,160,32,0.15); color: var(--warning); }
         .badge-u18 { background: rgba(224,64,64,0.15); color: var(--danger); }
+        .badge-c { background: rgba(255,255,255,0.15); color: white; }
+        .badge-vc { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
 
         .player-badges { display: flex; gap: 0.3rem; flex-shrink: 0; }
 
@@ -329,12 +331,12 @@
         { id:21, v:'Marcel', n:'Grabow', geb:'1997-02-22', verein:'H/V', er:true, u18:false },
         { id:22, v:'Maximilian', n:'Grässler', geb:'2008-12-21', verein:'HN', er:false, u18:false },
         { id:23, v:'Alexander', n:'Grunwald', geb:'1996-01-18', verein:'H/V', er:false, u18:false },
-        { id:24, v:'Anton', n:'Hanetzok', geb:'1999-07-09', verein:'H/V', er:false, u18:false },
+        { id:24, v:'Anton', n:'Hanetzok', geb:'1999-07-09', verein:'H/V', er:false, u18:false, role:'VC' },
         { id:25, v:'Oliver', n:'Herrmann', geb:'1998-03-19', verein:'HN', er:false, u18:false },
         { id:26, v:'Sebastian', n:'Hildebrandt', geb:'2005-05-30', verein:'HN', er:false, u18:false },
         { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', geb:'1970-07-10', verein:'HN', er:false, u18:false },
         { id:28, v:'Maximilian', n:'Hildebrandt', geb:'2002-11-18', verein:'HN', er:false, u18:false },
-        { id:29, v:'Jonas', n:'Hinz', geb:'2001-08-26', verein:'HN', er:true, u18:false },
+        { id:29, v:'Jonas', n:'Hinz', geb:'2001-08-26', verein:'HN', er:true, u18:false, role:'VC' },
         { id:30, v:'Moritz', n:'Janosch', geb:null, verein:'HN', er:false, u18:false },
         { id:31, v:'Daniel', n:'Kainer', geb:'1973-05-03', verein:'HN', er:true, u18:false },
         { id:32, v:'Julius', n:'Kayser', geb:'2009-06-03', verein:'HN', er:false, u18:false },
@@ -343,7 +345,7 @@
         { id:35, v:'Norman Guido', n:'Kranert', geb:'1997-01-01', verein:'HN', er:true, u18:false },
         { id:36, v:'Fabian', n:'Kreikenborn', geb:'2000-06-01', verein:'H/V', er:false, u18:false },
         { id:37, v:'Julius', n:'Laetsch', geb:'1995-04-19', verein:'H/V', er:false, u18:false },
-        { id:38, v:'Lukas', n:'Laetsch', geb:'1999-09-12', verein:'H/V', er:false, u18:false },
+        { id:38, v:'Lukas', n:'Laetsch', geb:'1999-09-12', verein:'H/V', er:false, u18:false, role:'VC' },
         { id:39, v:'Max', n:'Langer', geb:'1995-07-30', verein:'HN', er:true, u18:false },
         { id:40, v:'Fynn', n:'Lauer', geb:'2004-03-11', verein:'HN', er:false, u18:false },
         { id:41, v:'Tom', n:'Lebus', geb:'2000-06-08', verein:'H/V', er:false, u18:false },
@@ -360,7 +362,7 @@
         { id:52, v:'Maurice Peter', n:'Sankeralli', geb:'1976-11-16', verein:'H/V', er:false, u18:false },
         { id:53, v:'Theo', n:'Schmidt', geb:'2003-12-17', verein:'HN', er:false, u18:false },
         { id:54, v:'Timo', n:'Schmidt', geb:'1997-07-23', verein:'H/V', er:false, u18:false },
-        { id:55, v:'Rico', n:'Schomacker', geb:'1989-12-19', verein:'HN', er:false, u18:false },
+        { id:55, v:'Rico', n:'Schomacker', geb:'1989-12-19', verein:'HN', er:false, u18:false, role:'C' },
         { id:56, v:'Tristan', n:'Schöntag', geb:'2000-10-22', verein:'HN', er:false, u18:false },
         { id:57, v:'Steffen', n:'Schwarz', geb:'1981-03-05', verein:'HN', er:true, u18:false },
         { id:58, v:'Philip', n:'Simon', geb:'1998-10-18', verein:'H/V', er:true, u18:false },
@@ -453,6 +455,8 @@
             const ageStr = age !== null ? `${age} J.` : '';
 
             let badges = '';
+            if (p.role === 'C') badges += '<span class="badge badge-c">C</span>';
+            if (p.role === 'VC') badges += '<span class="badge badge-vc">VC</span>';
             badges += `<span class="badge badge-${vc}">${p.verein}</span>`;
             if (p.er) badges += '<span class="badge badge-er">1. Reihe</span>';
             if (p.u18) badges += '<span class="badge badge-u18">U18</span>';

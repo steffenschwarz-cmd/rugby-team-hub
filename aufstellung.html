@@ -321,12 +321,12 @@
         { id:21, v:'Marcel', n:'Grabow', verein:'H/V', er:true },
         { id:22, v:'Maximilian', n:'Grässler', verein:'HN', er:false },
         { id:23, v:'Alexander', n:'Grunwald', verein:'H/V', er:false },
-        { id:24, v:'Anton', n:'Hanetzok', verein:'H/V', er:false },
+        { id:24, v:'Anton', n:'Hanetzok', verein:'H/V', er:false, role:'VC' },
         { id:25, v:'Oliver', n:'Herrmann', verein:'HN', er:false },
         { id:26, v:'Sebastian', n:'Hildebrandt', verein:'HN', er:false },
         { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', verein:'HN', er:false },
         { id:28, v:'Maximilian', n:'Hildebrandt', verein:'HN', er:false },
-        { id:29, v:'Jonas', n:'Hinz', verein:'HN', er:true },
+        { id:29, v:'Jonas', n:'Hinz', verein:'HN', er:true, role:'VC' },
         { id:30, v:'Moritz', n:'Janosch', verein:'HN', er:false },
         { id:31, v:'Daniel', n:'Kainer', verein:'HN', er:true },
         { id:32, v:'Julius', n:'Kayser', verein:'HN', er:false },
@@ -335,7 +335,7 @@
         { id:35, v:'Norman Guido', n:'Kranert', verein:'HN', er:true },
         { id:36, v:'Fabian', n:'Kreikenborn', verein:'H/V', er:false },
         { id:37, v:'Julius', n:'Laetsch', verein:'H/V', er:false },
-        { id:38, v:'Lukas', n:'Laetsch', verein:'H/V', er:false },
+        { id:38, v:'Lukas', n:'Laetsch', verein:'H/V', er:false, role:'VC' },
         { id:39, v:'Max', n:'Langer', verein:'HN', er:true },
         { id:40, v:'Fynn', n:'Lauer', verein:'HN', er:false },
         { id:41, v:'Tom', n:'Lebus', verein:'H/V', er:false },
@@ -352,7 +352,7 @@
         { id:52, v:'Maurice Peter', n:'Sankeralli', verein:'H/V', er:false },
         { id:53, v:'Theo', n:'Schmidt', verein:'HN', er:false },
         { id:54, v:'Timo', n:'Schmidt', verein:'H/V', er:false },
-        { id:55, v:'Rico', n:'Schomacker', verein:'HN', er:false },
+        { id:55, v:'Rico', n:'Schomacker', verein:'HN', er:false, role:'C' },
         { id:56, v:'Tristan', n:'Schöntag', verein:'HN', er:false },
         { id:57, v:'Steffen', n:'Schwarz', verein:'HN', er:true },
         { id:58, v:'Philip', n:'Simon', verein:'H/V', er:true },
@@ -504,8 +504,8 @@
         for (const p of players) {
             const isSelected = current[posNum] === p.id;
             const isUsed = placed.has(p.id) && !isSelected;
-            const erTag = p.er ? ' [1.R]' : '';
-            options += `<option value="${p.id}" ${isSelected ? 'selected' : ''} ${isUsed ? 'disabled' : ''}>${fullName(p)}${erTag}</option>`;
+            const roleTag = p.role ? ' ' + p.role : '';
+            options += `<option value="${p.id}" ${isSelected ? 'selected' : ''} ${isUsed ? 'disabled' : ''}>${fullName(p)}${roleTag}</option>`;
         }
 
         return `
