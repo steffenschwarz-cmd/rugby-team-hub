@@ -162,8 +162,6 @@
             background: rgba(46,204,113,0.15); border-color: var(--accent);
             color: var(--accent);
         }
-        .filter-btn.active-hn { background: rgba(46,204,113,0.15); border-color: var(--accent); color: var(--accent); }
-        .filter-btn.active-hv { background: rgba(74,158,255,0.15); border-color: var(--accent-blue); color: var(--accent-blue); }
         .filter-btn.active-er { background: rgba(232,160,32,0.15); border-color: var(--warning); color: var(--warning); }
 
         .result-count {
@@ -292,8 +290,6 @@
             </div>
             <div class="filter-row" id="filters">
                 <button class="filter-btn active" data-filter="alle">Alle</button>
-                <button class="filter-btn" data-filter="hn">Hohen Neuendorf</button>
-                <button class="filter-btn" data-filter="hv">Hennigsdorf/Velten</button>
                 <button class="filter-btn" data-filter="er">Erste Reihe</button>
             </div>
             <div class="result-count" id="result-count"></div>
@@ -420,24 +416,16 @@
     // --- RENDER ---
     function renderStats() {
         const total = players.length;
-        const hn = players.filter(p => p.verein === 'HN').length;
-        const hv = players.filter(p => p.verein === 'H/V').length;
         const er = players.filter(p => p.er).length;
         document.getElementById('stats-bar').innerHTML = `
             <div class="stat-chip"><strong>${total}</strong> Spieler</div>
-            <div class="stat-chip"><strong>${hn}</strong> Hohen Neuendorf</div>
-            <div class="stat-chip"><strong>${hv}</strong> Hennigsdorf/Velten</div>
             <div class="stat-chip"><strong>${er}</strong> Erste Reihe</div>
         `;
     }
 
     function getFiltered() {
         return players.filter(p => {
-            // Filter
-            if (activeFilter === 'hn' && p.verein !== 'HN') return false;
-            if (activeFilter === 'hv' && p.verein !== 'H/V') return false;
             if (activeFilter === 'er' && !p.er) return false;
-            // Search
             if (searchQuery) {
                 const q = searchQuery.toLowerCase();
                 const fullName = (p.v + ' ' + p.n).toLowerCase();
@@ -492,8 +480,7 @@
         });
 
         activeFilter = btn.dataset.filter;
-        const filterStyles = { alle: 'active', hn: 'active-hn', hv: 'active-hv', er: 'active-er' };
-        btn.classList.add(filterStyles[activeFilter] || 'active');
+        btn.classList.add(activeFilter === 'er' ? 'active-er' : 'active');
 
         renderPlayers();
     });
