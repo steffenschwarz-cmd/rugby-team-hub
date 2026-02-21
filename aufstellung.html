@@ -282,6 +282,7 @@
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 </head>
 <body>
@@ -670,10 +671,17 @@
     function unlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
-        loadLineup();
-        renderAll();
-        // Check if trainer is already authenticated
-        checkTrainerAuth();
+        // Firebase Anonymous Auth, dann Daten laden
+        firebase.auth().signInAnonymously().then(() => {
+            loadLineup();
+            renderAll();
+            checkTrainerAuth();
+        }).catch(err => {
+            console.warn('Firebase Auth failed, loading from localStorage', err);
+            loadLineup();
+            renderAll();
+            checkTrainerAuth();
+        });
     }
     async function checkLogin() {
         const stored = localStorage.getItem('sgrhn_rat_auth');
