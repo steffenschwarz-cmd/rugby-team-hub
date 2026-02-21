@@ -1660,14 +1660,29 @@
                 firstFridays.add(ff.toDateString());
             }
 
+            // Sonderregel KW 9 (24.–27.02.): alles 18:30 in Hennigsdorf
+            // Ab KW 10 (03.03.): Di 19:00 Hohen Neuendorf, Fr 18:30 Hennigsdorf
+            const kw10Start = new Date('2026-03-03');
             while (d <= endDate) {
                 const day = d.getDay();
                 if (day === 2 || day === 5) {
                     const isFirstFri = day === 5 && firstFridays.has(d.toDateString());
+                    const isKW9 = d < kw10Start;
+                    let time, detail, title;
+                    if (day === 2) {
+                        time = isKW9 ? '18:30' : '19:00';
+                        const ort = isKW9 ? 'Hennigsdorf' : 'Hohen Neuendorf';
+                        title = 'Training + Stammtisch';
+                        detail = `Di ${time} ${ort} — danach Stammtisch`;
+                    } else {
+                        time = '18:30';
+                        title = isFirstFri ? 'Training + Teamabend' : 'Training';
+                        detail = isFirstFri ? `Fr ${time} Hennigsdorf — danach Teamabend` : `Fr ${time} Hennigsdorf`;
+                    }
                     events.push({
                         date: new Date(d),
-                        title: day === 2 ? 'Training + Stammtisch' : (isFirstFri ? 'Training + Teamabend' : 'Training'),
-                        detail: day === 2 ? 'Di 19:00 — danach Stammtisch im Club' : (isFirstFri ? 'Fr 19:00 — danach Teamabend im Club Hennigsdorf' : 'Fr 19:00'),
+                        title: title,
+                        detail: detail,
                         type: isFirstFri ? 'training-social' : 'training'
                     });
                 }
