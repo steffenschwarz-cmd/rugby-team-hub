@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aufstellung — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e; --green-dark: #145a2a;
+            --blue: #1a5fb4; --blue-dark: #0f3d7a;
+            --primary: #152030; --primary-light: #1c3048;
+            --accent: #2ecc71; --accent-blue: #4a9eff;
+            --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
+            --text: #e8ecf0; --text-muted: #7a90a8;
+            --danger: #e04040; --success: #40c060; --warning: #e8a020;
+            --home: #2ecc71; --away: #4a9eff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+            -webkit-user-select: none; user-select: none;
+        }
+
+        /* Login Gate */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center;
+        }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); } .club-x { margin: 0 0.3rem; } .club-blue { color: var(--accent-blue); }
+        .login-input {
+            width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 0.8rem; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* Nav */
+        .topnav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(12,20,32,0.92); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem; display: none;
+        }
+        .topnav.visible { display: flex; }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; align-items: center;
+            max-width: 1100px; margin: 0 auto; width: 100%;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem;
+            font-weight: 600; padding: 0.4rem 0.7rem; border-radius: 6px;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .topnav a:hover, .topnav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.2rem 1rem; text-align: center;
+            border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .page-header h1 { font-size: 1.3rem; font-weight: 800; }
+
+        /* Team Selector */
+        .team-selector {
+            display: flex; gap: 0.5rem; justify-content: center;
+            padding: 1rem; max-width: 1100px; margin: 0 auto;
+        }
+        .team-btn {
+            padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.85rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .team-btn.active-1 {
+            background: rgba(224,64,64,0.12); border-color: rgba(224,64,64,0.4); color: var(--danger);
+        }
+        .team-btn.active-2 {
+            background: rgba(74,158,255,0.12); border-color: rgba(74,158,255,0.3); color: var(--accent-blue);
+        }
+
+        /* Game Info */
+        .game-info {
+            text-align: center; padding: 0 1rem 0.5rem;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .game-info strong { color: var(--text); }
+
+        /* Main Layout */
+        .builder {
+            display: grid; grid-template-columns: 280px 1fr;
+            gap: 1rem; max-width: 1100px; margin: 0 auto; padding: 0.5rem 1rem 2rem;
+        }
+
+        /* Player Pool */
+        .pool {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 0.8rem;
+            max-height: calc(100vh - 200px); overflow-y: auto;
+            position: sticky; top: 50px;
+        }
+        .pool-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .pool-search {
+            width: 100%; padding: 0.45rem 0.6rem; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 6px; background: var(--primary); color: var(--text);
+            font-size: 0.8rem; outline: none; margin-bottom: 0.6rem;
+        }
+        .pool-search:focus { border-color: var(--accent); }
+        .pool-search::placeholder { color: var(--text-muted); }
+
+        .pool-count {
+            font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;
+        }
+
+        .player-chip {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.4rem 0.6rem; border-radius: 6px;
+            background: var(--primary-light); border: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 0.3rem; cursor: grab; transition: all 0.15s;
+            font-size: 0.8rem;
+        }
+        .player-chip:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.15); }
+        .player-chip:active { cursor: grabbing; opacity: 0.8; }
+        .player-chip.dragging { opacity: 0.4; }
+        .player-chip.placed { opacity: 0.3; pointer-events: none; }
+
+        .chip-avatar {
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.55rem; font-weight: 700; color: white; flex-shrink: 0;
+        }
+        .chip-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chip-badge {
+            font-size: 0.55rem; padding: 0.1rem 0.3rem; border-radius: 3px;
+            font-weight: 700; flex-shrink: 0;
+        }
+        .chip-er { background: rgba(232,160,32,0.2); color: var(--warning); }
+
+        /* Lineup */
+        .lineup { display: flex; flex-direction: column; gap: 1rem; }
+
+        .lineup-section {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 1rem;
+        }
+        .lineup-title {
+            font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 0.8rem; display: flex; justify-content: space-between;
+        }
+
+        .position-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 0.4rem;
+        }
+        .position-grid.bench { grid-template-columns: 1fr 1fr 1fr; }
+
+        .position-slot {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.6rem; border-radius: 8px;
+            border: 2px dashed rgba(255,255,255,0.1);
+            min-height: 44px; transition: all 0.2s;
+        }
+        .position-slot.drag-over {
+            border-color: var(--accent); background: rgba(46,204,113,0.08);
+        }
+        .position-slot.filled {
+            border-style: solid; border-color: rgba(255,255,255,0.12);
+            background: var(--primary-light);
+        }
+
+        .pos-number {
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.7rem; flex-shrink: 0;
+        }
+        .pos-number-fw { background: rgba(224,64,64,0.2); color: #ff6b6b; }
+        .pos-number-bk { background: rgba(74,158,255,0.2); color: #6baaff; }
+        .pos-number-bench { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+
+        .pos-info { flex: 1; min-width: 0; }
+        .pos-label {
+            font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .pos-player {
+            font-size: 0.8rem; font-weight: 600;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .pos-empty { font-size: 0.75rem; color: rgba(255,255,255,0.2); font-style: italic; }
+
+        .pos-remove {
+            width: 20px; height: 20px; border-radius: 50%; border: none;
+            background: rgba(224,64,64,0.2); color: var(--danger);
+            font-size: 0.7rem; cursor: pointer; display: none;
+            align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .position-slot.filled .pos-remove { display: flex; }
+        .pos-remove:hover { background: rgba(224,64,64,0.4); }
+
+        /* Actions */
+        .actions {
+            display: flex; gap: 0.5rem; justify-content: center;
+            padding: 0.5rem 0; flex-wrap: wrap;
+        }
+        .action-btn {
+            padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.8rem;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .action-btn:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+        .action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+        .save-indicator {
+            font-size: 0.7rem; color: var(--success); opacity: 0;
+            transition: opacity 0.3s; text-align: center; padding: 0.3rem;
+        }
+        .save-indicator.show { opacity: 1; }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 1.5rem; font-size: 0.7rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06); margin-top: 1rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            .builder { grid-template-columns: 1fr; }
+            .pool {
+                position: static; max-height: none;
+                display: grid; grid-template-columns: 1fr;
+            }
+            .pool-players { max-height: 200px; overflow-y: auto; }
+            .position-grid { grid-template-columns: 1fr; }
+            .position-grid.bench { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">Rugby Union Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">SV Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <button class="login-btn" id="login-btn">Einloggen</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html" class="active">Aufstellung</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="page-header app-content">
+        <h1>Aufstellung</h1>
+    </header>
+
+    <!-- TEAM SELECTOR -->
+    <div class="team-selector app-content">
+        <button class="team-btn active-1" data-team="1" id="btn-team-1">1. XV — 2. Bundesliga</button>
+        <button class="team-btn" data-team="2" id="btn-team-2">2. XV — Regionalliga</button>
+    </div>
+    <div class="game-info app-content" id="game-info"></div>
+
+    <!-- BUILDER -->
+    <div class="builder app-content">
+        <!-- Player Pool -->
+        <div class="pool">
+            <div class="pool-title">Spielerpool</div>
+            <input type="text" class="pool-search" id="pool-search" placeholder="Suchen...">
+            <div class="pool-count" id="pool-count"></div>
+            <div class="pool-players" id="pool-players"></div>
+        </div>
+
+        <!-- Lineup -->
+        <div class="lineup">
+            <div class="actions">
+                <button class="action-btn danger" id="btn-clear">Aufstellung leeren</button>
+            </div>
+            <div class="save-indicator" id="save-indicator">Gespeichert</div>
+
+            <!-- Sturm (Forwards 1-8) -->
+            <div class="lineup-section">
+                <div class="lineup-title">
+                    <span>Sturm</span>
+                    <span style="font-size:0.7rem;font-weight:400;">Positionen 1–8</span>
+                </div>
+                <div class="position-grid" id="forwards"></div>
+            </div>
+
+            <!-- Hintermannschaft (Backs 9-15) -->
+            <div class="lineup-section">
+                <div class="lineup-title">
+                    <span>Hintermannschaft</span>
+                    <span style="font-size:0.7rem;font-weight:400;">Positionen 9–15</span>
+                </div>
+                <div class="position-grid" id="backs"></div>
+            </div>
+
+            <!-- Ersatzbank (16-22) -->
+            <div class="lineup-section">
+                <div class="lineup-title">
+                    <span>Ersatzbank</span>
+                    <span style="font-size:0.7rem;font-weight:400;">Positionen 16–22</span>
+                </div>
+                <div class="position-grid bench" id="bench"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-content">
+        Rugby Union Hohen Neuendorf &times; SV Stahl Hennigsdorf<br>
+        <a href="index.html">&larr; Zurück zum Team Hub</a>
+    </footer>
+
+<script>
+    // --- PLAYER DATA ---
+    const players = [
+        { id:1, v:'Shawn', n:'Ahrens', geb:'2007-03-08', verein:'H/V', er:false },
+        { id:2, v:'Sarvan', n:'Aziz', geb:'2008-03-05', verein:'HN', er:false },
+        { id:3, v:'Hannes', n:'Bartelt', geb:'1999-05-30', verein:'HN', er:false },
+        { id:4, v:'Felix', n:'Berg', geb:'2000-04-13', verein:'HN', er:false },
+        { id:5, v:'Luca Karim', n:'Borgwardt', geb:'2002-02-13', verein:'HN', er:true },
+        { id:6, v:'Christopher', n:'Bunge', geb:'1984-09-21', verein:'H/V', er:false },
+        { id:7, v:'Paul', n:'Chukwu', geb:'2007-08-27', verein:'H/V', er:false },
+        { id:8, v:'Simon', n:'Csehan', geb:'2004-07-04', verein:'?', er:false },
+        { id:9, v:'Marvin', n:'Dirks', geb:'2004-08-12', verein:'HN', er:false },
+        { id:10, v:'Kimi', n:'Döpke', geb:'2009-03-05', verein:'HN', er:false },
+        { id:11, v:'Lucas', n:'Eichler', geb:'2007-07-26', verein:'HN', er:false },
+        { id:12, v:'Tobias', n:'Ehrlich', geb:'1986-08-05', verein:'HN', er:false },
+        { id:13, v:'Matti Erik', n:'Eschwe', geb:'2009-07-21', verein:'HN', er:false },
+        { id:14, v:'Keno', n:'Filietz', geb:'1994-04-18', verein:'H/V', er:false },
+        { id:15, v:'Kai', n:'Friesicke', geb:'1996-01-12', verein:'H/V', er:false },
+        { id:16, v:'Tim', n:'Förster', geb:'1999-11-29', verein:'HN', er:true },
+        { id:17, v:'Michael', n:'Galster', geb:'1977-12-29', verein:'HN', er:true },
+        { id:18, v:'Angelo', n:'Galster', geb:'2003-10-22', verein:'HN', er:false },
+        { id:19, v:'Moritz', n:'Gollnick', geb:'2008-05-23', verein:'HN', er:false },
+        { id:20, v:'Alexander', n:'Götsch', geb:'1980-07-29', verein:'H/V', er:false },
+        { id:21, v:'Marcel', n:'Grabow', geb:'1997-02-22', verein:'H/V', er:true },
+        { id:22, v:'Maximilian', n:'Grässler', geb:'2008-12-21', verein:'HN', er:false },
+        { id:23, v:'Alexander', n:'Grunwald', geb:'1996-01-18', verein:'H/V', er:false },
+        { id:24, v:'Anton', n:'Hanetzok', geb:'1999-07-09', verein:'H/V', er:false },
+        { id:25, v:'Oliver', n:'Herrmann', geb:'1998-03-19', verein:'HN', er:false },
+        { id:26, v:'Sebastian', n:'Hildebrandt', geb:'2005-05-30', verein:'HN', er:false },
+        { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', geb:'1970-07-10', verein:'HN', er:false },
+        { id:28, v:'Maximilian', n:'Hildebrandt', geb:'2002-11-18', verein:'HN', er:false },
+        { id:29, v:'Jonas', n:'Hinz', geb:'2001-08-26', verein:'HN', er:true },
+        { id:30, v:'Moritz', n:'Janosch', geb:null, verein:'HN', er:false },
+        { id:31, v:'Daniel', n:'Kainer', geb:'1973-05-03', verein:'HN', er:true },
+        { id:32, v:'Julius', n:'Kayser', geb:'2009-06-03', verein:'HN', er:false },
+        { id:33, v:'Tom', n:'König', geb:'1990-01-20', verein:'HN', er:true },
+        { id:34, v:'Sascha', n:'Kosanke', geb:'1990-02-14', verein:'H/V', er:true },
+        { id:35, v:'Norman Guido', n:'Kranert', geb:'1997-01-01', verein:'HN', er:true },
+        { id:36, v:'Fabian', n:'Kreikenborn', geb:'2000-06-01', verein:'H/V', er:false },
+        { id:37, v:'Julius', n:'Laetsch', geb:'1995-04-19', verein:'H/V', er:false },
+        { id:38, v:'Lukas', n:'Laetsch', geb:'1999-09-12', verein:'H/V', er:false },
+        { id:39, v:'Max', n:'Langer', geb:'1995-07-30', verein:'HN', er:true },
+        { id:40, v:'Fynn', n:'Lauer', geb:'2004-03-11', verein:'HN', er:false },
+        { id:41, v:'Tom', n:'Lebus', geb:'2000-06-08', verein:'H/V', er:false },
+        { id:42, v:'Xavier', n:'Mbrim A Fiediek', geb:'1988-12-26', verein:'H/V', er:false },
+        { id:43, v:'Steven', n:'Müller', geb:'2001-02-24', verein:'H/V', er:false },
+        { id:44, v:'Florian', n:'Neumann', geb:'1995-03-04', verein:'HN', er:false },
+        { id:45, v:'Gustav', n:'Palm', geb:'2007-09-15', verein:'HN', er:false },
+        { id:46, v:'Connor', n:'Peise', geb:'2007-05-27', verein:'H/V', er:false },
+        { id:47, v:'Kevin', n:'Pilz', geb:'1999-06-06', verein:'H/V', er:true },
+        { id:48, v:'Lukas', n:'Rathke', geb:'2001-11-16', verein:'H/V', er:false },
+        { id:49, v:'Silas', n:'Rathke', geb:'2007-04-12', verein:'H/V', er:false },
+        { id:50, v:'Paul-Nicolas', n:'Rusch', geb:'2001-04-02', verein:'HN', er:true },
+        { id:51, v:'Ronny', n:'Sager', geb:'1979-04-24', verein:'HN', er:true },
+        { id:52, v:'Maurice Peter', n:'Sankeralli', geb:'1976-11-16', verein:'H/V', er:false },
+        { id:53, v:'Theo', n:'Schmidt', geb:'2003-12-17', verein:'HN', er:false },
+        { id:54, v:'Timo', n:'Schmidt', geb:'1997-07-23', verein:'H/V', er:false },
+        { id:55, v:'Rico', n:'Schomacker', geb:'1989-12-19', verein:'HN', er:false },
+        { id:56, v:'Tristan', n:'Schöntag', geb:'2000-10-22', verein:'HN', er:false },
+        { id:57, v:'Steffen', n:'Schwarz', geb:'1981-03-05', verein:'HN', er:true },
+        { id:58, v:'Philip', n:'Simon', geb:'1998-10-18', verein:'H/V', er:true },
+        { id:59, v:'Enrico Marco', n:'Stenzel', geb:'1986-06-11', verein:'HN', er:false },
+        { id:60, v:'Florian', n:'Trapp', geb:'1996-07-10', verein:'H/V', er:false },
+        { id:61, v:'Oliver', n:'Tschetsch', geb:'1988-04-27', verein:'H/V', er:true },
+        { id:62, v:'Benjamin', n:'Uwiß', geb:'1997-09-27', verein:'H/V', er:false },
+        { id:63, v:'Joshua', n:'Walker', geb:'1996-08-14', verein:'H/V', er:false },
+        { id:64, v:'Fabian', n:'Wendt', geb:'1993-08-28', verein:'P', er:false },
+        { id:65, v:'Marcel', n:'Wischniowski', geb:'1979-07-26', verein:'H/V', er:false },
+        { id:66, v:'Robert', n:'Woelki', geb:'1998-11-30', verein:'H/V', er:false },
+        { id:67, v:'Paul', n:'Zyparth', geb:'1995-06-21', verein:'H/V', er:false },
+    ];
+    players.sort((a, b) => a.n.localeCompare(b.n, 'de'));
+
+    // --- POSITIONS ---
+    const positions = [
+        { num: 1, label: 'Pfeiler links', group: 'fw' },
+        { num: 2, label: 'Hakler', group: 'fw' },
+        { num: 3, label: 'Pfeiler rechts', group: 'fw' },
+        { num: 4, label: 'Zweite Reihe', group: 'fw' },
+        { num: 5, label: 'Zweite Reihe', group: 'fw' },
+        { num: 6, label: 'Flügelstürmer', group: 'fw' },
+        { num: 7, label: 'Flügelstürmer', group: 'fw' },
+        { num: 8, label: 'Nr. 8', group: 'fw' },
+        { num: 9, label: 'Gedrängehalb', group: 'bk' },
+        { num: 10, label: 'Verbinder', group: 'bk' },
+        { num: 11, label: 'Linker Flügel', group: 'bk' },
+        { num: 12, label: 'Innenzentrum', group: 'bk' },
+        { num: 13, label: 'Außenzentrum', group: 'bk' },
+        { num: 14, label: 'Rechter Flügel', group: 'bk' },
+        { num: 15, label: 'Schlussmann', group: 'bk' },
+        { num: 16, label: 'Ersatz', group: 'bench' },
+        { num: 17, label: 'Ersatz', group: 'bench' },
+        { num: 18, label: 'Ersatz', group: 'bench' },
+        { num: 19, label: 'Ersatz', group: 'bench' },
+        { num: 20, label: 'Ersatz', group: 'bench' },
+        { num: 21, label: 'Ersatz', group: 'bench' },
+        { num: 22, label: 'Ersatz', group: 'bench' },
+    ];
+
+    // --- GAMES ---
+    const games1 = [
+        { date: '2026-03-07', time: '14:00', opponent: 'Rugby Club Leipzig', home: true },
+        { date: '2026-03-14', time: '14:00', opponent: 'TSV Victoria Linden', home: true },
+        { date: '2026-03-21', time: '14:00', opponent: 'Rugby Klub 03 Berlin', home: false },
+        { date: '2026-03-28', time: '13:00', opponent: 'Hamburger Rugby-Club', home: false },
+        { date: '2026-04-18', time: '15:00', opponent: 'BSV 1892 Rugby', home: false },
+        { date: '2026-05-02', time: '15:00', opponent: 'Hamburger Rugby-Club', home: true },
+        { date: '2026-05-09', time: '15:00', opponent: 'FC St. Pauli Rugby', home: false },
+    ];
+    const games2 = [
+        { date: '2026-03-29', time: '15:00', opponent: 'Oranien Raptors', home: false },
+        { date: '2026-04-12', time: '15:00', opponent: 'SC Siemensstadt', home: true },
+        { date: '2026-04-19', time: '15:00', opponent: 'USV Potsdam', home: false },
+        { date: '2026-04-26', time: '15:00', opponent: 'Berliner RC II', home: true },
+    ];
+
+    // --- STATE ---
+    let activeTeam = '1';
+    // lineup[team] = { 1: playerId, 2: playerId, ... }
+    let lineup = { '1': {}, '2': {} };
+    let poolSearch = '';
+    let draggedPlayerId = null;
+
+    // --- HELPERS ---
+    function getNextGame(team) {
+        const games = team === '1' ? games1 : games2;
+        const now = new Date();
+        for (const g of games) {
+            if (new Date(g.date + 'T' + g.time + ':00') > now) return g;
+        }
+        return null;
+    }
+
+    function avatarClass(verein) {
+        if (verein === 'HN') return 'background:linear-gradient(135deg,#145a2a,#1b8a3e)';
+        if (verein === 'H/V') return 'background:linear-gradient(135deg,#0f3d7a,#1a5fb4)';
+        if (verein === 'P') return 'background:linear-gradient(135deg,#8a4a1b,#c06830)';
+        return 'background:linear-gradient(135deg,#444,#666)';
+    }
+
+    function initials(p) {
+        return (p.v.charAt(0) + p.n.charAt(0)).toUpperCase();
+    }
+
+    function shortName(p) {
+        return p.v.charAt(0) + '. ' + p.n;
+    }
+
+    function placedPlayerIds() {
+        return new Set(Object.values(lineup[activeTeam]).filter(Boolean).map(Number));
+    }
+
+    // --- STORAGE ---
+    function saveLineup() {
+        localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+        const ind = document.getElementById('save-indicator');
+        ind.classList.add('show');
+        setTimeout(() => ind.classList.remove('show'), 1500);
+    }
+
+    function loadLineup() {
+        const stored = localStorage.getItem('sgrhn_lineup');
+        if (stored) {
+            try { lineup = JSON.parse(stored); } catch(e) {}
+        }
+        if (!lineup['1']) lineup['1'] = {};
+        if (!lineup['2']) lineup['2'] = {};
+    }
+
+    // --- RENDER ---
+    function renderGameInfo() {
+        const game = getNextGame(activeTeam);
+        const el = document.getElementById('game-info');
+        if (!game) { el.textContent = 'Keine weiteren Spiele'; return; }
+        const d = new Date(game.date);
+        const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+        const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+        const prefix = game.home ? 'vs' : 'bei';
+        const tag = game.home ? 'HEIM' : 'AUSWÄRTS';
+        el.innerHTML = `Nächstes Spiel: <strong>${days[d.getDay()]}. ${d.getDate()}. ${months[d.getMonth()]} — ${prefix} ${game.opponent}</strong> · ${tag} · ${game.time} Uhr`;
+    }
+
+    function renderPool() {
+        const placed = placedPlayerIds();
+        const container = document.getElementById('pool-players');
+        const countEl = document.getElementById('pool-count');
+
+        let filtered = players;
+        if (poolSearch) {
+            const q = poolSearch.toLowerCase();
+            filtered = players.filter(p => (p.v + ' ' + p.n).toLowerCase().includes(q));
+        }
+
+        const available = filtered.filter(p => !placed.has(p.id));
+        const placedList = filtered.filter(p => placed.has(p.id));
+        const all = [...available, ...placedList];
+
+        countEl.textContent = `${placed.size}/22 aufgestellt · ${players.length - placed.size} verfügbar`;
+
+        container.innerHTML = all.map(p => {
+            const isPlaced = placed.has(p.id);
+            return `
+                <div class="player-chip ${isPlaced ? 'placed' : ''}"
+                     draggable="${isPlaced ? 'false' : 'true'}"
+                     data-id="${p.id}">
+                    <div class="chip-avatar" style="${avatarClass(p.verein)}">${initials(p)}</div>
+                    <span class="chip-name">${p.v} ${p.n}</span>
+                    ${p.er ? '<span class="chip-badge chip-er">1.R</span>' : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderSlots() {
+        const current = lineup[activeTeam];
+
+        function renderSlot(pos) {
+            const playerId = current[pos.num];
+            const player = playerId ? players.find(p => p.id === playerId) : null;
+            const numClass = pos.group === 'fw' ? 'pos-number-fw' : pos.group === 'bk' ? 'pos-number-bk' : 'pos-number-bench';
+
+            return `
+                <div class="position-slot ${player ? 'filled' : ''}" data-pos="${pos.num}">
+                    <div class="pos-number ${numClass}">${pos.num}</div>
+                    <div class="pos-info">
+                        <div class="pos-label">${pos.label}</div>
+                        ${player
+                            ? `<div class="pos-player">${player.v} ${player.n}</div>`
+                            : `<div class="pos-empty">Spieler hierher ziehen</div>`
+                        }
+                    </div>
+                    <button class="pos-remove" data-pos="${pos.num}" title="Entfernen">&times;</button>
+                </div>
+            `;
+        }
+
+        document.getElementById('forwards').innerHTML = positions.filter(p => p.group === 'fw').map(renderSlot).join('');
+        document.getElementById('backs').innerHTML = positions.filter(p => p.group === 'bk').map(renderSlot).join('');
+        document.getElementById('bench').innerHTML = positions.filter(p => p.group === 'bench').map(renderSlot).join('');
+    }
+
+    function renderAll() {
+        renderGameInfo();
+        renderPool();
+        renderSlots();
+    }
+
+    // --- DRAG & DROP ---
+    document.addEventListener('dragstart', e => {
+        const chip = e.target.closest('.player-chip');
+        if (!chip || chip.classList.contains('placed')) { e.preventDefault(); return; }
+        draggedPlayerId = parseInt(chip.dataset.id);
+        chip.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', draggedPlayerId);
+    });
+
+    document.addEventListener('dragend', e => {
+        const chip = e.target.closest('.player-chip');
+        if (chip) chip.classList.remove('dragging');
+        draggedPlayerId = null;
+        document.querySelectorAll('.position-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+    });
+
+    document.addEventListener('dragover', e => {
+        const slot = e.target.closest('.position-slot');
+        if (slot && draggedPlayerId) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            slot.classList.add('drag-over');
+        }
+    });
+
+    document.addEventListener('dragleave', e => {
+        const slot = e.target.closest('.position-slot');
+        if (slot) slot.classList.remove('drag-over');
+    });
+
+    document.addEventListener('drop', e => {
+        e.preventDefault();
+        const slot = e.target.closest('.position-slot');
+        if (!slot || !draggedPlayerId) return;
+        slot.classList.remove('drag-over');
+
+        const posNum = parseInt(slot.dataset.pos);
+        // If slot already has a player, free them first
+        if (lineup[activeTeam][posNum]) {
+            delete lineup[activeTeam][posNum];
+        }
+        // If this player is already in another slot, remove them
+        for (const key of Object.keys(lineup[activeTeam])) {
+            if (lineup[activeTeam][key] === draggedPlayerId) {
+                delete lineup[activeTeam][key];
+            }
+        }
+        lineup[activeTeam][posNum] = draggedPlayerId;
+        saveLineup();
+        renderAll();
+    });
+
+    // --- TOUCH SUPPORT ---
+    let touchDragId = null;
+    let touchGhost = null;
+
+    document.addEventListener('touchstart', e => {
+        const chip = e.target.closest('.player-chip:not(.placed)');
+        if (!chip) return;
+        touchDragId = parseInt(chip.dataset.id);
+        chip.classList.add('dragging');
+
+        // Create ghost element
+        touchGhost = chip.cloneNode(true);
+        touchGhost.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;opacity:0.8;width:' + chip.offsetWidth + 'px;';
+        document.body.appendChild(touchGhost);
+        const touch = e.touches[0];
+        touchGhost.style.left = (touch.clientX - 20) + 'px';
+        touchGhost.style.top = (touch.clientY - 20) + 'px';
+    }, { passive: true });
+
+    document.addEventListener('touchmove', e => {
+        if (!touchDragId || !touchGhost) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        touchGhost.style.left = (touch.clientX - 20) + 'px';
+        touchGhost.style.top = (touch.clientY - 20) + 'px';
+
+        // Highlight slot under finger
+        document.querySelectorAll('.position-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        const slot = el ? el.closest('.position-slot') : null;
+        if (slot) slot.classList.add('drag-over');
+    }, { passive: false });
+
+    document.addEventListener('touchend', e => {
+        if (!touchDragId) return;
+        document.querySelectorAll('.player-chip.dragging').forEach(c => c.classList.remove('dragging'));
+        if (touchGhost) { touchGhost.remove(); touchGhost = null; }
+
+        const touch = e.changedTouches[0];
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        const slot = el ? el.closest('.position-slot') : null;
+
+        if (slot) {
+            const posNum = parseInt(slot.dataset.pos);
+            if (lineup[activeTeam][posNum]) delete lineup[activeTeam][posNum];
+            for (const key of Object.keys(lineup[activeTeam])) {
+                if (lineup[activeTeam][key] === touchDragId) delete lineup[activeTeam][key];
+            }
+            lineup[activeTeam][posNum] = touchDragId;
+            saveLineup();
+        }
+
+        document.querySelectorAll('.position-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+        touchDragId = null;
+        renderAll();
+    });
+
+    // --- REMOVE PLAYER ---
+    document.addEventListener('click', e => {
+        const removeBtn = e.target.closest('.pos-remove');
+        if (removeBtn) {
+            const posNum = parseInt(removeBtn.dataset.pos);
+            delete lineup[activeTeam][posNum];
+            saveLineup();
+            renderAll();
+            return;
+        }
+
+        // Click to place: click on available player chip, then click on empty slot
+    });
+
+    // --- TEAM SWITCH ---
+    document.getElementById('btn-team-1').addEventListener('click', () => {
+        activeTeam = '1';
+        document.getElementById('btn-team-1').className = 'team-btn active-1';
+        document.getElementById('btn-team-2').className = 'team-btn';
+        renderAll();
+    });
+    document.getElementById('btn-team-2').addEventListener('click', () => {
+        activeTeam = '2';
+        document.getElementById('btn-team-1').className = 'team-btn';
+        document.getElementById('btn-team-2').className = 'team-btn active-2';
+        renderAll();
+    });
+
+    // --- CLEAR ---
+    document.getElementById('btn-clear').addEventListener('click', () => {
+        if (confirm('Aufstellung für ' + (activeTeam === '1' ? '1. XV' : '2. XV') + ' wirklich leeren?')) {
+            lineup[activeTeam] = {};
+            saveLineup();
+            renderAll();
+        }
+    });
+
+    // --- POOL SEARCH ---
+    document.getElementById('pool-search').addEventListener('input', e => {
+        poolSearch = e.target.value;
+        renderPool();
+    });
+
+    // --- LOGIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        loadLineup();
+        renderAll();
+    }
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_auth');
+        if (stored === await hashPw('oberhavel2025')) unlock();
+    }
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        const hash = await hashPw(pw);
+        const correctHash = await hashPw('oberhavel2025');
+        if (hash === correctHash) {
+            localStorage.setItem('sgrhn_auth', hash);
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    checkLogin();
+</script>
+</body>
+</html>
