@@ -378,7 +378,7 @@
     ];
 
     // Sort alphabetically by last name
-    players.sort((a, b) => a.n.localeCompare(b.n, 'de'));
+    players.sort((a, b) => a.n.localeCompare(b.n, 'de') || a.v.localeCompare(b.v, 'de'));
 
     // --- HELPERS ---
     function getAge(dateStr) {

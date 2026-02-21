@@ -366,7 +366,7 @@
         { id:66, v:'Robert', n:'Woelki', verein:'H/V', er:false },
         { id:67, v:'Paul', n:'Zyparth', verein:'H/V', er:false },
     ];
-    players.sort((a, b) => a.n.localeCompare(b.n, 'de'));
+    players.sort((a, b) => a.n.localeCompare(b.n, 'de') || a.v.localeCompare(b.v, 'de'));
 
     // --- GAMES ---
     const games1 = [
