@@ -149,26 +149,71 @@
             pointer-events: none;
         }
 
-        /* Quick Links */
-        .quick-links {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 0.6rem; margin-bottom: 1.2rem;
+        /* Sections */
+        .section { margin-bottom: 1.5rem; }
+        .section-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1rem; }
+        .section-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--green-dark), var(--blue-dark));
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
         }
-        .quick-link {
-            display: flex; align-items: center; gap: 0.6rem;
+        .section-title { font-size: 1.2rem; font-weight: 700; }
+        .card {
             background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 10px; padding: 0.8rem 1rem;
-            text-decoration: none; color: var(--text);
-            transition: all 0.2s;
+            border-radius: 12px; padding: 1.2rem; margin-bottom: 0.8rem;
         }
-        .quick-link:hover {
-            background: var(--bg-card-hover); border-color: rgba(255,255,255,0.15);
-            transform: translateY(-2px);
+
+        /* Progress */
+        .progress-container { margin-top: 0.6rem; }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+        .progress-label { font-size: 0.85rem; font-weight: 600; }
+        .progress-value { font-size: 0.85rem; color: var(--accent); font-weight: 700; }
+        .progress-bar { height: 8px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease; background: linear-gradient(90deg, var(--green), var(--accent-blue)); }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; }
+        .tab {
+            padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; white-space: nowrap; background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06); color: var(--text-muted); transition: all 0.2s;
         }
-        .quick-link-icon { font-size: 1.4rem; flex-shrink: 0; }
-        .quick-link-text { font-weight: 700; font-size: 0.82rem; }
-        .quick-link-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; }
-        @media (max-width: 520px) { .quick-links { grid-template-columns: 1fr; } }
+        .tab:hover { color: var(--text); }
+        .tab.active { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; border-color: transparent; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Goals */
+        .goal-row { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .goal-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .goal-row:first-child { padding-top: 0; }
+        .goal-check {
+            width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 50%;
+            flex-shrink: 0; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; transition: all 0.2s;
+        }
+        .goal-check.checked { background: #40c060; border-color: #40c060; }
+        .goal-check.checked::after { content: '\2713'; color: white; font-size: 0.75rem; font-weight: 700; }
+        .goal-text { flex: 1; }
+        .goal-label { font-weight: 600; font-size: 0.95rem; }
+        .goal-detail { font-size: 0.8rem; color: var(--text-muted); }
+        .goal-tag { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+        .tag-team1 { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .tag-team2 { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+        .tag-all { background: rgba(255,255,255,0.08); color: var(--text); }
+
+        /* Massnahmen */
+        .massnahme { display: flex; gap: 0.8rem; padding: 0.8rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .massnahme:last-child { border-bottom: none; }
+        .massnahme-num {
+            width: 28px; height: 28px; background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+        }
+        .massnahme-content { flex: 1; }
+        .massnahme-title { font-weight: 600; font-size: 0.95rem; }
+        .massnahme-desc { font-size: 0.8rem; color: var(--text-muted); }
 
         /* Filter */
         .filter-row {
@@ -238,30 +283,174 @@
     <!-- MAIN -->
     <div class="container app-content">
 
-        <!-- Quick Links -->
-        <div class="quick-links">
-            <a href="index.html#sec-training" class="quick-link">
-                <div class="quick-link-icon">&#128200;</div>
-                <div>
-                    <div class="quick-link-text">Trainingsbeteiligung</div>
-                    <div class="quick-link-sub">Zahlen &amp; Entwicklung</div>
-                </div>
-            </a>
-            <a href="index.html#sec-ziele" class="quick-link">
-                <div class="quick-link-icon">&#127942;</div>
-                <div>
-                    <div class="quick-link-text">Saisonziele</div>
-                    <div class="quick-link-sub">Rückrunde 2025/26</div>
-                </div>
-            </a>
-            <a href="index.html#sec-massnahmen" class="quick-link">
-                <div class="quick-link-icon">&#9889;</div>
-                <div>
-                    <div class="quick-link-text">Maßnahmen</div>
-                    <div class="quick-link-sub">Beschlüsse &amp; ToDos</div>
-                </div>
-            </a>
+        <!-- TRAININGSBETEILIGUNG -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128200;</div>
+                <div class="section-title">Trainingsbeteiligung</div>
+            </div>
+            <div class="card" id="training-attendance"></div>
         </div>
+
+        <!-- SAISONZIELE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#127942;</div>
+                <div class="section-title">Saisonziele Rückrunde</div>
+            </div>
+            <div class="tabs">
+                <div class="tab active" data-tab="goals-all">Alle</div>
+                <div class="tab" data-tab="goals-team1">1. XV</div>
+                <div class="tab" data-tab="goals-team2">2. XV</div>
+            </div>
+            <div class="card tab-content active" id="goals-all">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Trainingsbeteiligung steigern</div>
+                        <div class="goal-detail">Mind. 20 Spieler pro Trainingseinheit</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Team-Spirit aufbauen</div>
+                        <div class="goal-detail">Mind. 1 Team-Event pro Monat</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">SpielerPlus konsequent nutzen</div>
+                        <div class="goal-detail">100% An-/Abmeldung vor jedem Training &amp; Spiel</div>
+                    </div>
+                    <span class="goal-tag tag-all">Alle</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Rückrunde: Punkte holen</div>
+                        <div class="goal-detail">2. Bundesliga Nord — Klassenerhalt sichern</div>
+                    </div>
+                    <span class="goal-tag tag-team1">1. XV</span>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Spielpraxis für alle</div>
+                        <div class="goal-detail">Regionalliga Ost — Jeder bekommt Einsatzzeit</div>
+                    </div>
+                    <span class="goal-tag tag-team2">2. XV</span>
+                </div>
+            </div>
+            <div class="card tab-content" id="goals-team1">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Klassenerhalt sichern</div>
+                        <div class="goal-detail">2. Bundesliga Nord — Punkte holen in der Rückrunde</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Standardsituationen verbessern</div>
+                        <div class="goal-detail">Gedränge &amp; Gassen — regelmäßig 6–8 gleiche Stürmer im Training!</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Kontakthärte aufbauen</div>
+                        <div class="goal-detail">Mehr Vollkontakt &amp; Echtzeit-Übungen</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Heimspiel-Festung</div>
+                        <div class="goal-detail">Alle 3 Heimspiele gewinnen (Leipzig, Victoria Linden, Hamburg)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card tab-content" id="goals-team2">
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Spielpraxis für alle</div>
+                        <div class="goal-detail">Jeder Kaderspieler bekommt Einsatzzeit</div>
+                    </div>
+                </div>
+                <div class="goal-row">
+                    <div class="goal-check" onclick="this.classList.toggle('checked')"></div>
+                    <div class="goal-text">
+                        <div class="goal-label">Aufbau-Saison</div>
+                        <div class="goal-detail">Regionalliga Ost — Entwicklung &gt; Ergebnis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAßNAHMEN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#9889;</div>
+                <div class="section-title">Unsere Maßnahmen</div>
+            </div>
+            <div class="card">
+                <div class="massnahme">
+                    <div class="massnahme-num">1</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Keine Absagen in der Gruppe posten</div>
+                        <div class="massnahme-desc">Absagen demotivieren andere. Ab sofort nur noch über die SpielerPlus-App oder persönlich beim Trainer absagen — nicht in der WhatsApp-Gruppe.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">2</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Persönliche Ansprache fehlender Spieler</div>
+                        <div class="massnahme-desc">Jonas, Rico und Anton sprechen Spieler, die nicht regelmäßig erscheinen, einzeln und persönlich an. Nicht per WhatsApp — Anruf!</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">3</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Mehr Spielsituationen im Training</div>
+                        <div class="massnahme-desc">Mehr spielerische Elemente und Vollkontakt-Spielsituationen am Trainingsende einbauen — das macht Bock und erhöht die Beteiligung.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">4</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">SpielerPlus ist Pflicht</div>
+                        <div class="massnahme-desc">An-/Abmeldung über die App ist ab sofort verpflichtend für jedes Training und Spiel. Keine Ausnahmen.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">5</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Stammtisch &amp; Teamabend</div>
+                        <div class="massnahme-desc">Jeden Dienstag nach dem Training: Stammtisch im Club Hohen Neuendorf. Jeden 1. Freitag im Monat: Teamabend im Club Hennigsdorf.</div>
+                    </div>
+                </div>
+                <div class="massnahme">
+                    <div class="massnahme-num">6</div>
+                    <div class="massnahme-content">
+                        <div class="massnahme-title">Dienstag = Pflichttraining</div>
+                        <div class="massnahme-desc">Nächsten Dienstag: Vollkontakt und Match-Situationen. Wer nicht arbeiten muss, ist da — keine Ausreden.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPIELER-ZUORDNUNG -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-icon">&#128222;</div>
+                <div class="section-title">Spieler-Zuordnung</div>
+            </div>
 
         <!-- Members overview with counts -->
         <div class="members-bar" id="members-bar"></div>
@@ -281,6 +470,7 @@
             </thead>
             <tbody id="assign-body"></tbody>
         </table>
+        </div><!-- /section Spieler-Zuordnung -->
     </div>
 
     <!-- FOOTER -->
@@ -473,9 +663,86 @@
     }
 
     function renderAll() {
+        renderAttendance();
         renderMembers();
         renderTable();
     }
+
+    // --- TRAININGSBETEILIGUNG ---
+    const attendanceData = [
+        {
+            kw: 8, label: 'KW 8', range: '18.–20.02.',
+            sessions: [
+                { day: 'Mi', date: '18.02.', yes: 13, maybe: 3, no: 16 },
+                { day: 'Fr', date: '20.02.', yes: 21, maybe: 4, no: 8 },
+            ]
+        },
+    ];
+
+    function renderAttendance() {
+        const container = document.getElementById('training-attendance');
+        if (!container || attendanceData.length === 0) return;
+        const goal = 20;
+        const latest = attendanceData[0];
+        const latestAvg = Math.round(latest.sessions.reduce((s, x) => s + x.yes, 0) / latest.sessions.length);
+        const pct = Math.min(100, Math.round((latestAvg / 30) * 100));
+        let html = `
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="progress-label">Ziel: ${goal}+ Spieler pro Training</span>
+                    <span class="progress-value">Schnitt ${latestAvg} / 30+</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: ${pct}%"></div></div>
+            </div>`;
+        function renderWeek(week) {
+            let w = `<div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                ${week.label} (${week.range}) — Daten aus <strong>SpielerPlus</strong>
+            </div>
+            <div style="margin-top: 0.8rem; display: grid; grid-template-columns: repeat(${week.sessions.length}, 1fr); gap: 0.8rem;">`;
+            for (const s of week.sessions) {
+                const hit = s.yes >= goal;
+                const col = hit ? '#40c060' : 'var(--danger)';
+                const bg = hit ? 'rgba(64,192,96,0.08)' : 'rgba(224,64,64,0.08)';
+                w += `<div style="background: ${bg}; padding: 0.8rem; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 0.75rem; color: ${col}; font-weight: 600; text-transform: uppercase;">${s.day} ${s.date}</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: ${col};">${s.yes}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Zusagen (+${s.maybe} Vielleicht)</div>
+                </div>`;
+            }
+            w += '</div>';
+            return w;
+        }
+        html += renderWeek(latest);
+        if (attendanceData.length > 1) {
+            html += `<div style="margin-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.8rem;">
+                <div id="history-toggle" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" onclick="toggleHistory()">
+                    <span id="history-arrow" style="transition: transform 0.2s;">&#9654;</span>
+                    Vergangene Wochen (${attendanceData.length - 1})
+                </div>
+                <div id="history-content" style="display: none;">`;
+            for (let i = 1; i < attendanceData.length; i++) html += renderWeek(attendanceData[i]);
+            html += '</div></div>';
+        }
+        container.innerHTML = html;
+    }
+
+    function toggleHistory() {
+        const content = document.getElementById('history-content');
+        const arrow = document.getElementById('history-arrow');
+        if (content.style.display === 'none') { content.style.display = 'block'; arrow.style.transform = 'rotate(90deg)'; }
+        else { content.style.display = 'none'; arrow.style.transform = 'rotate(0deg)'; }
+    }
+
+    // --- TABS ---
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetId = tab.dataset.tab;
+            tab.closest('.section').querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            tab.closest('.section').querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
 
     // --- LOGIN ---
     async function hashPw(pw) {
