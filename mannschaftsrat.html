@@ -245,6 +245,8 @@
             .assign-table { font-size: 0.8rem; }
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -480,6 +482,18 @@
     </footer>
 
 <script>
+    // --- FIREBASE ---
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+
     // --- MANNSCHAFTSRAT MEMBERS ---
     const members = [
         { id: 'rs', name: 'Rico Schomacker', initials: 'RS', role: 'Captain' },
@@ -558,6 +572,11 @@
 
     // --- STORAGE ---
     function save() {
+        // Firebase speichern
+        db.ref('assignments').set(assignments).catch(err => {
+            console.warn('Firebase save failed, using localStorage fallback', err);
+        });
+        // LocalStorage als Fallback
         localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
         const ind = document.getElementById('save-indicator');
         ind.classList.add('show');
@@ -565,10 +584,21 @@
     }
 
     function load() {
+        // Erstmal LocalStorage laden (sofort verfügbar / Offline-Fallback)
         const stored = localStorage.getItem('sgrhn_rat_assign');
         if (stored) {
             try { assignments = JSON.parse(stored); } catch(e) {}
         }
+        // Firebase Echtzeit-Listener — überschreibt LocalStorage wenn online
+        db.ref('assignments').on('value', snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                assignments = data;
+                localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
+            }
+            renderMembers();
+            renderTable();
+        });
     }
 
     // --- RENDER ---

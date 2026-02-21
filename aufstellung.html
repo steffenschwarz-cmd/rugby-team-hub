@@ -281,6 +281,8 @@
             .section-label { grid-column: 1; }
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
@@ -354,6 +356,18 @@
     </footer>
 
 <script>
+    // --- FIREBASE ---
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+
     // --- PLAYER DATA ---
     const players = [
         { id:18, v:'Angelo', n:'Galster', role:null, pos:['sh','fh','ct'] },
@@ -469,6 +483,11 @@
 
     // --- STORAGE ---
     function saveLineup() {
+        // Firebase speichern
+        db.ref('lineup').set(lineup).catch(err => {
+            console.warn('Firebase save failed, using localStorage fallback', err);
+        });
+        // LocalStorage als Fallback
         localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
         const ind = document.getElementById('save-indicator');
         ind.classList.add('show');
@@ -476,12 +495,24 @@
     }
 
     function loadLineup() {
+        // Erstmal LocalStorage laden (sofort verfügbar / Offline-Fallback)
         const stored = localStorage.getItem('sgrhn_lineup');
         if (stored) {
             try { lineup = JSON.parse(stored); } catch(e) {}
         }
         if (!lineup['1']) lineup['1'] = {};
         if (!lineup['2']) lineup['2'] = {};
+        // Firebase Echtzeit-Listener — überschreibt LocalStorage wenn online
+        db.ref('lineup').on('value', snapshot => {
+            const data = snapshot.val();
+            if (data) {
+                lineup = data;
+                if (!lineup['1']) lineup['1'] = {};
+                if (!lineup['2']) lineup['2'] = {};
+                localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+            }
+            renderAll();
+        });
     }
 
     // --- RENDER ---
