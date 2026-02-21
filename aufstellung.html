@@ -306,7 +306,6 @@
         { id:6, v:'Christopher', n:'Bunge', verein:'H/V', er:false },
         { id:7, v:'Paul', n:'Chukwu', verein:'H/V', er:false },
         { id:8, v:'Simon', n:'Csehan', verein:'?', er:false },
-        { id:9, v:'Marvin', n:'Dirks', verein:'HN', er:false },
         { id:10, v:'Kimi', n:'Döpke', verein:'HN', er:false },
         { id:11, v:'Lucas', n:'Eichler', verein:'HN', er:false },
         { id:12, v:'Tobias', n:'Ehrlich', verein:'HN', er:false },
@@ -317,10 +316,7 @@
         { id:17, v:'Michael', n:'Galster', verein:'HN', er:true },
         { id:18, v:'Angelo', n:'Galster', verein:'HN', er:false },
         { id:19, v:'Moritz', n:'Gollnick', verein:'HN', er:false },
-        { id:20, v:'Alexander', n:'Götsch', verein:'H/V', er:false },
         { id:21, v:'Marcel', n:'Grabow', verein:'H/V', er:true },
-        { id:22, v:'Maximilian', n:'Grässler', verein:'HN', er:false },
-        { id:23, v:'Alexander', n:'Grunwald', verein:'H/V', er:false },
         { id:24, v:'Anton', n:'Hanetzok', verein:'H/V', er:false, role:'VC' },
         { id:25, v:'Oliver', n:'Herrmann', verein:'HN', er:false },
         { id:26, v:'Sebastian', n:'Hildebrandt', verein:'HN', er:false },
@@ -329,11 +325,9 @@
         { id:29, v:'Jonas', n:'Hinz', verein:'HN', er:true, role:'VC' },
         { id:30, v:'Moritz', n:'Janosch', verein:'HN', er:false },
         { id:31, v:'Daniel', n:'Kainer', verein:'HN', er:true },
-        { id:32, v:'Julius', n:'Kayser', verein:'HN', er:false },
         { id:33, v:'Tom', n:'König', verein:'HN', er:true },
         { id:34, v:'Sascha', n:'Kosanke', verein:'H/V', er:true },
         { id:35, v:'Norman Guido', n:'Kranert', verein:'HN', er:true },
-        { id:36, v:'Fabian', n:'Kreikenborn', verein:'H/V', er:false },
         { id:37, v:'Julius', n:'Laetsch', verein:'H/V', er:false },
         { id:38, v:'Lukas', n:'Laetsch', verein:'H/V', er:false, role:'VC' },
         { id:39, v:'Max', n:'Langer', verein:'HN', er:true },
@@ -345,9 +339,7 @@
         { id:45, v:'Gustav', n:'Palm', verein:'HN', er:false },
         { id:46, v:'Connor', n:'Peise', verein:'H/V', er:false },
         { id:47, v:'Kevin', n:'Pilz', verein:'H/V', er:true },
-        { id:48, v:'Lukas', n:'Rathke', verein:'H/V', er:false },
         { id:49, v:'Silas', n:'Rathke', verein:'H/V', er:false },
-        { id:50, v:'Paul-Nicolas', n:'Rusch', verein:'HN', er:true },
         { id:51, v:'Ronny', n:'Sager', verein:'HN', er:true },
         { id:52, v:'Maurice Peter', n:'Sankeralli', verein:'H/V', er:false },
         { id:53, v:'Theo', n:'Schmidt', verein:'HN', er:false },
@@ -357,16 +349,13 @@
         { id:57, v:'Steffen', n:'Schwarz', verein:'HN', er:true },
         { id:58, v:'Philip', n:'Simon', verein:'H/V', er:true },
         { id:59, v:'Enrico Marco', n:'Stenzel', verein:'HN', er:false },
-        { id:60, v:'Florian', n:'Trapp', verein:'H/V', er:false },
         { id:61, v:'Oliver', n:'Tschetsch', verein:'H/V', er:true },
-        { id:62, v:'Benjamin', n:'Uwiß', verein:'H/V', er:false },
         { id:63, v:'Joshua', n:'Walker', verein:'H/V', er:false },
         { id:64, v:'Fabian', n:'Wendt', verein:'P', er:false },
-        { id:65, v:'Marcel', n:'Wischniowski', verein:'H/V', er:false },
         { id:66, v:'Robert', n:'Woelki', verein:'H/V', er:false },
         { id:67, v:'Paul', n:'Zyparth', verein:'H/V', er:false },
     ];
-    players.sort((a, b) => a.n.localeCompare(b.n, 'de') || a.v.localeCompare(b.v, 'de'));
+    players.sort((a, b) => a.v.localeCompare(b.v, 'de') || a.n.localeCompare(b.n, 'de'));
 
     // --- GAMES ---
     const games1 = [
