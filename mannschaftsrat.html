@@ -593,10 +593,9 @@
         // Firebase Echtzeit-Listener — überschreibt LocalStorage wenn online
         db.ref('assignments').on('value', snapshot => {
             const data = snapshot.val();
-            if (data) {
-                assignments = data;
-                localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
-            }
+            // Firebase löscht leere Objekte → null bedeutet "alles geleert"
+            assignments = data || {};
+            localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
             renderMembers();
             renderTable();
         });

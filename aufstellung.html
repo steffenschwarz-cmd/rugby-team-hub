@@ -277,6 +277,7 @@
         /* Mobile */
         @media (max-width: 520px) {
             .lineup-table { grid-template-columns: 1fr; }
+            .lineup-row { order: var(--pos-order); }
             .match-title { font-size: 1rem; }
             .section-label { grid-column: 1; }
         }
@@ -506,12 +507,24 @@
         // Firebase Echtzeit-Listener — überschreibt LocalStorage wenn online
         db.ref('lineup').on('value', snapshot => {
             const data = snapshot.val();
+            // Firebase löscht leere Objekte → null bedeutet "alles geleert"
             if (data) {
-                lineup = data;
-                if (!lineup['1']) lineup['1'] = {};
-                if (!lineup['2']) lineup['2'] = {};
-                localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+                lineup = {};
+                // Firebase kann numerische Keys als Array zurückgeben → zu Objekt konvertieren
+                for (const team of ['1', '2']) {
+                    lineup[team] = {};
+                    const teamData = data[team];
+                    if (teamData && typeof teamData === 'object') {
+                        const entries = Array.isArray(teamData) ? teamData.entries() : Object.entries(teamData);
+                        for (const [k, v] of entries) {
+                            if (v != null) lineup[team][k] = v;
+                        }
+                    }
+                }
+            } else {
+                lineup = { '1': {}, '2': {} };
             }
+            localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
             renderAll();
         });
     }
@@ -622,7 +635,7 @@
         }
 
         return `
-            <div class="lineup-row">
+            <div class="lineup-row" style="--pos-order: ${posNum}">
                 <div class="pos-num ${numClass}">${posNum}</div>
                 <div class="pos-select-wrap">
                     <select class="pos-select" data-pos="${posNum}">
