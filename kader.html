@@ -488,16 +488,16 @@
     }
 
     async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_auth');
-        if (stored === await hashPw('oberhavel2025')) unlock();
+        const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (stored === await hashPw('RatPack#26')) unlock();
     }
 
     async function tryLogin() {
         const pw = document.getElementById('login-pw').value;
         const hash = await hashPw(pw);
-        const correctHash = await hashPw('oberhavel2025');
+        const correctHash = await hashPw('RatPack#26');
         if (hash === correctHash) {
-            localStorage.setItem('sgrhn_auth', hash);
+            localStorage.setItem('sgrhn_rat_auth', hash);
             unlock();
         } else {
             document.getElementById('login-error').style.display = 'block';

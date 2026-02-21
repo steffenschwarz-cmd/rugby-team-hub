@@ -50,6 +50,57 @@
         .app-content { display: none; }
         .app-content.visible { display: block; }
 
+        /* Trainer PIN Bar */
+        .trainer-bar {
+            background: linear-gradient(135deg, rgba(27,138,62,0.15), rgba(26,95,180,0.15));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+        }
+        .trainer-bar .trainer-info {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .trainer-bar .trainer-info.unlocked {
+            color: var(--accent);
+        }
+        .trainer-bar .trainer-btn {
+            padding: 0.45rem 1rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            background: var(--primary-light);
+            color: var(--text);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .trainer-bar .trainer-btn:hover {
+            background: var(--green-dark);
+            border-color: var(--accent);
+        }
+        .trainer-bar .trainer-btn.locked {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            border: none;
+            color: white;
+        }
+        /* Read-only mode: dim selects and hide clear button */
+        .readonly-mode .pos-select {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .readonly-mode .pos-select-wrap::after {
+            display: none;
+        }
+        .readonly-mode #btn-clear {
+            display: none;
+        }
+
         /* Nav */
         .topnav {
             position: sticky; top: 0; z-index: 100;
@@ -272,7 +323,13 @@
     </div>
 
     <!-- MAIN -->
-    <div class="aufstellung-container app-content">
+    <div class="aufstellung-container app-content readonly-mode" id="aufstellung-main">
+        <!-- Trainer PIN Bar -->
+        <div class="trainer-bar" id="trainer-bar">
+            <span class="trainer-info" id="trainer-info">Nur-Lesen-Modus — Trainer-PIN erforderlich zum Bearbeiten</span>
+            <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Bearbeiten</button>
+        </div>
+
         <div class="match-header">
             <div class="match-title" id="match-title">AUFSTELLUNG</div>
             <div class="match-info" id="match-info"></div>
@@ -497,6 +554,12 @@
                 renderTable();
             });
         });
+
+        // Enforce read-only mode if trainer not authenticated
+        const main = document.getElementById('aufstellung-main');
+        if (main && main.classList.contains('readonly-mode')) {
+            container.querySelectorAll('.pos-select').forEach(sel => sel.setAttribute('disabled', ''));
+        }
     }
 
     function buildOption(p, current, posNum, placed) {
@@ -578,17 +641,19 @@
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
         loadLineup();
         renderAll();
+        // Check if trainer is already authenticated
+        checkTrainerAuth();
     }
     async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_auth');
-        if (stored === await hashPw('oberhavel2025')) unlock();
+        const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (stored === await hashPw('RatPack#26')) unlock();
     }
     async function tryLogin() {
         const pw = document.getElementById('login-pw').value;
         const hash = await hashPw(pw);
-        const correctHash = await hashPw('oberhavel2025');
+        const correctHash = await hashPw('RatPack#26');
         if (hash === correctHash) {
-            localStorage.setItem('sgrhn_auth', hash);
+            localStorage.setItem('sgrhn_rat_auth', hash);
             unlock();
         } else {
             document.getElementById('login-error').style.display = 'block';
@@ -597,6 +662,41 @@
     }
     document.getElementById('login-btn').addEventListener('click', tryLogin);
     document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    // --- TRAINER PIN ---
+    async function checkTrainerAuth() {
+        const stored = localStorage.getItem('sgrhn_trainer_auth');
+        if (stored === await hashPw('7831')) {
+            enableEditing();
+        }
+    }
+
+    function enableEditing() {
+        const main = document.getElementById('aufstellung-main');
+        main.classList.remove('readonly-mode');
+        document.querySelectorAll('.pos-select').forEach(sel => sel.removeAttribute('disabled'));
+        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
+        document.getElementById('trainer-info').classList.add('unlocked');
+        document.getElementById('trainer-btn').textContent = 'Entsperrt';
+        document.getElementById('trainer-btn').classList.remove('locked');
+        document.getElementById('trainer-btn').disabled = true;
+        document.getElementById('trainer-btn').style.opacity = '0.6';
+        document.getElementById('trainer-btn').style.cursor = 'default';
+    }
+
+    async function promptTrainerPIN() {
+        const pin = prompt('Trainer-PIN eingeben:');
+        if (pin === null) return;
+        const hash = await hashPw(pin);
+        const correctHash = await hashPw('7831');
+        if (hash === correctHash) {
+            localStorage.setItem('sgrhn_trainer_auth', hash);
+            enableEditing();
+        } else {
+            alert('Falscher PIN.');
+        }
+    }
+
     checkLogin();
 </script>
 </body>

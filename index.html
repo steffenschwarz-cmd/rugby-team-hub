@@ -1846,7 +1846,7 @@
 
         async function checkLogin() {
             const stored = localStorage.getItem('sgrhn_auth');
-            if (stored === await hashPw('oberhavel2025')) {
+            if (stored === await hashPw('ScrumHN!2026')) {
                 unlock();
             }
         }
@@ -1866,7 +1866,7 @@
         async function tryLogin() {
             const pw = document.getElementById('login-pw').value;
             const hash = await hashPw(pw);
-            const correctHash = await hashPw('oberhavel2025');
+            const correctHash = await hashPw('ScrumHN!2026');
             if (hash === correctHash) {
                 localStorage.setItem('sgrhn_auth', hash);
                 unlock();
