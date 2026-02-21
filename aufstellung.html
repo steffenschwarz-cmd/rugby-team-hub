@@ -646,7 +646,9 @@
     }
     async function checkLogin() {
         const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (!stored) { localStorage.removeItem('sgrhn_auth'); return; }
         if (stored === await hashPw('RatPack#26')) unlock();
+        else localStorage.removeItem('sgrhn_rat_auth');
     }
     async function tryLogin() {
         const pw = document.getElementById('login-pw').value;
