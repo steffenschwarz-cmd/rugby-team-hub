@@ -149,6 +149,27 @@
             pointer-events: none;
         }
 
+        /* Quick Links */
+        .quick-links {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem; margin-bottom: 1.2rem;
+        }
+        .quick-link {
+            display: flex; align-items: center; gap: 0.6rem;
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px; padding: 0.8rem 1rem;
+            text-decoration: none; color: var(--text);
+            transition: all 0.2s;
+        }
+        .quick-link:hover {
+            background: var(--bg-card-hover); border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+        .quick-link-icon { font-size: 1.4rem; flex-shrink: 0; }
+        .quick-link-text { font-weight: 700; font-size: 0.82rem; }
+        .quick-link-sub { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; }
+        @media (max-width: 520px) { .quick-links { grid-template-columns: 1fr; } }
+
         /* Filter */
         .filter-row {
             display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center;
@@ -216,6 +237,31 @@
 
     <!-- MAIN -->
     <div class="container app-content">
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <a href="index.html#sec-training" class="quick-link">
+                <div class="quick-link-icon">&#128200;</div>
+                <div>
+                    <div class="quick-link-text">Trainingsbeteiligung</div>
+                    <div class="quick-link-sub">Zahlen &amp; Entwicklung</div>
+                </div>
+            </a>
+            <a href="index.html#sec-ziele" class="quick-link">
+                <div class="quick-link-icon">&#127942;</div>
+                <div>
+                    <div class="quick-link-text">Saisonziele</div>
+                    <div class="quick-link-sub">Rückrunde 2025/26</div>
+                </div>
+            </a>
+            <a href="index.html#sec-massnahmen" class="quick-link">
+                <div class="quick-link-icon">&#9889;</div>
+                <div>
+                    <div class="quick-link-text">Maßnahmen</div>
+                    <div class="quick-link-sub">Beschlüsse &amp; ToDos</div>
+                </div>
+            </a>
+        </div>
 
         <!-- Members overview with counts -->
         <div class="members-bar" id="members-bar"></div>
