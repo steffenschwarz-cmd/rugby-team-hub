@@ -195,11 +195,8 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: 700; font-size: 0.7rem;
             flex-shrink: 0; color: white;
+            background: linear-gradient(135deg, var(--primary-light), #2a4060);
         }
-        .avatar-hn { background: linear-gradient(135deg, var(--green-dark), var(--green)); }
-        .avatar-hv { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); }
-        .avatar-p { background: linear-gradient(135deg, #8a4a1b, #c06830); }
-        .avatar-unknown { background: linear-gradient(135deg, #444, #666); }
 
         .player-info { flex: 1; min-width: 0; }
         .player-name {
@@ -216,9 +213,6 @@
             border-radius: 4px; font-size: 0.65rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.02em;
         }
-        .badge-hn { background: rgba(46,204,113,0.15); color: var(--accent); }
-        .badge-hv { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
-        .badge-p { background: rgba(192,104,48,0.2); color: #e8a050; }
         .badge-er { background: rgba(232,160,32,0.15); color: #e8a020; }
         .badge-zr { background: rgba(224,100,64,0.15); color: #e06840; }
         .badge-dr { background: rgba(208,64,128,0.15); color: #d04880; }
@@ -404,20 +398,6 @@
         return (p.v.charAt(0) + p.n.charAt(0)).toUpperCase();
     }
 
-    function vereinClass(v) {
-        if (v === 'HN') return 'hn';
-        if (v === 'H/V') return 'hv';
-        if (v === 'P') return 'p';
-        return 'unknown';
-    }
-
-    function vereinLabel(v) {
-        if (v === 'HN') return 'Hohen Neuendorf';
-        if (v === 'H/V') return 'Hennigsdorf/Velten';
-        if (v === 'P') return 'Potsdam';
-        return 'Unbekannt';
-    }
-
     // --- STATE ---
     let activeFilter = 'alle';
     let searchQuery = '';
@@ -454,7 +434,6 @@
 
         grid.innerHTML = filtered.map(p => {
             const age = getAge(p.geb);
-            const vc = vereinClass(p.verein);
             const ageStr = age !== null ? `${age} J.` : '';
 
             let badges = '';
@@ -467,10 +446,10 @@
 
             return `
                 <div class="player-card">
-                    <div class="player-avatar avatar-${vc}">${getInitials(p)}</div>
+                    <div class="player-avatar">${getInitials(p)}</div>
                     <div class="player-info">
                         <div class="player-name">${p.v} ${p.n}</div>
-                        <div class="player-meta">${ageStr}${ageStr ? ' · ' : ''}${vereinLabel(p.verein)}</div>
+                        <div class="player-meta">${ageStr}</div>
                     </div>
                     <div class="player-badges">${badges}</div>
                 </div>
