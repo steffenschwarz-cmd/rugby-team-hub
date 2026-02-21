@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kader — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e;
+            --green-dark: #145a2a;
+            --blue: #1a5fb4;
+            --blue-dark: #0f3d7a;
+            --primary: #152030;
+            --primary-light: #1c3048;
+            --accent: #2ecc71;
+            --accent-blue: #4a9eff;
+            --bg: #0c1420;
+            --bg-card: #131f30;
+            --bg-card-hover: #1a2a40;
+            --text: #e8ecf0;
+            --text-muted: #7a90a8;
+            --danger: #e04040;
+            --success: #40c060;
+            --warning: #e8a020;
+            --home: #2ecc71;
+            --away: #4a9eff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Login Gate */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 1000;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            width: min(90vw, 360px);
+            text-align: center;
+        }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); }
+        .club-x { margin: 0 0.3rem; }
+        .club-blue { color: var(--accent-blue); }
+        .login-input {
+            width: 100%; padding: 0.8rem 1rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary);
+            color: var(--text); font-size: 1rem;
+            margin-bottom: 0.8rem; outline: none; text-align: center;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 0.8rem; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* Nav */
+        .topnav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(12,20,32,0.92);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem;
+            display: none;
+        }
+        .topnav.visible { display: flex; }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; align-items: center;
+            max-width: 1100px; margin: 0 auto; width: 100%;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none;
+            font-size: 0.75rem; font-weight: 600;
+            padding: 0.4rem 0.7rem; border-radius: 6px;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .topnav a:hover, .topnav a.active {
+            color: var(--text); background: rgba(255,255,255,0.08);
+        }
+        .nav-sep {
+            color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .page-header .subtitle {
+            font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;
+            padding: 1rem; max-width: 1100px; margin: 0 auto;
+        }
+        .stat-chip {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px; padding: 0.3rem 0.8rem;
+            font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+        }
+        .stat-chip strong { color: var(--text); margin-right: 0.3rem; }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 1rem 2rem; }
+
+        /* Search & Filter */
+        .controls { margin-bottom: 1.2rem; }
+        .search-box {
+            width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; background: var(--bg-card);
+            color: var(--text); font-size: 0.9rem; outline: none;
+            margin-bottom: 0.8rem;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        .search-box::placeholder { color: var(--text-muted); }
+        .search-wrap { position: relative; }
+        .search-icon {
+            position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+            font-size: 0.9rem; color: var(--text-muted); pointer-events: none;
+        }
+        .filter-row {
+            display: flex; gap: 0.4rem; flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.35rem 0.75rem; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted);
+            font-size: 0.75rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-btn.active {
+            background: rgba(46,204,113,0.15); border-color: var(--accent);
+            color: var(--accent);
+        }
+        .filter-btn.active-hn { background: rgba(46,204,113,0.15); border-color: var(--accent); color: var(--accent); }
+        .filter-btn.active-hv { background: rgba(74,158,255,0.15); border-color: var(--accent-blue); color: var(--accent-blue); }
+        .filter-btn.active-er { background: rgba(232,160,32,0.15); border-color: var(--warning); color: var(--warning); }
+
+        .result-count {
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem;
+        }
+
+        /* Player Grid */
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.6rem;
+        }
+
+        .player-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.15s;
+        }
+        .player-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .player-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.7rem;
+            flex-shrink: 0; color: white;
+        }
+        .avatar-hn { background: linear-gradient(135deg, var(--green-dark), var(--green)); }
+        .avatar-hv { background: linear-gradient(135deg, var(--blue-dark), var(--blue)); }
+        .avatar-p { background: linear-gradient(135deg, #8a4a1b, #c06830); }
+        .avatar-unknown { background: linear-gradient(135deg, #444, #666); }
+
+        .player-info { flex: 1; min-width: 0; }
+        .player-name {
+            font-weight: 700; font-size: 0.9rem;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .player-meta {
+            font-size: 0.75rem; color: var(--text-muted);
+            display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-block; padding: 0.1rem 0.4rem;
+            border-radius: 4px; font-size: 0.65rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.02em;
+        }
+        .badge-hn { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .badge-hv { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+        .badge-p { background: rgba(192,104,48,0.2); color: #e8a050; }
+        .badge-er { background: rgba(232,160,32,0.15); color: var(--warning); }
+        .badge-u18 { background: rgba(224,64,64,0.15); color: var(--danger); }
+
+        .player-badges { display: flex; gap: 0.3rem; flex-shrink: 0; }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center; padding: 3rem 1rem;
+            color: var(--text-muted); font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 1.5rem;
+            font-size: 0.7rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 2rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        @media (max-width: 480px) {
+            .player-grid { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">Rugby Union Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">SV Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <button class="login-btn" id="login-btn">Einloggen</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html" class="active">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="page-header app-content">
+        <h1>Kader 2025/26</h1>
+        <div class="subtitle">SG Rugbyunion Hohen Neuendorf &times; SV Stahl Hennigsdorf</div>
+    </header>
+
+    <!-- STATS -->
+    <div class="stats-bar app-content" id="stats-bar"></div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container app-content">
+        <div class="controls">
+            <div class="search-wrap">
+                <span class="search-icon">&#128269;</span>
+                <input type="text" class="search-box" id="search" placeholder="Spieler suchen...">
+            </div>
+            <div class="filter-row" id="filters">
+                <button class="filter-btn active" data-filter="alle">Alle</button>
+                <button class="filter-btn" data-filter="hn">Hohen Neuendorf</button>
+                <button class="filter-btn" data-filter="hv">Hennigsdorf/Velten</button>
+                <button class="filter-btn" data-filter="er">Erste Reihe</button>
+            </div>
+            <div class="result-count" id="result-count"></div>
+        </div>
+        <div class="player-grid" id="player-grid"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-content">
+        Rugby Union Hohen Neuendorf &times; SV Stahl Hennigsdorf<br>
+        <a href="index.html">&larr; Zurück zum Team Hub</a>
+    </footer>
+
+<script>
+    // --- PLAYER DATA ---
+    const players = [
+        { id:1, v:'Shawn', n:'Ahrens', geb:'2007-03-08', verein:'H/V', er:false, u18:false },
+        { id:2, v:'Sarvan', n:'Aziz', geb:'2008-03-05', verein:'HN', er:false, u18:true },
+        { id:3, v:'Hannes', n:'Bartelt', geb:'1999-05-30', verein:'HN', er:false, u18:false },
+        { id:4, v:'Felix', n:'Berg', geb:'2000-04-13', verein:'HN', er:false, u18:false },
+        { id:5, v:'Luca Karim', n:'Borgwardt', geb:'2002-02-13', verein:'HN', er:true, u18:false },
+        { id:6, v:'Christopher', n:'Bunge', geb:'1984-09-21', verein:'H/V', er:false, u18:false },
+        { id:7, v:'Paul', n:'Chukwu', geb:'2007-08-27', verein:'H/V', er:false, u18:false },
+        { id:8, v:'Simon', n:'Csehan', geb:'2004-07-04', verein:'?', er:false, u18:false },
+        { id:9, v:'Marvin', n:'Dirks', geb:'2004-08-12', verein:'HN', er:false, u18:false },
+        { id:10, v:'Kimi', n:'Döpke', geb:'2009-03-05', verein:'HN', er:false, u18:false },
+        { id:11, v:'Lucas', n:'Eichler', geb:'2007-07-26', verein:'HN', er:false, u18:false },
+        { id:12, v:'Tobias', n:'Ehrlich', geb:'1986-08-05', verein:'HN', er:false, u18:false },
+        { id:13, v:'Matti Erik', n:'Eschwe', geb:'2009-07-21', verein:'HN', er:false, u18:false },
+        { id:14, v:'Keno', n:'Filietz', geb:'1994-04-18', verein:'H/V', er:false, u18:false },
+        { id:15, v:'Kai', n:'Friesicke', geb:'1996-01-12', verein:'H/V', er:false, u18:false },
+        { id:16, v:'Tim', n:'Förster', geb:'1999-11-29', verein:'HN', er:true, u18:false },
+        { id:17, v:'Michael', n:'Galster', geb:'1977-12-29', verein:'HN', er:true, u18:false },
+        { id:18, v:'Angelo', n:'Galster', geb:'2003-10-22', verein:'HN', er:false, u18:false },
+        { id:19, v:'Moritz', n:'Gollnick', geb:'2008-05-23', verein:'HN', er:false, u18:true },
+        { id:20, v:'Alexander', n:'Götsch', geb:'1980-07-29', verein:'H/V', er:false, u18:false },
+        { id:21, v:'Marcel', n:'Grabow', geb:'1997-02-22', verein:'H/V', er:true, u18:false },
+        { id:22, v:'Maximilian', n:'Grässler', geb:'2008-12-21', verein:'HN', er:false, u18:false },
+        { id:23, v:'Alexander', n:'Grunwald', geb:'1996-01-18', verein:'H/V', er:false, u18:false },
+        { id:24, v:'Anton', n:'Hanetzok', geb:'1999-07-09', verein:'H/V', er:false, u18:false },
+        { id:25, v:'Oliver', n:'Herrmann', geb:'1998-03-19', verein:'HN', er:false, u18:false },
+        { id:26, v:'Sebastian', n:'Hildebrandt', geb:'2005-05-30', verein:'HN', er:false, u18:false },
+        { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', geb:'1970-07-10', verein:'HN', er:false, u18:false },
+        { id:28, v:'Maximilian', n:'Hildebrandt', geb:'2002-11-18', verein:'HN', er:false, u18:false },
+        { id:29, v:'Jonas', n:'Hinz', geb:'2001-08-26', verein:'HN', er:true, u18:false },
+        { id:30, v:'Moritz', n:'Janosch', geb:null, verein:'HN', er:false, u18:false },
+        { id:31, v:'Daniel', n:'Kainer', geb:'1973-05-03', verein:'HN', er:true, u18:false },
+        { id:32, v:'Julius', n:'Kayser', geb:'2009-06-03', verein:'HN', er:false, u18:false },
+        { id:33, v:'Tom', n:'König', geb:'1990-01-20', verein:'HN', er:true, u18:false },
+        { id:34, v:'Sascha', n:'Kosanke', geb:'1990-02-14', verein:'H/V', er:true, u18:false },
+        { id:35, v:'Norman Guido', n:'Kranert', geb:'1997-01-01', verein:'HN', er:true, u18:false },
+        { id:36, v:'Fabian', n:'Kreikenborn', geb:'2000-06-01', verein:'H/V', er:false, u18:false },
+        { id:37, v:'Julius', n:'Laetsch', geb:'1995-04-19', verein:'H/V', er:false, u18:false },
+        { id:38, v:'Lukas', n:'Laetsch', geb:'1999-09-12', verein:'H/V', er:false, u18:false },
+        { id:39, v:'Max', n:'Langer', geb:'1995-07-30', verein:'HN', er:true, u18:false },
+        { id:40, v:'Fynn', n:'Lauer', geb:'2004-03-11', verein:'HN', er:false, u18:false },
+        { id:41, v:'Tom', n:'Lebus', geb:'2000-06-08', verein:'H/V', er:false, u18:false },
+        { id:42, v:'Xavier', n:'Mbrim A Fiediek', geb:'1988-12-26', verein:'H/V', er:false, u18:false },
+        { id:43, v:'Steven', n:'Müller', geb:'2001-02-24', verein:'H/V', er:false, u18:false },
+        { id:44, v:'Florian', n:'Neumann', geb:'1995-03-04', verein:'HN', er:false, u18:false },
+        { id:45, v:'Gustav', n:'Palm', geb:'2007-09-15', verein:'HN', er:false, u18:false },
+        { id:46, v:'Connor', n:'Peise', geb:'2007-05-27', verein:'H/V', er:false, u18:false },
+        { id:47, v:'Kevin', n:'Pilz', geb:'1999-06-06', verein:'H/V', er:true, u18:false },
+        { id:48, v:'Lukas', n:'Rathke', geb:'2001-11-16', verein:'H/V', er:false, u18:false },
+        { id:49, v:'Silas', n:'Rathke', geb:'2007-04-12', verein:'H/V', er:false, u18:false },
+        { id:50, v:'Paul-Nicolas', n:'Rusch', geb:'2001-04-02', verein:'HN', er:true, u18:false },
+        { id:51, v:'Ronny', n:'Sager', geb:'1979-04-24', verein:'HN', er:true, u18:false },
+        { id:52, v:'Maurice Peter', n:'Sankeralli', geb:'1976-11-16', verein:'H/V', er:false, u18:false },
+        { id:53, v:'Theo', n:'Schmidt', geb:'2003-12-17', verein:'HN', er:false, u18:false },
+        { id:54, v:'Timo', n:'Schmidt', geb:'1997-07-23', verein:'H/V', er:false, u18:false },
+        { id:55, v:'Rico', n:'Schomacker', geb:'1989-12-19', verein:'HN', er:false, u18:false },
+        { id:56, v:'Tristan', n:'Schöntag', geb:'2000-10-22', verein:'HN', er:false, u18:false },
+        { id:57, v:'Steffen', n:'Schwarz', geb:'1981-03-05', verein:'HN', er:true, u18:false },
+        { id:58, v:'Philip', n:'Simon', geb:'1998-10-18', verein:'H/V', er:true, u18:false },
+        { id:59, v:'Enrico Marco', n:'Stenzel', geb:'1986-06-11', verein:'HN', er:false, u18:false },
+        { id:60, v:'Florian', n:'Trapp', geb:'1996-07-10', verein:'H/V', er:false, u18:false },
+        { id:61, v:'Oliver', n:'Tschetsch', geb:'1988-04-27', verein:'H/V', er:true, u18:false },
+        { id:62, v:'Benjamin', n:'Uwiß', geb:'1997-09-27', verein:'H/V', er:false, u18:false },
+        { id:63, v:'Joshua', n:'Walker', geb:'1996-08-14', verein:'H/V', er:false, u18:false },
+        { id:64, v:'Fabian', n:'Wendt', geb:'1993-08-28', verein:'P', er:false, u18:false },
+        { id:65, v:'Marcel', n:'Wischniowski', geb:'1979-07-26', verein:'H/V', er:false, u18:false },
+        { id:66, v:'Robert', n:'Woelki', geb:'1998-11-30', verein:'H/V', er:false, u18:false },
+        { id:67, v:'Paul', n:'Zyparth', geb:'1995-06-21', verein:'H/V', er:false, u18:false },
+    ];
+
+    // Sort alphabetically by last name
+    players.sort((a, b) => a.n.localeCompare(b.n, 'de'));
+
+    // --- HELPERS ---
+    function getAge(dateStr) {
+        if (!dateStr) return null;
+        const today = new Date();
+        const birth = new Date(dateStr);
+        let age = today.getFullYear() - birth.getFullYear();
+        const m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+        return age;
+    }
+
+    function getInitials(p) {
+        const first = p.v.charAt(0);
+        const last = p.n.charAt(0);
+        return (first + last).toUpperCase();
+    }
+
+    function vereinClass(verein) {
+        if (verein === 'HN') return 'hn';
+        if (verein === 'H/V') return 'hv';
+        if (verein === 'P') return 'p';
+        return 'unknown';
+    }
+
+    function vereinLabel(verein) {
+        if (verein === 'HN') return 'Hohen Neuendorf';
+        if (verein === 'H/V') return 'Hennigsdorf/Velten';
+        if (verein === 'P') return 'Potsdam';
+        return 'Unbekannt';
+    }
+
+    // --- STATE ---
+    let activeFilter = 'alle';
+    let searchQuery = '';
+
+    // --- RENDER ---
+    function renderStats() {
+        const total = players.length;
+        const hn = players.filter(p => p.verein === 'HN').length;
+        const hv = players.filter(p => p.verein === 'H/V').length;
+        const er = players.filter(p => p.er).length;
+        document.getElementById('stats-bar').innerHTML = `
+            <div class="stat-chip"><strong>${total}</strong> Spieler</div>
+            <div class="stat-chip"><strong>${hn}</strong> Hohen Neuendorf</div>
+            <div class="stat-chip"><strong>${hv}</strong> Hennigsdorf/Velten</div>
+            <div class="stat-chip"><strong>${er}</strong> Erste Reihe</div>
+        `;
+    }
+
+    function getFiltered() {
+        return players.filter(p => {
+            // Filter
+            if (activeFilter === 'hn' && p.verein !== 'HN') return false;
+            if (activeFilter === 'hv' && p.verein !== 'H/V') return false;
+            if (activeFilter === 'er' && !p.er) return false;
+            // Search
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                const fullName = (p.v + ' ' + p.n).toLowerCase();
+                if (!fullName.includes(q)) return false;
+            }
+            return true;
+        });
+    }
+
+    function renderPlayers() {
+        const filtered = getFiltered();
+        const grid = document.getElementById('player-grid');
+        const count = document.getElementById('result-count');
+
+        count.textContent = `${filtered.length} von ${players.length} Spielern`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="empty-state">Keine Spieler gefunden.</div>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map(p => {
+            const age = getAge(p.geb);
+            const vc = vereinClass(p.verein);
+            const ageStr = age !== null ? `${age} J.` : '';
+
+            let badges = '';
+            badges += `<span class="badge badge-${vc}">${p.verein}</span>`;
+            if (p.er) badges += '<span class="badge badge-er">1. Reihe</span>';
+            if (p.u18) badges += '<span class="badge badge-u18">U18</span>';
+
+            return `
+                <div class="player-card">
+                    <div class="player-avatar avatar-${vc}">${getInitials(p)}</div>
+                    <div class="player-info">
+                        <div class="player-name">${p.v} ${p.n}</div>
+                        <div class="player-meta">${ageStr}${ageStr ? ' · ' : ''}${vereinLabel(p.verein)}</div>
+                    </div>
+                    <div class="player-badges">${badges}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // --- FILTER LOGIC ---
+    document.getElementById('filters').addEventListener('click', e => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+
+        document.querySelectorAll('.filter-btn').forEach(b => {
+            b.className = 'filter-btn';
+        });
+
+        activeFilter = btn.dataset.filter;
+        const filterStyles = { alle: 'active', hn: 'active-hn', hv: 'active-hv', er: 'active-er' };
+        btn.classList.add(filterStyles[activeFilter] || 'active');
+
+        renderPlayers();
+    });
+
+    document.getElementById('search').addEventListener('input', e => {
+        searchQuery = e.target.value;
+        renderPlayers();
+    });
+
+    // --- LOGIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        renderStats();
+        renderPlayers();
+    }
+
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_auth');
+        if (stored === await hashPw('oberhavel2025')) unlock();
+    }
+
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        const hash = await hashPw(pw);
+        const correctHash = await hashPw('oberhavel2025');
+        if (hash === correctHash) {
+            localStorage.setItem('sgrhn_auth', hash);
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => {
+        if (e.key === 'Enter') tryLogin();
+    });
+
+    checkLogin();
+</script>
+
+</body>
+</html>
