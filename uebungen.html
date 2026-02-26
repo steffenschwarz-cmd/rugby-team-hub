@@ -682,11 +682,13 @@
             const data = snap.val();
             if (data && Object.keys(data).length > 0) {
                 drills = data;
-                // Seed-Migration: fehlende Drills nachpushen
+                // Seed-Migration: fehlende Drills sofort lokal + Firebase pushen
                 const existingNames = Object.values(data).map(d => d.name);
                 SEED_DRILLS.forEach(sd => {
                     if (!existingNames.includes(sd.name)) {
-                        db.ref('/uebungen').push().set(sd);
+                        const ref = db.ref('/uebungen').push();
+                        ref.set(sd);
+                        drills[ref.key] = sd; // Sofort lokal anzeigen
                     }
                 });
                 localStorage.setItem('uebungen_fallback', JSON.stringify(drills));
@@ -694,8 +696,12 @@
             } else {
                 // Alle Seeds in Firebase schreiben
                 SEED_DRILLS.forEach(sd => {
-                    db.ref('/uebungen').push().set(sd);
+                    const ref = db.ref('/uebungen').push();
+                    ref.set(sd);
+                    drills[ref.key] = sd;
                 });
+                localStorage.setItem('uebungen_fallback', JSON.stringify(drills));
+                renderUI();
             }
         });
     }
