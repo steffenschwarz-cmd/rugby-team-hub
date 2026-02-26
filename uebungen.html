@@ -347,57 +347,317 @@
     }
 
     // ===== SEED DATA =====
-    const SEED_DRILL = {
-        name: 'Ball-Klau',
-        category: 'warm-up',
-        description: 'Zwei Teams stehen in einem durch 4 Kegel markierten Feld. Das Angriffsteam passt sich den Ball zu, während das Verteidigungsteam versucht, den Ball abzufangen. Intensives Warm-Up für Passspiel, Reaktion und Kommunikation.',
-        rules: [
-            'Zwei Teams spielen gegeneinander im markierten Feld',
-            'Das Angriffsteam passt sich den Ball untereinander zu',
-            'Das Verteidigungsteam versucht den Ball abzufangen',
-            'NICHT zwischen Sperrzone und Kegel hindurchlaufen um den Ball zu blocken',
-            'Abfangen nur im offenen Feld erlaubt — vor der Sperrzone',
-            'Nach Ballgewinn tauschen die Teams die Rollen'
-        ],
-        setup: {
-            cones: [
-                { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
-                { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+    const SEED_DRILLS = [
+        {
+            name: 'Ball-Klau',
+            category: 'warm-up',
+            description: 'Zwei Teams stehen in einem durch 4 Kegel markierten Feld. Das Angriffsteam passt sich den Ball zu, während das Verteidigungsteam versucht, den Ball abzufangen. Intensives Warm-Up für Passspiel, Reaktion und Kommunikation.',
+            rules: [
+                'Zwei Teams spielen gegeneinander im markierten Feld',
+                'Das Angriffsteam passt sich den Ball untereinander zu',
+                'Das Verteidigungsteam versucht den Ball abzufangen',
+                'NICHT zwischen Sperrzone und Kegel hindurchlaufen um den Ball zu blocken',
+                'Abfangen nur im offenen Feld erlaubt — vor der Sperrzone',
+                'Nach Ballgewinn tauschen die Teams die Rollen'
             ],
-            zones: [
-                { x1: -0.10, y1: 0.18, x2: 0.18, y2: -0.10 },
-                { x1: 0.82, y1: -0.10, x2: 1.10, y2: 0.18 },
-                { x1: -0.10, y1: 0.82, x2: 0.18, y2: 1.10 },
-                { x1: 0.82, y1: 1.10, x2: 1.10, y2: 0.82 }
-            ],
-            teams: {
-                a: {
-                    label: 'Angriff', color: '#9b59b6',
-                    players: [
-                        { x: 0.15, y: 0.78 }, { x: 0.30, y: 0.42 },
-                        { x: 0.50, y: 0.55 }, { x: 0.40, y: 0.25 },
-                        { x: 0.70, y: 0.35 }, { x: 0.22, y: 0.58 },
-                        { x: 0.62, y: 0.68 }, { x: 0.78, y: 0.52 }
-                    ]
+            setup: {
+                cones: [
+                    { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
+                    { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+                ],
+                zones: [
+                    { x1: -0.10, y1: 0.18, x2: 0.18, y2: -0.10 },
+                    { x1: 0.82, y1: -0.10, x2: 1.10, y2: 0.18 },
+                    { x1: -0.10, y1: 0.82, x2: 0.18, y2: 1.10 },
+                    { x1: 0.82, y1: 1.10, x2: 1.10, y2: 0.82 }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#9b59b6',
+                        players: [
+                            { x: 0.15, y: 0.78 }, { x: 0.30, y: 0.42 },
+                            { x: 0.50, y: 0.55 }, { x: 0.40, y: 0.25 },
+                            { x: 0.70, y: 0.35 }, { x: 0.22, y: 0.58 },
+                            { x: 0.62, y: 0.68 }, { x: 0.78, y: 0.52 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.55, y: 0.42 }, { x: 0.45, y: 0.65 },
+                            { x: 0.65, y: 0.55 }, { x: 0.35, y: 0.60 },
+                            { x: 0.60, y: 0.75 }, { x: 0.28, y: 0.32 },
+                            { x: 0.72, y: 0.22 }, { x: 0.48, y: 0.48 }
+                        ]
+                    }
                 },
-                b: {
-                    label: 'Verteidigung', color: '#3498db',
-                    players: [
-                        { x: 0.55, y: 0.42 }, { x: 0.45, y: 0.65 },
-                        { x: 0.65, y: 0.55 }, { x: 0.35, y: 0.60 },
-                        { x: 0.60, y: 0.75 }, { x: 0.28, y: 0.32 },
-                        { x: 0.72, y: 0.22 }, { x: 0.48, y: 0.48 }
-                    ]
-                }
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.15, y1: 0.78, x2: 0.35, y2: 0.52, dashed: true }
+                ]
             },
-            ball: { team: 'a', playerIndex: 0 },
-            passLines: [
-                { x1: 0.15, y1: 0.78, x2: 0.35, y2: 0.52, dashed: true }
-            ]
+            animated: false,
+            createdAt: Date.now()
         },
-        animated: false,
-        createdAt: Date.now()
-    };
+        {
+            name: 'Ball-Klau (2 Bälle)',
+            category: 'warm-up',
+            description: 'Wie Ball-Klau, aber mit 2 Bällen gleichzeitig! Beide Teams greifen und verteidigen gleichzeitig. Extrem hohe Intensität — erfordert ständige Kommunikation und Aufmerksamkeit in alle Richtungen.',
+            rules: [
+                'Gleiche Regeln wie Ball-Klau, aber 2 Bälle im Spiel',
+                'Jedes Team startet mit einem Ball',
+                'Jedes Team verteidigt den eigenen Ball und versucht den gegnerischen zu klauen',
+                'Wer beide Bälle hat, gewinnt die Runde',
+                'NICHT zwischen Sperrzone und Kegel hindurchlaufen',
+                'Kommunikation ist der Schlüssel — wer schweigt, verliert'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
+                    { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+                ],
+                zones: [
+                    { x1: -0.10, y1: 0.18, x2: 0.18, y2: -0.10 },
+                    { x1: 0.82, y1: -0.10, x2: 1.10, y2: 0.18 },
+                    { x1: -0.10, y1: 0.82, x2: 0.18, y2: 1.10 },
+                    { x1: 0.82, y1: 1.10, x2: 1.10, y2: 0.82 }
+                ],
+                teams: {
+                    a: {
+                        label: 'Team A', color: '#9b59b6',
+                        players: [
+                            { x: 0.15, y: 0.78 }, { x: 0.30, y: 0.42 },
+                            { x: 0.50, y: 0.55 }, { x: 0.40, y: 0.25 },
+                            { x: 0.70, y: 0.35 }, { x: 0.22, y: 0.58 },
+                            { x: 0.62, y: 0.68 }, { x: 0.78, y: 0.52 }
+                        ]
+                    },
+                    b: {
+                        label: 'Team B', color: '#3498db',
+                        players: [
+                            { x: 0.55, y: 0.42 }, { x: 0.45, y: 0.65 },
+                            { x: 0.65, y: 0.55 }, { x: 0.35, y: 0.60 },
+                            { x: 0.60, y: 0.75 }, { x: 0.28, y: 0.32 },
+                            { x: 0.72, y: 0.22 }, { x: 0.48, y: 0.48 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.15, y1: 0.78, x2: 0.30, y2: 0.42, dashed: true },
+                    { x1: 0.55, y1: 0.42, x2: 0.45, y2: 0.65, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Endzone',
+            category: 'warm-up',
+            description: 'Zwei Teams auf engem Raum. Das Angriffsteam muss den Ball durch Passen in die gegnerische Endzone bringen. Kein Laufen mit dem Ball — nur Passen! Perfekt für schnelles Umschalten und Raumgefühl.',
+            rules: [
+                'Zwei Teams spielen gegeneinander',
+                'Kein Laufen mit dem Ball — nur Passen erlaubt',
+                'Ball muss in der Endzone gefangen werden (= Punkt)',
+                'Nach Punkt oder Ballverlust: Teams tauschen Rollen',
+                'Pässe nur nach hinten oder seitlich (Rugby-Regel)',
+                'Wer den Ball fallen lässt, verliert den Ballbesitz'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
+                    { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+                ],
+                zones: [
+                    { x1: 0.0, y1: 0.0, x2: 1.0, y2: 0.0, color: '#2ecc71' },
+                    { x1: 0.0, y1: 1.0, x2: 1.0, y2: 1.0, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.20, y: 0.55 }, { x: 0.40, y: 0.45 },
+                            { x: 0.60, y: 0.50 }, { x: 0.80, y: 0.55 },
+                            { x: 0.30, y: 0.65 }, { x: 0.50, y: 0.60 },
+                            { x: 0.70, y: 0.65 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#1abc9c',
+                        players: [
+                            { x: 0.20, y: 0.30 }, { x: 0.40, y: 0.25 },
+                            { x: 0.60, y: 0.30 }, { x: 0.80, y: 0.25 },
+                            { x: 0.30, y: 0.35 }, { x: 0.50, y: 0.30 },
+                            { x: 0.70, y: 0.35 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.20, y1: 0.55, x2: 0.40, y2: 0.45, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Schwänzchen-Fangen',
+            category: 'warm-up',
+            description: 'Jeder Spieler steckt sich ein Leibchen oder Band als "Schwänzchen" hinten in die Hose. Auf Signal versuchen alle, sich gegenseitig die Schwänzchen zu klauen — während sie das eigene schützen. Letzter Spieler mit Schwänzchen gewinnt.',
+            rules: [
+                'Jeder Spieler hat ein Schwänzchen (Leibchen/Band) hinten in der Hose',
+                'Auf Pfiff: Alle versuchen, anderen das Schwänzchen zu klauen',
+                'Eigenes Schwänzchen gleichzeitig schützen',
+                'Wer sein Schwänzchen verliert, macht 5 Burpees und darf wieder mitmachen',
+                'Variante: Wer draußen ist, bleibt draußen — Letzter gewinnt',
+                'Spielfeld nicht verlassen — wer rausgeht, verliert automatisch'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
+                    { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Spieler', color: '#e74c3c',
+                        players: [
+                            { x: 0.15, y: 0.20 }, { x: 0.35, y: 0.15 },
+                            { x: 0.55, y: 0.25 }, { x: 0.75, y: 0.18 },
+                            { x: 0.85, y: 0.35 }, { x: 0.25, y: 0.40 },
+                            { x: 0.45, y: 0.38 }, { x: 0.65, y: 0.42 },
+                            { x: 0.20, y: 0.60 }, { x: 0.40, y: 0.55 },
+                            { x: 0.60, y: 0.62 }, { x: 0.80, y: 0.58 },
+                            { x: 0.30, y: 0.78 }, { x: 0.50, y: 0.75 },
+                            { x: 0.70, y: 0.80 }
+                        ]
+                    }
+                },
+                ball: null,
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Rondo (Rugby)',
+            category: 'warm-up',
+            description: 'Rugby-Version des Fußball-Rondos. 6-8 Spieler bilden einen Kreis und passen sich den Ball zu, während 2-3 Spieler in der Mitte versuchen, den Ball abzufangen. Wer den Fehlpass spielt, geht in die Mitte.',
+            rules: [
+                '6-8 Spieler im Kreis, 2-3 Verteidiger in der Mitte',
+                'Kreisspieler passen sich den Ball zu (nur Rugby-Pässe)',
+                'Verteidiger versuchen den Ball abzufangen oder zu berühren',
+                'Wer einen Fehlpass spielt, tauscht mit einem Verteidiger',
+                'Ball darf nicht über Kopfhöhe gepasst werden',
+                'Maximal 3 Sekunden Ballbesitz — dann muss gepasst werden'
+            ],
+            setup: {
+                cones: [],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Kreis', color: '#2ecc71',
+                        players: [
+                            { x: 0.50, y: 0.10 }, { x: 0.82, y: 0.25 },
+                            { x: 0.92, y: 0.55 }, { x: 0.75, y: 0.82 },
+                            { x: 0.50, y: 0.92 }, { x: 0.25, y: 0.82 },
+                            { x: 0.08, y: 0.55 }, { x: 0.18, y: 0.25 }
+                        ]
+                    },
+                    b: {
+                        label: 'Mitte', color: '#e74c3c',
+                        players: [
+                            { x: 0.45, y: 0.45 }, { x: 0.55, y: 0.55 },
+                            { x: 0.50, y: 0.48 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.50, y1: 0.10, x2: 0.82, y2: 0.25, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Sumo-Ring',
+            category: 'warm-up',
+            description: 'Zwei Spieler stehen sich im Kreis gegenüber. Ziel: Den Gegner aus dem Ring schieben oder zu Boden bringen. Trainiert Körperspannung, niedrigen Schwerpunkt und Kontaktstärke — perfektes Rugby-Warm-Up für den Körperkontakt.',
+            rules: [
+                'Zwei Spieler starten im Ring (durch Kegel markiert)',
+                'Auf Pfiff: Versuchen, den Gegner aus dem Ring zu schieben',
+                'Greifen erlaubt (am Trikot/Körper), aber kein Schlagen/Treten',
+                'Wer mit einem Fuß den Ring verlässt, verliert',
+                'Wer mit Knie oder Hand den Boden berührt, verliert',
+                'Gewinner bleibt im Ring — nächster Herausforderer kommt'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.25, y: 0.50 }, { x: 0.50, y: 0.15 },
+                    { x: 0.75, y: 0.50 }, { x: 0.50, y: 0.85 },
+                    { x: 0.32, y: 0.25 }, { x: 0.68, y: 0.25 },
+                    { x: 0.32, y: 0.75 }, { x: 0.68, y: 0.75 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Kämpfer 1', color: '#e74c3c',
+                        players: [
+                            { x: 0.42, y: 0.48 }
+                        ]
+                    },
+                    b: {
+                        label: 'Kämpfer 2', color: '#3498db',
+                        players: [
+                            { x: 0.58, y: 0.52 }
+                        ]
+                    }
+                },
+                ball: null,
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'King of the Hill',
+            category: 'warm-up',
+            description: 'Alle Spieler auf engem Raum. Jeder gegen jeden! Ziel: Andere Spieler aus dem markierten Feld schieben. Letzter Spieler im Feld ist "King of the Hill". Trainiert Balance, Körperkontakt und Durchsetzungsvermögen.',
+            rules: [
+                'Alle Spieler starten im markierten Feld',
+                'Auf Pfiff: Jeder gegen jeden — aus dem Feld schieben',
+                'Greifen am Trikot/Körper erlaubt, kein Schlagen',
+                'Wer das Feld mit einem Fuß verlässt, ist raus',
+                'Letzter Spieler im Feld gewinnt ("King")',
+                'Variante: Teams (z.B. Stürmer vs. Hintermannschaft)'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.15, y: 0.15 }, { x: 0.85, y: 0.15 },
+                    { x: 0.15, y: 0.85 }, { x: 0.85, y: 0.85 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Spieler', color: '#f39c12',
+                        players: [
+                            { x: 0.30, y: 0.30 }, { x: 0.50, y: 0.25 },
+                            { x: 0.70, y: 0.30 }, { x: 0.25, y: 0.50 },
+                            { x: 0.45, y: 0.45 }, { x: 0.65, y: 0.50 },
+                            { x: 0.35, y: 0.65 }, { x: 0.55, y: 0.60 },
+                            { x: 0.75, y: 0.65 }, { x: 0.30, y: 0.75 },
+                            { x: 0.50, y: 0.78 }, { x: 0.70, y: 0.75 }
+                        ]
+                    }
+                },
+                ball: null,
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
+        }
+    ];
 
     // ===== DATA =====
     function loadDrills() {
@@ -406,14 +666,13 @@
         if (cached) {
             try {
                 const parsed = JSON.parse(cached);
-                // Pruefen ob Cache veraltete Daten hat (keine zones)
                 const hasZones = Object.values(parsed).some(d => d.setup && d.setup.zones);
-                if (hasZones) drills = parsed;
+                if (hasZones && Object.keys(parsed).length >= SEED_DRILLS.length) drills = parsed;
             } catch(e) {}
         }
-        // 2. Falls leer oder veraltet: Seed-Daten sofort anzeigen
+        // 2. Falls leer oder veraltet: Alle Seed-Drills lokal anzeigen
         if (Object.keys(drills).length === 0) {
-            drills['local-seed'] = SEED_DRILL;
+            SEED_DRILLS.forEach((sd, i) => { drills['local-seed-' + i] = sd; });
         }
         // 3. Sofort rendern (kein Warten auf Firebase)
         renderUI();
@@ -423,12 +682,20 @@
             const data = snap.val();
             if (data && Object.keys(data).length > 0) {
                 drills = data;
+                // Seed-Migration: fehlende Drills nachpushen
+                const existingNames = Object.values(data).map(d => d.name);
+                SEED_DRILLS.forEach(sd => {
+                    if (!existingNames.includes(sd.name)) {
+                        db.ref('/uebungen').push().set(sd);
+                    }
+                });
                 localStorage.setItem('uebungen_fallback', JSON.stringify(drills));
                 renderUI();
             } else {
-                // Seed in Firebase schreiben
-                const ref = db.ref('/uebungen').push();
-                ref.set(SEED_DRILL);
+                // Alle Seeds in Firebase schreiben
+                SEED_DRILLS.forEach(sd => {
+                    db.ref('/uebungen').push().set(sd);
+                });
             }
         });
     }
@@ -519,15 +786,18 @@
         zones.forEach((z, i) => {
             const px1 = fx(z.x1), py1 = fy(z.y1);
             const px2 = fx(z.x2), py2 = fy(z.y2);
+            // Support custom zone color (e.g. green for endzone)
+            const zc = z.color || '#ff8c8c';
+            const r = parseInt(zc.slice(1,3),16), g = parseInt(zc.slice(3,5),16), b = parseInt(zc.slice(5,7),16);
 
             // Glow/fill behind the line
-            ctx.strokeStyle = 'rgba(255, 120, 120, 0.2)';
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.25)`;
             ctx.lineWidth = Math.max(12, W * 0.018);
             ctx.lineCap = 'round';
             ctx.beginPath(); ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
 
             // Main line
-            ctx.strokeStyle = 'rgba(255, 140, 140, 0.7)';
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.8)`;
             ctx.lineWidth = Math.max(4, W * 0.006);
             ctx.lineCap = 'round';
             ctx.beginPath(); ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
@@ -535,7 +805,7 @@
             // Edit mode: endpoints
             if (editMode) {
                 const hr = 5;
-                ctx.fillStyle = 'rgba(255, 140, 140, 0.9)';
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.9)`;
                 ctx.beginPath(); ctx.arc(px1, py1, hr, 0, Math.PI * 2); ctx.fill();
                 ctx.beginPath(); ctx.arc(px2, py2, hr, 0, Math.PI * 2); ctx.fill();
                 ctx.strokeStyle = 'rgba(255,255,255,0.4)';
@@ -825,10 +1095,10 @@
         Object.values(s.teams).forEach(t => {
             html += `<span class="legend-item"><span class="legend-dot" style="background:${t.color}"></span> ${t.label}</span>`;
         });
-        html += `<span class="legend-item"><span class="legend-dot" style="background:#e8a020"></span> Ballträger</span>`;
-        html += `<span class="legend-item"><span class="legend-dot" style="background:#1a5fb4"></span> Kegel</span>`;
-        html += `<span class="legend-item"><span class="legend-dash"></span> Passweg</span>`;
-        html += `<span class="legend-item"><span class="legend-zone"></span> Sperrzone</span>`;
+        if (s.ball) html += `<span class="legend-item"><span class="legend-dot" style="background:#e8a020"></span> Ballträger</span>`;
+        if (toArr(s.cones).length > 0) html += `<span class="legend-item"><span class="legend-dot" style="background:#1a5fb4"></span> Kegel</span>`;
+        if (toArr(s.passLines).length > 0) html += `<span class="legend-item"><span class="legend-dash"></span> Passweg</span>`;
+        if (toArr(s.zones).length > 0) html += `<span class="legend-item"><span class="legend-zone"></span> Sperrzone</span>`;
         el.innerHTML = html;
     }
 

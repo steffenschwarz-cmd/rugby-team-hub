@@ -42,6 +42,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 | uebungen.html bauen (Drill-Bibliothek mit Canvas) | Fertig | 25.02.2026 |
 | Navigation in allen Seiten: Übungen-Link | Fertig | 25.02.2026 |
 | Erster Drill: "Ball-Klau" (Warm-Up) als Seed | Fertig | 25.02.2026 |
+| 6 weitere Warm-Up Drills + Farb-Zonen + kontextabhängige Legende | Fertig | 26.02.2026 |
 | SpielerPlus-Integration (weitere Screenshots) | Offen | — |
 
 ### Changelog
@@ -54,6 +55,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 - **23.02.2026**: Trainingsbeteiligung-Seite: Anwesenheit bei Training & Spielen, Ranking-Tabelle, Einheiten-Übersicht, Seed-Daten vom 18.02. und 20.02.
 - **23.02.2026**: Kader ↔ Beteiligung verknüpft: Klickbare Namen in Beteiligung → springt zum Spieler im Kader (mit Highlight). Kader zeigt Training-/Spiel-Statistik pro Spieler.
 - **25.02.2026**: Übungsbibliothek (uebungen.html): Separate Drill-Seite mit Canvas-Visualisierung, Kategoriefilter, Trainer-Modus (CRUD, Drag&Drop), Firebase-Persistenz. Erster Drill: "Ball-Klau" (Warm-Up). Navigation in allen 8 bestehenden Seiten aktualisiert.
+- **26.02.2026**: 6 weitere Warm-Up Drills: Ball-Klau (2 Bälle), Endzone, Schwänzchen-Fangen, Rondo (Rugby), Sumo-Ring, King of the Hill. Farbige Zonen (grün für Endzone), kontextabhängige Legende (Ball/Kegel/Passweg/Sperrzone nur wenn vorhanden), automatische Seed-Migration in Firebase.
 
 ## Offene Ideen / Backlog
 
