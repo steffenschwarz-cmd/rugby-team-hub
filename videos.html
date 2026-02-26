@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e; --green-dark: #145a2a;
+            --blue: #1a5fb4; --blue-dark: #0f3d7a;
+            --primary: #152030; --primary-light: #1c3048;
+            --accent: #2ecc71; --accent-blue: #4a9eff;
+            --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
+            --text: #e8ecf0; --text-muted: #7a90a8;
+            --danger: #e04040; --warning: #e8a020;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+        }
+
+        /* Login Gate */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center;
+        }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); } .club-x { margin: 0 0.3rem; } .club-blue { color: var(--accent-blue); }
+        .login-input {
+            width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 0.8rem; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* Nav */
+        .topnav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(12,20,32,0.92); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem; display: none;
+        }
+        .topnav.visible { display: flex; }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; align-items: center;
+            max-width: 1100px; margin: 0 auto; width: 100%;
+            overflow-x: auto;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem;
+            font-weight: 600; padding: 0.4rem 0.7rem; border-radius: 6px;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .topnav a:hover, .topnav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.2rem 1rem; text-align: center;
+            border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .page-header .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        /* Trainer Bar */
+        .trainer-bar {
+            background: linear-gradient(135deg, rgba(27,138,62,0.15), rgba(26,95,180,0.15));
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            padding: 0.7rem 1rem; margin-bottom: 0.8rem;
+            display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+        }
+        .trainer-bar .trainer-info { font-size: 0.82rem; color: var(--text-muted); }
+        .trainer-bar .trainer-info.unlocked { color: var(--accent); }
+        .trainer-bar .trainer-btn {
+            padding: 0.45rem 1rem; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px; background: var(--primary-light); color: var(--text);
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
+        .trainer-bar .trainer-btn:hover { background: var(--green-dark); border-color: var(--accent); }
+        .trainer-bar .trainer-btn.locked {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            border: none; color: white;
+        }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 2rem; }
+
+        /* Filter & Search */
+        .controls { margin-bottom: 1.2rem; }
+        .search-wrap { position: relative; margin-bottom: 0.8rem; }
+        .search-icon {
+            position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%);
+            font-size: 0.9rem; color: var(--text-muted); pointer-events: none;
+        }
+        .search-box {
+            width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            background: var(--bg-card); color: var(--text); font-size: 0.9rem; outline: none;
+        }
+        .search-box:focus { border-color: var(--accent); }
+        .search-box::placeholder { color: var(--text-muted); }
+        .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 0.35rem 0.75rem; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); background: transparent;
+            color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-btn.active {
+            background: rgba(46,204,113,0.15); border-color: var(--accent); color: var(--accent);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .video-card {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; overflow: hidden; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .video-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .video-thumb {
+            position: relative; width: 100%; padding-top: 56.25%; background: var(--primary);
+            overflow: hidden;
+        }
+        .video-thumb img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+        }
+        .video-thumb .play-overlay {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.2s;
+        }
+        .video-card:hover .play-overlay { opacity: 1; }
+        .play-overlay span {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(46,204,113,0.9); display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; color: white; padding-left: 3px;
+        }
+        .video-info { padding: 0.8rem 1rem; }
+        .video-category {
+            display: inline-block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; padding: 0.15rem 0.5rem; border-radius: 10px;
+            margin-bottom: 0.4rem;
+        }
+        .cat-spielzuege { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .cat-spielanalyse { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+        .cat-training { background: rgba(232,160,32,0.15); color: var(--warning); }
+        .cat-highlights { background: rgba(224,64,64,0.15); color: var(--danger); }
+        .video-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .video-desc { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .video-meta { font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+        .video-actions { display: none; gap: 0.3rem; }
+        .trainer-active .video-actions { display: flex; }
+        .video-actions button {
+            padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.7rem; cursor: pointer;
+        }
+        .video-actions button:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+        .video-actions .btn-del:hover { color: var(--danger); border-color: var(--danger); }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center; padding: 3rem 1rem; color: var(--text-muted);
+        }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+        .empty-state p { font-size: 0.9rem; }
+
+        /* Add Button (Trainer) */
+        .fab {
+            display: none; position: fixed; bottom: 1.5rem; right: 1.5rem;
+            width: 56px; height: 56px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1.8rem; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 50;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .fab.visible { display: flex; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; width: min(95vw, 900px); max-height: 90vh;
+            overflow-y: auto; position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 0.8rem; right: 0.8rem; z-index: 10;
+            background: rgba(0,0,0,0.5); border: none; color: white;
+            width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.2); }
+        .modal-video { width: 100%; aspect-ratio: 16/9; border-radius: 16px 16px 0 0; }
+        .modal-video iframe { width: 100%; height: 100%; border: none; border-radius: 16px 16px 0 0; }
+        .modal-body { padding: 1.2rem; }
+        .modal-body h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .modal-body .desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .modal-body .meta { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Form Modal */
+        .form-modal {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; width: min(95vw, 500px); max-height: 90vh;
+            overflow-y: auto; padding: 1.5rem;
+        }
+        .form-modal h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label {
+            display: block; font-size: 0.8rem; font-weight: 600;
+            color: var(--text-muted); margin-bottom: 0.3rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent);
+        }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-group select { -webkit-appearance: none; -moz-appearance: none; appearance: none; cursor: pointer; }
+        .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+        .btn { padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-muted); }
+        .btn-cancel:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+        /* Save Indicator */
+        .save-indicator {
+            font-size: 0.7rem; color: var(--accent); opacity: 0;
+            transition: opacity 0.3s; text-align: center; padding: 0.2rem;
+        }
+        .save-indicator.show { opacity: 1; }
+
+        @media (max-width: 600px) {
+            .video-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">RU Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <button class="login-btn" id="login-btn">Anmelden</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+            <a href="mannschaftsrat.html">Mannschaftsrat</a>
+            <span class="nav-sep">|</span>
+            <a href="spielzuege.html">Spielzüge</a>
+            <a href="uebungen.html">Übungen</a>
+            <a href="trainingsplan.html">Training</a>
+            <a href="videos.html" class="active">Videos</a>
+            <span class="nav-sep">|</span>
+            <a href="trainingsbeteiligung.html">Beteiligung</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="page-header app-content">
+        <h1>Video-Bibliothek</h1>
+        <div class="subtitle">Spielzüge, Analysen & Trainingsvideos</div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="app-content" id="main-content">
+        <div class="container">
+
+            <!-- Trainer Bar -->
+            <div class="trainer-bar">
+                <span class="trainer-info" id="trainer-info">Nur-Lese-Modus</span>
+                <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
+            </div>
+            <div class="save-indicator" id="save-indicator">Gespeichert</div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="search-wrap">
+                    <span class="search-icon">&#128269;</span>
+                    <input type="text" class="search-box" id="search-box" placeholder="Video suchen...">
+                </div>
+                <div class="filter-row" id="filter-row">
+                    <button class="filter-btn active" data-cat="alle">Alle</button>
+                    <button class="filter-btn" data-cat="spielzuege">Spielzüge</button>
+                    <button class="filter-btn" data-cat="spielanalyse">Spielanalyse</button>
+                    <button class="filter-btn" data-cat="training">Training</button>
+                    <button class="filter-btn" data-cat="highlights">Highlights</button>
+                </div>
+            </div>
+
+            <!-- Video Grid -->
+            <div class="video-grid" id="video-grid"></div>
+            <div class="empty-state" id="empty-state" style="display:none">
+                <div class="icon">&#127909;</div>
+                <p>Noch keine Videos vorhanden.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB: Add Video (Trainer only) -->
+    <button class="fab" id="fab-add" onclick="openForm()" style="display:none" title="Video hinzufügen">+</button>
+
+    <!-- Play Modal -->
+    <div class="modal-overlay" id="play-modal">
+        <div class="modal">
+            <button class="modal-close" onclick="closePlayModal()">&times;</button>
+            <div class="modal-video" id="modal-video"></div>
+            <div class="modal-body">
+                <h2 id="modal-title"></h2>
+                <div class="desc" id="modal-desc"></div>
+                <div class="meta" id="modal-meta"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Modal -->
+    <div class="modal-overlay" id="form-modal">
+        <div class="form-modal">
+            <h2 id="form-title">Video hinzufügen</h2>
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="f-title" placeholder="z.B. Crash Ball Links — Spielanalyse">
+            </div>
+            <div class="form-group">
+                <label>Video-URL (YouTube, Vimeo oder Loom)</label>
+                <input type="url" id="f-url" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <div class="form-group">
+                <label>Kategorie</label>
+                <select id="f-category">
+                    <option value="spielzuege">Spielzüge</option>
+                    <option value="spielanalyse">Spielanalyse</option>
+                    <option value="training">Training</option>
+                    <option value="highlights">Highlights</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Beschreibung (optional)</label>
+                <textarea id="f-desc" placeholder="Kurze Beschreibung..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-cancel" onclick="closeForm()">Abbrechen</button>
+                <button class="btn btn-primary" id="form-save" onclick="saveVideo()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- FIREBASE ---
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+
+    let videos = {};
+    let trainerMode = false;
+    let editingId = null;
+    let activeFilter = 'alle';
+
+    // --- VIDEO URL PARSING ---
+    function parseVideoUrl(url) {
+        // YouTube
+        let m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+        if (m) return { platform: 'youtube', id: m[1] };
+        // Vimeo
+        m = url.match(/vimeo\.com\/(\d+)/);
+        if (m) return { platform: 'vimeo', id: m[1] };
+        // Loom
+        m = url.match(/loom\.com\/share\/([a-f0-9]+)/);
+        if (m) return { platform: 'loom', id: m[1] };
+        return null;
+    }
+
+    function getEmbedUrl(platform, id) {
+        if (platform === 'youtube') return `https://www.youtube.com/embed/${id}`;
+        if (platform === 'vimeo') return `https://player.vimeo.com/video/${id}`;
+        if (platform === 'loom') return `https://www.loom.com/embed/${id}`;
+        return '';
+    }
+
+    function getThumbnail(platform, id) {
+        if (platform === 'youtube') return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+        // Vimeo/Loom: no easy static thumb, use placeholder
+        return '';
+    }
+
+    const catLabels = { spielzuege: 'Spielzüge', spielanalyse: 'Spielanalyse', training: 'Training', highlights: 'Highlights' };
+
+    // --- RENDER ---
+    function render() {
+        const grid = document.getElementById('video-grid');
+        const empty = document.getElementById('empty-state');
+        const search = document.getElementById('search-box').value.toLowerCase();
+        const entries = Object.entries(videos);
+
+        const filtered = entries.filter(([id, v]) => {
+            if (activeFilter !== 'alle' && v.category !== activeFilter) return false;
+            if (search && !v.title.toLowerCase().includes(search) && !(v.description || '').toLowerCase().includes(search)) return false;
+            return true;
+        }).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+
+        grid.innerHTML = filtered.map(([id, v]) => {
+            const parsed = parseVideoUrl(v.url || '');
+            const thumb = parsed ? getThumbnail(parsed.platform, parsed.id) : '';
+            const catClass = 'cat-' + (v.category || 'training');
+            const date = v.createdAt ? new Date(v.createdAt).toLocaleDateString('de-DE') : '';
+            return `
+                <div class="video-card" onclick="openPlay('${id}')">
+                    <div class="video-thumb">
+                        ${thumb ? `<img src="${thumb}" alt="" loading="lazy">` : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:0.3">&#127909;</div>`}
+                        <div class="play-overlay"><span>&#9654;</span></div>
+                    </div>
+                    <div class="video-info">
+                        <span class="video-category ${catClass}">${catLabels[v.category] || v.category}</span>
+                        <div class="video-title">${esc(v.title)}</div>
+                        ${v.description ? `<div class="video-desc">${esc(v.description)}</div>` : ''}
+                        <div class="video-meta">
+                            <span>${date}</span>
+                            <div class="video-actions" onclick="event.stopPropagation()">
+                                <button onclick="editVideo('${id}')">Bearbeiten</button>
+                                <button class="btn-del" onclick="deleteVideo('${id}')">Löschen</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    // --- PLAY MODAL ---
+    function openPlay(id) {
+        const v = videos[id]; if (!v) return;
+        const parsed = parseVideoUrl(v.url || '');
+        const modal = document.getElementById('play-modal');
+        if (parsed) {
+            document.getElementById('modal-video').innerHTML = `<iframe src="${getEmbedUrl(parsed.platform, parsed.id)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>`;
+        } else {
+            document.getElementById('modal-video').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--text-muted)">Video-URL konnte nicht erkannt werden</div>`;
+        }
+        document.getElementById('modal-title').textContent = v.title;
+        document.getElementById('modal-desc').textContent = v.description || '';
+        const date = v.createdAt ? new Date(v.createdAt).toLocaleDateString('de-DE') : '';
+        document.getElementById('modal-meta').textContent = `${catLabels[v.category] || v.category} · ${date}`;
+        modal.classList.add('open');
+    }
+
+    function closePlayModal() {
+        document.getElementById('play-modal').classList.remove('open');
+        document.getElementById('modal-video').innerHTML = '';
+    }
+
+    // --- FORM ---
+    function openForm(id) {
+        editingId = id || null;
+        if (id && videos[id]) {
+            const v = videos[id];
+            document.getElementById('f-title').value = v.title || '';
+            document.getElementById('f-url').value = v.url || '';
+            document.getElementById('f-category').value = v.category || 'training';
+            document.getElementById('f-desc').value = v.description || '';
+            document.getElementById('form-title').textContent = 'Video bearbeiten';
+        } else {
+            document.getElementById('f-title').value = '';
+            document.getElementById('f-url').value = '';
+            document.getElementById('f-category').value = 'spielzuege';
+            document.getElementById('f-desc').value = '';
+            document.getElementById('form-title').textContent = 'Video hinzufügen';
+        }
+        document.getElementById('form-modal').classList.add('open');
+    }
+
+    function closeForm() {
+        document.getElementById('form-modal').classList.remove('open');
+        editingId = null;
+    }
+
+    function editVideo(id) { openForm(id); }
+
+    function deleteVideo(id) {
+        if (!confirm('Video wirklich löschen?')) return;
+        db.ref('videos/' + id).remove();
+        delete videos[id];
+        localStorage.setItem('sgrhn_videos', JSON.stringify(videos));
+        render();
+        showSaved('Gelöscht');
+    }
+
+    function saveVideo() {
+        const title = document.getElementById('f-title').value.trim();
+        const url = document.getElementById('f-url').value.trim();
+        const category = document.getElementById('f-category').value;
+        const description = document.getElementById('f-desc').value.trim();
+
+        if (!title || !url) { alert('Titel und URL sind erforderlich.'); return; }
+        const parsed = parseVideoUrl(url);
+        if (!parsed) { alert('URL nicht erkannt. Bitte YouTube, Vimeo oder Loom-Link eingeben.'); return; }
+
+        const data = {
+            title, url, category, description,
+            platform: parsed.platform,
+            createdAt: editingId && videos[editingId] ? videos[editingId].createdAt : Date.now()
+        };
+
+        if (editingId) {
+            db.ref('videos/' + editingId).set(data);
+            videos[editingId] = data;
+        } else {
+            const ref = db.ref('videos').push();
+            ref.set(data);
+            videos[ref.key] = data;
+        }
+        localStorage.setItem('sgrhn_videos', JSON.stringify(videos));
+        closeForm();
+        render();
+        showSaved();
+    }
+
+    function showSaved(text) {
+        const ind = document.getElementById('save-indicator');
+        ind.textContent = text || 'Gespeichert';
+        ind.classList.add('show');
+        setTimeout(() => ind.classList.remove('show'), 2000);
+    }
+
+    // --- FILTER ---
+    document.getElementById('filter-row').addEventListener('click', e => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.cat;
+        render();
+    });
+
+    document.getElementById('search-box').addEventListener('input', render);
+
+    // --- LOAD DATA ---
+    function loadVideos() {
+        // LocalStorage fallback
+        try {
+            const stored = localStorage.getItem('sgrhn_videos');
+            if (stored) videos = JSON.parse(stored);
+        } catch(e) {}
+        render();
+
+        // Firebase Realtime
+        db.ref('videos').on('value', snap => {
+            const data = snap.val();
+            videos = data || {};
+            localStorage.setItem('sgrhn_videos', JSON.stringify(videos));
+            render();
+        });
+    }
+
+    // --- TRAINER PIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkTrainerAuth() {
+        const stored = localStorage.getItem('sgrhn_trainer_auth');
+        if (stored === await hashPw('7831')) enableTrainer();
+    }
+
+    function enableTrainer() {
+        trainerMode = true;
+        document.getElementById('main-content').classList.add('trainer-active');
+        document.getElementById('fab-add').style.display = 'flex';
+        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
+        document.getElementById('trainer-info').classList.add('unlocked');
+        document.getElementById('trainer-btn').textContent = 'Entsperrt';
+        document.getElementById('trainer-btn').classList.remove('locked');
+        document.getElementById('trainer-btn').disabled = true;
+        document.getElementById('trainer-btn').style.opacity = '0.6';
+        document.getElementById('trainer-btn').style.cursor = 'default';
+        render();
+    }
+
+    async function promptTrainerPIN() {
+        const pin = prompt('Trainer-PIN eingeben:');
+        if (pin === null) return;
+        const hash = await hashPw(pin);
+        if (hash === await hashPw('7831')) {
+            localStorage.setItem('sgrhn_trainer_auth', hash);
+            enableTrainer();
+        } else {
+            alert('Falscher PIN.');
+        }
+    }
+
+    // --- LOGIN ---
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        firebase.auth().signInAnonymously().then(() => {
+            loadVideos();
+            checkTrainerAuth();
+        }).catch(err => {
+            console.warn('Firebase Auth failed, loading from localStorage', err);
+            loadVideos();
+            checkTrainerAuth();
+        });
+    }
+
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (!stored) return;
+        if (stored === await hashPw('RatPack#26')) unlock();
+        else localStorage.removeItem('sgrhn_rat_auth');
+    }
+
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        const hash = await hashPw(pw);
+        if (hash === await hashPw('RatPack#26')) {
+            localStorage.setItem('sgrhn_rat_auth', hash);
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    // Close modals on overlay click
+    document.getElementById('play-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePlayModal(); });
+    document.getElementById('form-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeForm(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closePlayModal(); closeForm(); }
+    });
+
+    checkLogin();
+</script>
+</body>
+</html>

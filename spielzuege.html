@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spielzüge — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e; --green-dark: #145a2a;
+            --blue: #1a5fb4; --blue-dark: #0f3d7a;
+            --primary: #152030; --primary-light: #1c3048;
+            --accent: #2ecc71; --accent-blue: #4a9eff;
+            --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
+            --text: #e8ecf0; --text-muted: #7a90a8;
+            --danger: #e04040; --warning: #e8a020; --success: #40c060;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+        }
+
+        /* Login Gate */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center;
+        }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); } .club-x { margin: 0 0.3rem; } .club-blue { color: var(--accent-blue); }
+        .login-input {
+            width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center;
+        }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn {
+            width: 100%; padding: 0.8rem; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1rem; font-weight: 700; cursor: pointer;
+        }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* Nav */
+        .topnav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(12,20,32,0.92); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.5rem 1rem; display: none;
+        }
+        .topnav.visible { display: flex; }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; align-items: center;
+            max-width: 1100px; margin: 0 auto; width: 100%; overflow-x: auto;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.75rem;
+            font-weight: 600; padding: 0.4rem 0.7rem; border-radius: 6px;
+            white-space: nowrap; transition: all 0.2s;
+        }
+        .topnav a:hover, .topnav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.2rem 1rem; text-align: center;
+            border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .page-header .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        /* Trainer Bar */
+        .trainer-bar {
+            background: linear-gradient(135deg, rgba(27,138,62,0.15), rgba(26,95,180,0.15));
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+            padding: 0.7rem 1rem; margin-bottom: 0.8rem;
+            display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+        }
+        .trainer-bar .trainer-info { font-size: 0.82rem; color: var(--text-muted); }
+        .trainer-bar .trainer-info.unlocked { color: var(--accent); }
+        .trainer-bar .trainer-btn {
+            padding: 0.45rem 1rem; border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px; background: var(--primary-light); color: var(--text);
+            font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
+        .trainer-bar .trainer-btn:hover { background: var(--green-dark); border-color: var(--accent); }
+        .trainer-bar .trainer-btn.locked {
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            border: none; color: white;
+        }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 1rem 1rem 2rem; }
+
+        /* Save Indicator */
+        .save-indicator {
+            font-size: 0.7rem; color: var(--accent); opacity: 0;
+            transition: opacity 0.3s; text-align: center; padding: 0.2rem;
+        }
+        .save-indicator.show { opacity: 1; }
+
+        /* Filter */
+        .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .filter-btn {
+            padding: 0.35rem 0.75rem; border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1); background: transparent;
+            color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-btn.active { background: rgba(46,204,113,0.15); border-color: var(--accent); color: var(--accent); }
+
+        /* Play List */
+        .play-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 0.8rem; margin-bottom: 1rem;
+        }
+        .play-card {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; padding: 1rem; cursor: pointer; transition: all 0.2s;
+        }
+        .play-card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.12); }
+        .play-card.selected { border-color: var(--accent); background: rgba(46,204,113,0.06); }
+        .play-card-cat {
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.04em; padding: 0.1rem 0.5rem; border-radius: 10px;
+            display: inline-block; margin-bottom: 0.3rem;
+        }
+        .cat-angriff { background: rgba(46,204,113,0.15); color: var(--accent); }
+        .cat-verteidigung { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+        .cat-standard { background: rgba(232,160,32,0.15); color: var(--warning); }
+        .cat-gedraenge { background: rgba(224,64,64,0.15); color: var(--danger); }
+        .cat-gasse { background: rgba(168,85,247,0.15); color: #a855f7; }
+        .play-card-name { font-weight: 700; font-size: 0.95rem; }
+        .play-card-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+        .play-card-actions { display: none; gap: 0.3rem; margin-top: 0.5rem; }
+        .trainer-active .play-card-actions { display: flex; }
+        .play-card-actions button {
+            padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.7rem; cursor: pointer;
+        }
+        .play-card-actions button:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+        /* Canvas Area */
+        .canvas-section {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px; overflow: hidden; display: none;
+        }
+        .canvas-section.visible { display: block; }
+        .canvas-header {
+            padding: 0.8rem 1rem; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .canvas-title { font-weight: 700; font-size: 1rem; }
+        .canvas-close {
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 6px;
+            font-size: 0.75rem; cursor: pointer;
+        }
+        .canvas-close:hover { color: var(--text); }
+        .canvas-wrap {
+            position: relative; width: 100%; background: #0a1018;
+        }
+        canvas#field {
+            display: block; width: 100%; touch-action: none;
+        }
+
+        /* Playback Controls */
+        .playback {
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.5rem; padding: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06);
+            flex-wrap: wrap;
+        }
+        .pb-btn {
+            width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15);
+            background: var(--primary-light); color: var(--text); font-size: 0.9rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .pb-btn:hover { background: var(--green-dark); border-color: var(--accent); }
+        .pb-btn.active { background: var(--green); border-color: var(--accent); }
+        .phase-indicator {
+            font-size: 0.8rem; color: var(--text-muted); font-weight: 600;
+            min-width: 80px; text-align: center;
+        }
+        .speed-control { display: flex; align-items: center; gap: 0.3rem; }
+        .speed-control label { font-size: 0.7rem; color: var(--text-muted); }
+        .speed-control input { width: 60px; accent-color: var(--accent); }
+
+        /* Editor Controls (Trainer only) */
+        .editor-bar {
+            display: none; padding: 0.6rem 1rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            gap: 0.4rem; flex-wrap: wrap; align-items: center;
+        }
+        .trainer-active .editor-bar { display: flex; }
+        .editor-bar button {
+            padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.75rem;
+            font-weight: 600; cursor: pointer;
+        }
+        .editor-bar button:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+        .editor-bar button.active { background: rgba(46,204,113,0.15); border-color: var(--accent); color: var(--accent); }
+        .editor-bar .sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); }
+        .editor-bar select {
+            padding: 0.3rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);
+            background: var(--primary); color: var(--text); font-size: 0.75rem; outline: none;
+        }
+
+        /* Phase Notes */
+        .phase-notes {
+            padding: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            min-height: 1.6rem;
+        }
+        .phase-notes-input {
+            width: 100%; background: transparent; border: none; color: var(--text);
+            font-size: 0.8rem; font-family: inherit; outline: none; resize: none;
+        }
+
+        /* Empty */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+        .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+
+        /* FAB */
+        .fab {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            width: 56px; height: 56px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white; font-size: 1.8rem; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 50;
+            display: none; align-items: center; justify-content: center;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .form-modal {
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; width: min(95vw, 450px); max-height: 90vh;
+            overflow-y: auto; padding: 1.5rem;
+        }
+        .form-modal h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; }
+        .form-group { margin-bottom: 0.8rem; }
+        .form-group label {
+            display: block; font-size: 0.8rem; font-weight: 600;
+            color: var(--text-muted); margin-bottom: 0.3rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px; background: var(--primary); color: var(--text);
+            font-size: 0.9rem; font-family: inherit; outline: none;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--accent); }
+        .form-group select { -webkit-appearance: none; -moz-appearance: none; appearance: none; cursor: pointer; }
+        .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+        .btn { padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-muted); }
+        .btn-cancel:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+
+        @media (max-width: 600px) {
+            .play-grid { grid-template-columns: 1fr; }
+            .pb-btn { width: 32px; height: 32px; font-size: 0.8rem; }
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">RU Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <button class="login-btn" id="login-btn">Anmelden</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+            <a href="mannschaftsrat.html">Mannschaftsrat</a>
+            <span class="nav-sep">|</span>
+            <a href="spielzuege.html" class="active">Spielzüge</a>
+            <a href="uebungen.html">Übungen</a>
+            <a href="trainingsplan.html">Training</a>
+            <a href="videos.html">Videos</a>
+            <span class="nav-sep">|</span>
+            <a href="trainingsbeteiligung.html">Beteiligung</a>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="page-header app-content">
+        <h1>Spielzüge</h1>
+        <div class="subtitle">Taktiken visualisieren & animieren</div>
+    </header>
+
+    <!-- MAIN -->
+    <div class="app-content" id="main-content">
+        <div class="container">
+            <div class="trainer-bar">
+                <span class="trainer-info" id="trainer-info">Nur-Lese-Modus</span>
+                <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
+            </div>
+            <div class="save-indicator" id="save-indicator">Gespeichert</div>
+
+            <!-- Filter -->
+            <div class="filter-row" id="filter-row">
+                <button class="filter-btn active" data-cat="alle">Alle</button>
+                <button class="filter-btn" data-cat="angriff">Angriff</button>
+                <button class="filter-btn" data-cat="verteidigung">Verteidigung</button>
+                <button class="filter-btn" data-cat="standard">Standard</button>
+                <button class="filter-btn" data-cat="gedraenge">Gedränge</button>
+                <button class="filter-btn" data-cat="gasse">Gasse</button>
+            </div>
+
+            <!-- Play Grid -->
+            <div class="play-grid" id="play-grid"></div>
+            <div class="empty-state" id="empty-state" style="display:none">
+                <div class="icon">&#127944;</div>
+                <p>Noch keine Spielzüge vorhanden.</p>
+            </div>
+
+            <!-- Canvas Section -->
+            <div class="canvas-section" id="canvas-section">
+                <div class="canvas-header">
+                    <span class="canvas-title" id="canvas-title">Spielzug</span>
+                    <button class="canvas-close" onclick="closeViewer()">Schliessen</button>
+                </div>
+                <div class="canvas-wrap" id="canvas-wrap">
+                    <canvas id="field"></canvas>
+                </div>
+                <!-- Playback -->
+                <div class="playback">
+                    <button class="pb-btn" id="pb-prev" onclick="prevPhase()" title="Vorherige Phase">&#9664;</button>
+                    <button class="pb-btn" id="pb-play" onclick="togglePlay()" title="Play/Pause">&#9654;</button>
+                    <button class="pb-btn" id="pb-next" onclick="nextPhase()" title="Nächste Phase">&#9654;</button>
+                    <span class="phase-indicator" id="phase-indicator">Phase 1/1</span>
+                    <div class="speed-control">
+                        <label>Tempo</label>
+                        <input type="range" id="speed-slider" min="0.5" max="3" step="0.25" value="1">
+                    </div>
+                </div>
+                <!-- Phase Notes -->
+                <div class="phase-notes" id="phase-notes"></div>
+                <!-- Editor Bar (Trainer only) -->
+                <div class="editor-bar" id="editor-bar">
+                    <button id="btn-edit-mode" onclick="toggleEditMode()">Bearbeiten</button>
+                    <div class="sep"></div>
+                    <button onclick="addPhaseAfter()">+ Phase</button>
+                    <button onclick="deleteCurrentPhase()">Phase löschen</button>
+                    <div class="sep"></div>
+                    <select id="add-player" onchange="addPlayerToPhase()">
+                        <option value="">+ Spieler</option>
+                    </select>
+                    <select id="remove-player" onchange="removePlayerFromPhase()">
+                        <option value="">- Spieler</option>
+                    </select>
+                    <div class="sep"></div>
+                    <select id="ball-carrier" onchange="setBallCarrier()">
+                        <option value="">Ball: keiner</option>
+                    </select>
+                    <select id="pass-to" onchange="setPassTo()">
+                        <option value="">Pass an: —</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <button class="fab" id="fab-add" onclick="openPlayForm()" title="Spielzug erstellen">+</button>
+
+    <!-- Play Form Modal -->
+    <div class="modal-overlay" id="play-modal">
+        <div class="form-modal">
+            <h2 id="play-form-title">Spielzug erstellen</h2>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="fp-name" placeholder="z.B. Crash Ball Links">
+            </div>
+            <div class="form-group">
+                <label>Kategorie</label>
+                <select id="fp-category">
+                    <option value="angriff">Angriff</option>
+                    <option value="verteidigung">Verteidigung</option>
+                    <option value="standard">Standard</option>
+                    <option value="gedraenge">Gedränge</option>
+                    <option value="gasse">Gasse</option>
+                </select>
+            </div>
+            <div class="form-group" id="fp-formation-group">
+                <label>Startformation</label>
+                <select id="fp-formation" onchange="updateStartBallOptions()">
+                    <option value="offen">Offenes Spiel (alle 15)</option>
+                    <option value="scrum">Gedränge / Scrum</option>
+                    <option value="lineout">Gasse / Lineout</option>
+                    <option value="backs">Nur Backs (9-15)</option>
+                    <option value="forwards">Nur Forwards (1-8)</option>
+                </select>
+            </div>
+            <div class="form-group" id="fp-ball-group">
+                <label>Ball bei Spieler</label>
+                <select id="fp-ball"></select>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-cancel" onclick="closePlayForm()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="savePlay()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- FIREBASE ---
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+
+    let plays = {};
+    let trainerMode = false;
+    let activeFilter = 'alle';
+    let selectedPlayId = null;
+    let editingPlayId = null;
+
+    // --- ANIMATION STATE ---
+    let currentPhase = 0;
+    let isPlaying = false;
+    let animProgress = 0; // 0-1 between phases
+    let animSpeed = 1;
+    let editMode = false;
+    let draggingPlayer = null;
+    let lastFrameTime = 0;
+
+    const catLabels = { angriff: 'Angriff', verteidigung: 'Verteidigung', standard: 'Standard', gedraenge: 'Gedränge', gasse: 'Gasse' };
+
+    function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    // --- FORMATIONS ---
+    // Normalized coords (0-1). Field: top = opponent try line, bottom = own try line
+    // Scrum: 1,2,3 front row (top), 4,5 locks, 6,7 flanks, 8 Nr.8 (bottom of pack)
+    const FORMATIONS = {
+        offen: {
+            label: 'Offenes Spiel (alle 15)',
+            ballCarrier: '10',
+            players: {
+                1:  {x:0.35, y:0.35}, 2:  {x:0.40, y:0.35}, 3:  {x:0.45, y:0.35},
+                4:  {x:0.37, y:0.40}, 5:  {x:0.43, y:0.40},
+                6:  {x:0.30, y:0.38}, 7:  {x:0.50, y:0.38}, 8:  {x:0.40, y:0.43},
+                9:  {x:0.40, y:0.48}, 10: {x:0.40, y:0.55},
+                11: {x:0.15, y:0.62}, 12: {x:0.32, y:0.60}, 13: {x:0.48, y:0.60}, 14: {x:0.65, y:0.62},
+                15: {x:0.40, y:0.72}
+            }
+        },
+        scrum: {
+            label: 'Gedränge (Scrum)',
+            ballCarrier: '9',
+            players: {
+                // Front row (closest to opponent = top)
+                1:  {x:0.35, y:0.38}, 2:  {x:0.40, y:0.37}, 3:  {x:0.45, y:0.38},
+                // Locks
+                4:  {x:0.37, y:0.42}, 5:  {x:0.43, y:0.42},
+                // Flankers
+                6:  {x:0.33, y:0.44}, 7:  {x:0.47, y:0.44},
+                // Nr. 8 (back of scrum)
+                8:  {x:0.40, y:0.47},
+                // Halves
+                9:  {x:0.48, y:0.50}, 10: {x:0.40, y:0.56},
+                // Backs
+                11: {x:0.15, y:0.62}, 12: {x:0.32, y:0.60}, 13: {x:0.48, y:0.60}, 14: {x:0.65, y:0.62},
+                15: {x:0.40, y:0.72}
+            }
+        },
+        lineout: {
+            label: 'Gasse (Lineout)',
+            ballCarrier: '2',
+            players: {
+                // Hooker (thrower)
+                2:  {x:0.18, y:0.45},
+                // Lineout jumpers (vertical line)
+                4:  {x:0.25, y:0.38}, 6:  {x:0.25, y:0.41},
+                5:  {x:0.25, y:0.44}, 7:  {x:0.25, y:0.47},
+                8:  {x:0.25, y:0.50},
+                // Props off to the side
+                1:  {x:0.18, y:0.50}, 3:  {x:0.18, y:0.40},
+                // Halves
+                9:  {x:0.32, y:0.48}, 10: {x:0.40, y:0.55},
+                // Backs
+                11: {x:0.15, y:0.62}, 12: {x:0.35, y:0.60}, 13: {x:0.50, y:0.60}, 14: {x:0.65, y:0.62},
+                15: {x:0.40, y:0.72}
+            }
+        },
+        backs: {
+            label: 'Nur Backs (9-15)',
+            ballCarrier: '10',
+            players: {
+                9:  {x:0.40, y:0.45}, 10: {x:0.40, y:0.52},
+                11: {x:0.15, y:0.60}, 12: {x:0.32, y:0.58}, 13: {x:0.48, y:0.58}, 14: {x:0.65, y:0.60},
+                15: {x:0.40, y:0.70}
+            }
+        },
+        forwards: {
+            label: 'Nur Forwards (1-8)',
+            ballCarrier: '8',
+            players: {
+                1:  {x:0.35, y:0.38}, 2:  {x:0.40, y:0.37}, 3:  {x:0.45, y:0.38},
+                4:  {x:0.37, y:0.42}, 5:  {x:0.43, y:0.42},
+                6:  {x:0.33, y:0.44}, 7:  {x:0.47, y:0.44},
+                8:  {x:0.40, y:0.48}
+            }
+        }
+    };
+
+    function defaultPositions(formation) {
+        const f = FORMATIONS[formation || 'offen'];
+        return JSON.parse(JSON.stringify(f.players));
+    }
+
+    function defaultBallCarrier(formation) {
+        return FORMATIONS[formation || 'offen'].ballCarrier || '10';
+    }
+
+    // --- RENDER PLAY LIST ---
+    function renderList() {
+        const grid = document.getElementById('play-grid');
+        const empty = document.getElementById('empty-state');
+        const entries = Object.entries(plays).filter(([id, p]) => {
+            return activeFilter === 'alle' || p.category === activeFilter;
+        });
+
+        if (entries.length === 0) {
+            grid.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+
+        grid.innerHTML = entries.map(([id, p]) => {
+            const phases = getPhases(p);
+            const sel = id === selectedPlayId ? 'selected' : '';
+            return `
+                <div class="play-card ${sel}" onclick="selectPlay('${id}')">
+                    <span class="play-card-cat cat-${p.category}">${catLabels[p.category] || p.category}</span>
+                    <div class="play-card-name">${esc(p.name)}</div>
+                    <div class="play-card-meta">${phases.length} Phase${phases.length !== 1 ? 'n' : ''}</div>
+                    <div class="play-card-actions" onclick="event.stopPropagation()">
+                        <button onclick="editPlayMeta('${id}')">Umbenennen</button>
+                        <button onclick="deletePlay('${id}')" style="color:var(--danger)">Löschen</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function getPhases(play) {
+        if (!play.phases) return [];
+        return Array.isArray(play.phases) ? play.phases : Object.values(play.phases);
+    }
+
+    // --- SELECT PLAY ---
+    function selectPlay(id) {
+        selectedPlayId = id;
+        currentPhase = 0;
+        animProgress = 0;
+        isPlaying = false;
+        editMode = false;
+        document.getElementById('canvas-section').classList.add('visible');
+        document.getElementById('canvas-title').textContent = plays[id].name;
+        updateBallDropdowns();
+        renderList();
+        resizeCanvas();
+        drawField();
+        updatePhaseIndicator();
+        updateNotes();
+    }
+
+    function closeViewer() {
+        selectedPlayId = null;
+        isPlaying = false;
+        editMode = false;
+        document.getElementById('canvas-section').classList.remove('visible');
+        renderList();
+    }
+
+    // --- CANVAS DRAWING ---
+    const canvas = document.getElementById('field');
+    const ctx = canvas.getContext('2d');
+    let W = 800, H = 500;
+    const FIELD_ASPECT = 70 / 100; // rugby field is wider than long in our view (rotated)
+
+    function resizeCanvas() {
+        const wrap = document.getElementById('canvas-wrap');
+        const w = wrap.clientWidth;
+        const h = Math.round(w * 0.625); // 5:8 aspect
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        W = w; H = h;
+        drawField();
+    }
+
+    function drawField() {
+        ctx.clearRect(0, 0, W, H);
+
+        // Field background
+        ctx.fillStyle = '#1a3320';
+        ctx.fillRect(0, 0, W, H);
+
+        // Field lines
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+        ctx.lineWidth = 1;
+
+        const pad = 20;
+        const fw = W - pad * 2;
+        const fh = H - pad * 2;
+
+        // Outline
+        ctx.strokeRect(pad, pad, fw, fh);
+
+        // Try lines (in-goal areas at top and bottom)
+        const tryDepth = fh * 0.08;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(pad, pad + tryDepth);
+        ctx.lineTo(pad + fw, pad + tryDepth);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pad, pad + fh - tryDepth);
+        ctx.lineTo(pad + fw, pad + fh - tryDepth);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Halfway line
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1.5;
+        const midY = pad + fh / 2;
+        ctx.beginPath();
+        ctx.moveTo(pad, midY);
+        ctx.lineTo(pad + fw, midY);
+        ctx.stroke();
+
+        // 22m lines
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.lineWidth = 1;
+        const line22top = pad + tryDepth + (fh - 2 * tryDepth) * 0.22;
+        const line22bot = pad + fh - tryDepth - (fh - 2 * tryDepth) * 0.22;
+        ctx.beginPath();
+        ctx.moveTo(pad, line22top); ctx.lineTo(pad + fw, line22top);
+        ctx.moveTo(pad, line22bot); ctx.lineTo(pad + fw, line22bot);
+        ctx.stroke();
+
+        // 10m lines (from halfway)
+        ctx.setLineDash([4, 4]);
+        const line10top = midY - (fh - 2 * tryDepth) * 0.10;
+        const line10bot = midY + (fh - 2 * tryDepth) * 0.10;
+        ctx.beginPath();
+        ctx.moveTo(pad, line10top); ctx.lineTo(pad + fw, line10top);
+        ctx.moveTo(pad, line10bot); ctx.lineTo(pad + fw, line10bot);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Labels
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('TRY', pad + 4, pad + tryDepth - 4);
+        ctx.fillText('22m', pad + 4, line22top - 3);
+        ctx.fillText('10m', pad + 4, line10top - 3);
+        ctx.fillText('HALFWAY', pad + 4, midY - 4);
+        ctx.fillText('10m', pad + 4, line10bot - 3);
+        ctx.fillText('22m', pad + 4, line22bot - 3);
+        ctx.fillText('TRY', pad + 4, pad + fh - 4);
+
+        // --- DRAW PLAYERS ---
+        if (!selectedPlayId || !plays[selectedPlayId]) return;
+        const play = plays[selectedPlayId];
+        const phases = getPhases(play);
+        if (phases.length === 0) return;
+
+        const phase = phases[currentPhase];
+        const nextPhaseData = (currentPhase < phases.length - 1 && isPlaying) ? phases[currentPhase + 1] : null;
+        const players = phase.players || {};
+        const ball = phase.ball || {};
+        const hasPass = ball.carrier && ball.passTo && players[ball.carrier] && players[ball.passTo];
+
+        // Player token radius (needed for pass animation ball too)
+        const radius = Math.max(14, Math.min(20, W / 40));
+
+        // Movement is continuous throughout the entire animation (0→1)
+        const effectiveMoveProgress = isPlaying ? animProgress : 0;
+
+        // Pass happens mid-movement: starts at 15%, arrives at 55%
+        const PASS_START = 0.15;
+        const PASS_END = 0.55;
+        const passProgress = hasPass && isPlaying
+            ? Math.max(0, Math.min(1, (animProgress - PASS_START) / (PASS_END - PASS_START)))
+            : 0;
+
+        // Determine who currently has the ball during animation
+        const ballPassedOver = hasPass && passProgress >= 1;
+        const currentBallHolder = ballPassedOver ? ball.passTo : ball.carrier;
+
+        // Draw pass visualization
+        if (hasPass) {
+            // Get current animated positions of passer and receiver
+            const passerCur = players[ball.carrier];
+            const passerNext = nextPhaseData?.players?.[ball.carrier];
+            const receiverCur = players[ball.passTo];
+            const receiverNext = nextPhaseData?.players?.[ball.passTo];
+
+            // Ball release point: passer's position frozen at pass start
+            const releasePos = getPlayerPos(passerCur, passerNext, PASS_START);
+            // Ball target: receiver's position at catch time
+            const catchPos = getPlayerPos(receiverCur, receiverNext, PASS_END);
+
+            const fx = releasePos.x * W, fy = releasePos.y * H;
+            const tx = catchPos.x * W, ty = catchPos.y * H;
+
+            // Static dashed line (from start positions, for reference)
+            if (!isPlaying) {
+                const sx = passerCur.x * W, sy = passerCur.y * H;
+                const ex = receiverCur.x * W, ey = receiverCur.y * H;
+
+                ctx.strokeStyle = 'rgba(232,160,32,0.3)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6, 4]);
+                ctx.beginPath();
+                ctx.moveTo(sx, sy);
+                ctx.lineTo(ex, ey);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Arrow at receiver
+                const angle = Math.atan2(ey - sy, ex - sx);
+                ctx.fillStyle = 'rgba(232,160,32,0.6)';
+                ctx.beginPath();
+                ctx.moveTo(ex, ey);
+                ctx.lineTo(ex - Math.cos(angle) * 14 - Math.sin(angle) * 5, ey - Math.sin(angle) * 14 + Math.cos(angle) * 5);
+                ctx.lineTo(ex - Math.cos(angle) * 14 + Math.sin(angle) * 5, ey - Math.sin(angle) * 14 - Math.cos(angle) * 5);
+                ctx.fill();
+            }
+
+            // Animated ball: straight line from release point to catch point
+            if (isPlaying && passProgress > 0 && passProgress < 1) {
+                const t = easeInOut(passProgress);
+                const bx = fx + (tx - fx) * t;
+                const by = fy + (ty - fy) * t;
+                const br = Math.max(6, radius * 0.45);
+
+                // Trail behind ball
+                ctx.strokeStyle = 'rgba(232,160,32,0.25)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(fx, fy);
+                ctx.lineTo(bx, by);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.save();
+                ctx.translate(bx, by);
+                ctx.rotate(-0.4);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, br * 1.5, br, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#e8a020';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        // Draw movement trails (only during move phase)
+        if (nextPhaseData && effectiveMoveProgress > 0) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([3, 3]);
+            for (const num of Object.keys(players)) {
+                const np = nextPhaseData.players?.[num];
+                if (!np) continue;
+                const cp = players[num];
+                ctx.beginPath();
+                ctx.moveTo(cp.x * W, cp.y * H);
+                ctx.lineTo(np.x * W, np.y * H);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        }
+
+        // Draw player tokens
+        for (const [num, pos] of Object.entries(players)) {
+            const nextPos = nextPhaseData?.players?.[num];
+            // Players only move during the move phase (after pass)
+            const p = getPlayerPos(pos, nextPos, effectiveMoveProgress);
+            const px = p.x * W;
+            const py = p.y * H;
+            const hasBall = String(currentBallHolder) === String(num);
+
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.beginPath();
+            ctx.arc(px + 1, py + 1, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Circle
+            ctx.fillStyle = hasBall ? '#e8a020' : (parseInt(num) <= 8 ? '#2ecc71' : '#4a9eff');
+            ctx.beginPath();
+            ctx.arc(px, py, radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Border
+            ctx.strokeStyle = hasBall ? '#fff' : 'rgba(255,255,255,0.4)';
+            ctx.lineWidth = hasBall ? 2.5 : 1.5;
+            ctx.stroke();
+
+            // Number
+            ctx.fillStyle = hasBall ? '#000' : '#fff';
+            ctx.font = `bold ${Math.round(radius * 0.85)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(num, px, py + 1);
+
+            // Ball icon (small rugby ball above carrier)
+            if (hasBall) {
+                const bx = px + radius * 0.8;
+                const by = py - radius * 0.8;
+                const br = radius * 0.4;
+                ctx.save();
+                ctx.translate(bx, by);
+                ctx.rotate(-0.4);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, br * 1.4, br, 0, 0, Math.PI * 2);
+                ctx.fillStyle = '#c47a20';
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+                // Seam line
+                ctx.beginPath();
+                ctx.moveTo(0, -br);
+                ctx.lineTo(0, br);
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        // Edit mode indicator
+        if (editMode) {
+            ctx.fillStyle = 'rgba(46,204,113,0.15)';
+            ctx.fillRect(0, 0, W, 3);
+        }
+    }
+
+    function getPlayerPos(current, next, progress) {
+        if (!next || progress <= 0) return current;
+        // Linear interpolation for seamless phase-to-phase flow
+        return {
+            x: current.x + (next.x - current.x) * progress,
+            y: current.y + (next.y - current.y) * progress
+        };
+    }
+
+    function easeInOut(t) {
+        return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+    }
+
+    // --- ANIMATION LOOP ---
+    function animate(timestamp) {
+        if (!isPlaying) return;
+        if (!lastFrameTime) lastFrameTime = timestamp;
+        const dt = (timestamp - lastFrameTime) / 1000;
+        lastFrameTime = timestamp;
+
+        const phases = getPhases(plays[selectedPlayId]);
+        if (currentPhase >= phases.length - 1) {
+            isPlaying = false;
+            updatePlayBtn();
+            return;
+        }
+
+        animProgress += dt * animSpeed * 0.5; // 2 seconds per phase at speed 1
+
+        // Seamless phase transitions: carry over excess into next phase
+        while (animProgress >= 1 && currentPhase < phases.length - 1) {
+            animProgress -= 1; // carry leftover into next phase
+            currentPhase++;
+            updatePhaseIndicator();
+            updateNotes();
+            updateBallDropdowns();
+        }
+
+        if (currentPhase >= phases.length - 1) {
+            animProgress = 0;
+            isPlaying = false;
+            updatePlayBtn();
+            drawField();
+            return;
+        }
+
+        drawField();
+        requestAnimationFrame(animate);
+    }
+
+    // --- PLAYBACK CONTROLS ---
+    function togglePlay() {
+        const phases = getPhases(plays[selectedPlayId] || {});
+        if (phases.length <= 1) return;
+        if (currentPhase >= phases.length - 1) {
+            currentPhase = 0;
+            animProgress = 0;
+        }
+        isPlaying = !isPlaying;
+        updatePlayBtn();
+        if (isPlaying) {
+            lastFrameTime = 0;
+            requestAnimationFrame(animate);
+        }
+    }
+
+    function updatePlayBtn() {
+        document.getElementById('pb-play').innerHTML = isPlaying ? '&#9646;&#9646;' : '&#9654;';
+        document.getElementById('pb-play').classList.toggle('active', isPlaying);
+    }
+
+    function prevPhase() {
+        isPlaying = false;
+        updatePlayBtn();
+        animProgress = 0;
+        if (currentPhase > 0) currentPhase--;
+        updatePhaseIndicator();
+        updateNotes();
+        updateBallDropdowns();
+        drawField();
+    }
+
+    function nextPhase() {
+        isPlaying = false;
+        updatePlayBtn();
+        animProgress = 0;
+        const phases = getPhases(plays[selectedPlayId] || {});
+        if (currentPhase < phases.length - 1) currentPhase++;
+        updatePhaseIndicator();
+        updateNotes();
+        updateBallDropdowns();
+        drawField();
+    }
+
+    function updatePhaseIndicator() {
+        const phases = getPhases(plays[selectedPlayId] || {});
+        document.getElementById('phase-indicator').textContent = `Phase ${currentPhase + 1}/${phases.length}`;
+    }
+
+    function updateNotes() {
+        const el = document.getElementById('phase-notes');
+        const phases = getPhases(plays[selectedPlayId] || {});
+        const phase = phases[currentPhase];
+        if (!phase) { el.innerHTML = ''; return; }
+        if (editMode && trainerMode) {
+            el.innerHTML = `<textarea class="phase-notes-input" placeholder="Notizen für diese Phase..." onchange="savePhaseNotes(this.value)">${esc(phase.notes || '')}</textarea>`;
+        } else {
+            el.textContent = phase.notes || '';
+        }
+    }
+
+    function savePhaseNotes(val) {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        phases[currentPhase].notes = val;
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+    }
+
+    document.getElementById('speed-slider').addEventListener('input', e => {
+        animSpeed = parseFloat(e.target.value);
+    });
+
+    // --- EDITOR (DRAG & DROP) ---
+    function toggleEditMode() {
+        editMode = !editMode;
+        document.getElementById('btn-edit-mode').classList.toggle('active', editMode);
+        document.getElementById('btn-edit-mode').textContent = editMode ? 'Bearbeiten (aktiv)' : 'Bearbeiten';
+        updateNotes();
+        drawField();
+    }
+
+    // Pointer events for drag
+    canvas.addEventListener('pointerdown', e => {
+        if (!editMode || !trainerMode || !selectedPlayId) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) / W;
+        const my = (e.clientY - rect.top) / H;
+        const phases = getPhases(plays[selectedPlayId]);
+        const phase = phases[currentPhase];
+        if (!phase) return;
+        const players = phase.players || {};
+        const radius = Math.max(14, Math.min(20, W / 40)) / W;
+
+        for (const [num, pos] of Object.entries(players)) {
+            const dx = pos.x - mx;
+            const dy = pos.y - my;
+            if (Math.sqrt(dx * dx + dy * dy) < radius * 1.5) {
+                draggingPlayer = num;
+                canvas.setPointerCapture(e.pointerId);
+                return;
+            }
+        }
+    });
+
+    canvas.addEventListener('pointermove', e => {
+        if (!draggingPlayer || !selectedPlayId) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / W));
+        const my = Math.max(0, Math.min(1, (e.clientY - rect.top) / H));
+        const phases = getPhases(plays[selectedPlayId]);
+        phases[currentPhase].players[draggingPlayer] = { x: mx, y: my };
+        plays[selectedPlayId].phases = phases;
+        drawField();
+    });
+
+    canvas.addEventListener('pointerup', e => {
+        if (draggingPlayer && selectedPlayId) {
+            persistPlay(selectedPlayId);
+            draggingPlayer = null;
+        }
+    });
+
+    // --- PHASE MANAGEMENT ---
+    function addPhaseAfter() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        // Copy current phase as template
+        const current = phases[currentPhase];
+        const newPhase = {
+            players: JSON.parse(JSON.stringify(current?.players || defaultPositions())),
+            ball: { carrier: current?.ball?.passTo || current?.ball?.carrier || '', passTo: '' },
+            notes: ''
+        };
+        phases.splice(currentPhase + 1, 0, newPhase);
+        plays[selectedPlayId].phases = phases;
+        currentPhase++;
+        persistPlay(selectedPlayId);
+        updatePhaseIndicator();
+        updateNotes();
+        updateBallDropdowns();
+        drawField();
+        showSaved('Phase hinzugefügt');
+    }
+
+    function deleteCurrentPhase() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        if (phases.length <= 1) { alert('Mindestens eine Phase muss vorhanden sein.'); return; }
+        if (!confirm('Phase löschen?')) return;
+        phases.splice(currentPhase, 1);
+        if (currentPhase >= phases.length) currentPhase = phases.length - 1;
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        updatePhaseIndicator();
+        updateNotes();
+        updateBallDropdowns();
+        drawField();
+        showSaved('Phase gelöscht');
+    }
+
+    // --- BALL CONTROLS ---
+    function updateBallDropdowns() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        const phase = phases[currentPhase];
+        if (!phase) return;
+        const ball = phase.ball || {};
+        const present = Object.keys(phase.players || {}).sort((a, b) => parseInt(a) - parseInt(b));
+        const allNums = Array.from({length: 15}, (_, i) => String(i + 1));
+        const missing = allNums.filter(n => !present.includes(n));
+
+        let carrierHtml = '<option value="">Ball: keiner</option>';
+        let passHtml = '<option value="">Pass an: —</option>';
+        for (const n of present) {
+            carrierHtml += `<option value="${n}" ${String(ball.carrier) === n ? 'selected' : ''}>${n}</option>`;
+            passHtml += `<option value="${n}" ${String(ball.passTo) === n ? 'selected' : ''}>${n}</option>`;
+        }
+        document.getElementById('ball-carrier').innerHTML = carrierHtml;
+        document.getElementById('pass-to').innerHTML = passHtml;
+
+        // Add/Remove player dropdowns
+        let addHtml = '<option value="">+ Spieler</option>';
+        for (const n of missing) addHtml += `<option value="${n}">${n}</option>`;
+        document.getElementById('add-player').innerHTML = addHtml;
+
+        let removeHtml = '<option value="">- Spieler</option>';
+        for (const n of present) removeHtml += `<option value="${n}">${n}</option>`;
+        document.getElementById('remove-player').innerHTML = removeHtml;
+    }
+
+    function addPlayerToPhase() {
+        const sel = document.getElementById('add-player');
+        const num = sel.value;
+        if (!num || !selectedPlayId) { sel.value = ''; return; }
+        const phases = getPhases(plays[selectedPlayId]);
+        const phase = phases[currentPhase];
+        // Place new player near center
+        phase.players[num] = { x: 0.40 + Math.random() * 0.1 - 0.05, y: 0.50 + Math.random() * 0.1 - 0.05 };
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        updateBallDropdowns();
+        drawField();
+        sel.value = '';
+        showSaved('Spieler ' + num + ' hinzugefügt');
+    }
+
+    function removePlayerFromPhase() {
+        const sel = document.getElementById('remove-player');
+        const num = sel.value;
+        if (!num || !selectedPlayId) { sel.value = ''; return; }
+        const phases = getPhases(plays[selectedPlayId]);
+        delete phases[currentPhase].players[num];
+        // Clear ball if removed player had it
+        const ball = phases[currentPhase].ball || {};
+        if (String(ball.carrier) === num) phases[currentPhase].ball.carrier = '';
+        if (String(ball.passTo) === num) phases[currentPhase].ball.passTo = '';
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        updateBallDropdowns();
+        drawField();
+        sel.value = '';
+        showSaved('Spieler ' + num + ' entfernt');
+    }
+
+    function setBallCarrier() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        if (!phases[currentPhase].ball) phases[currentPhase].ball = {};
+        phases[currentPhase].ball.carrier = document.getElementById('ball-carrier').value;
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        drawField();
+    }
+
+    function setPassTo() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        if (!phases[currentPhase].ball) phases[currentPhase].ball = {};
+        const passTo = document.getElementById('pass-to').value;
+        phases[currentPhase].ball.passTo = passTo;
+        // Auto-update next phase's carrier
+        if (passTo && currentPhase < phases.length - 1) {
+            if (!phases[currentPhase + 1].ball) phases[currentPhase + 1].ball = {};
+            phases[currentPhase + 1].ball.carrier = passTo;
+        }
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        drawField();
+    }
+
+    // --- PLAY CRUD ---
+    function updateStartBallOptions() {
+        const formation = document.getElementById('fp-formation').value;
+        const f = FORMATIONS[formation];
+        const nums = Object.keys(f.players).sort((a, b) => parseInt(a) - parseInt(b));
+        const def = f.ballCarrier || nums[0];
+        let html = '';
+        for (const n of nums) {
+            html += `<option value="${n}" ${n === def ? 'selected' : ''}>${n}</option>`;
+        }
+        document.getElementById('fp-ball').innerHTML = html;
+    }
+
+    function openPlayForm(id) {
+        editingPlayId = id || null;
+        if (id && plays[id]) {
+            document.getElementById('fp-name').value = plays[id].name;
+            document.getElementById('fp-category').value = plays[id].category || 'angriff';
+            document.getElementById('play-form-title').textContent = 'Spielzug umbenennen';
+            document.getElementById('fp-formation-group').style.display = 'none';
+            document.getElementById('fp-ball-group').style.display = 'none';
+        } else {
+            document.getElementById('fp-name').value = '';
+            document.getElementById('fp-category').value = 'angriff';
+            document.getElementById('fp-formation').value = 'offen';
+            document.getElementById('play-form-title').textContent = 'Spielzug erstellen';
+            document.getElementById('fp-formation-group').style.display = 'block';
+            document.getElementById('fp-ball-group').style.display = 'block';
+            updateStartBallOptions();
+        }
+        document.getElementById('play-modal').classList.add('open');
+    }
+
+    function closePlayForm() {
+        document.getElementById('play-modal').classList.remove('open');
+        editingPlayId = null;
+    }
+
+    function editPlayMeta(id) { openPlayForm(id); }
+
+    function savePlay() {
+        const name = document.getElementById('fp-name').value.trim();
+        const category = document.getElementById('fp-category').value;
+        if (!name) { alert('Name ist erforderlich.'); return; }
+
+        if (editingPlayId) {
+            plays[editingPlayId].name = name;
+            plays[editingPlayId].category = category;
+            db.ref('spielzuege/' + editingPlayId).update({ name, category });
+        } else {
+            const formation = document.getElementById('fp-formation').value;
+            const data = {
+                name, category,
+                phases: [{
+                    players: defaultPositions(formation),
+                    ball: { carrier: document.getElementById('fp-ball').value || defaultBallCarrier(formation), passTo: '' },
+                    notes: ''
+                }]
+            };
+            const ref = db.ref('spielzuege').push();
+            ref.set(data);
+            plays[ref.key] = data;
+            // Auto-select the new play
+            selectedPlayId = ref.key;
+        }
+        persist();
+        closePlayForm();
+        renderList();
+        if (selectedPlayId) {
+            currentPhase = 0;
+            animProgress = 0;
+            document.getElementById('canvas-section').classList.add('visible');
+            document.getElementById('canvas-title').textContent = plays[selectedPlayId].name;
+            updateBallDropdowns();
+            resizeCanvas();
+            drawField();
+            updatePhaseIndicator();
+            updateNotes();
+        }
+        showSaved();
+    }
+
+    function deletePlay(id) {
+        if (!confirm('Spielzug wirklich löschen?')) return;
+        db.ref('spielzuege/' + id).remove();
+        delete plays[id];
+        if (selectedPlayId === id) {
+            selectedPlayId = null;
+            document.getElementById('canvas-section').classList.remove('visible');
+        }
+        persist();
+        renderList();
+        showSaved('Gelöscht');
+    }
+
+    function persistPlay(id) {
+        db.ref('spielzuege/' + id).set(plays[id]);
+        persist();
+    }
+
+    function persist() {
+        localStorage.setItem('sgrhn_spielzuege', JSON.stringify(plays));
+    }
+
+    function showSaved(text) {
+        const ind = document.getElementById('save-indicator');
+        ind.textContent = text || 'Gespeichert';
+        ind.classList.add('show');
+        setTimeout(() => ind.classList.remove('show'), 2000);
+    }
+
+    // --- FILTER ---
+    document.getElementById('filter-row').addEventListener('click', e => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeFilter = btn.dataset.cat;
+        renderList();
+    });
+
+    // --- LOAD ---
+    function loadData() {
+        try {
+            const stored = localStorage.getItem('sgrhn_spielzuege');
+            if (stored) plays = JSON.parse(stored);
+        } catch(e) {}
+        renderList();
+
+        db.ref('spielzuege').on('value', snap => {
+            const data = snap.val();
+            if (data) {
+                plays = {};
+                for (const [key, val] of Object.entries(data)) {
+                    plays[key] = val;
+                    if (val.phases && !Array.isArray(val.phases)) {
+                        plays[key].phases = Object.values(val.phases);
+                        // Also normalize nested players objects
+                        for (const phase of plays[key].phases) {
+                            if (phase.players && Array.isArray(phase.players)) {
+                                // Convert array back to object with numeric keys
+                                const obj = {};
+                                phase.players.forEach((p, i) => { if (p) obj[i] = p; });
+                                phase.players = obj;
+                            }
+                        }
+                    }
+                }
+            } else {
+                plays = {};
+            }
+            persist();
+            renderList();
+            if (selectedPlayId && plays[selectedPlayId]) {
+                drawField();
+                updatePhaseIndicator();
+            }
+        });
+    }
+
+    // --- TRAINER PIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkTrainerAuth() {
+        const stored = localStorage.getItem('sgrhn_trainer_auth');
+        if (stored === await hashPw('7831')) enableTrainer();
+    }
+
+    function enableTrainer() {
+        trainerMode = true;
+        document.getElementById('main-content').classList.add('trainer-active');
+        document.getElementById('fab-add').style.display = 'flex';
+        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
+        document.getElementById('trainer-info').classList.add('unlocked');
+        document.getElementById('trainer-btn').textContent = 'Entsperrt';
+        document.getElementById('trainer-btn').classList.remove('locked');
+        document.getElementById('trainer-btn').disabled = true;
+        document.getElementById('trainer-btn').style.opacity = '0.6';
+        document.getElementById('trainer-btn').style.cursor = 'default';
+        renderList();
+    }
+
+    async function promptTrainerPIN() {
+        const pin = prompt('Trainer-PIN eingeben:');
+        if (pin === null) return;
+        if (await hashPw(pin) === await hashPw('7831')) {
+            localStorage.setItem('sgrhn_trainer_auth', await hashPw('7831'));
+            enableTrainer();
+        } else {
+            alert('Falscher PIN.');
+        }
+    }
+
+    // --- LOGIN ---
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        firebase.auth().signInAnonymously().then(() => {
+            loadData();
+            checkTrainerAuth();
+        }).catch(err => {
+            console.warn('Firebase Auth failed, loading from localStorage', err);
+            loadData();
+            checkTrainerAuth();
+        });
+    }
+
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (!stored) return;
+        if (stored === await hashPw('RatPack#26')) unlock();
+        else localStorage.removeItem('sgrhn_rat_auth');
+    }
+
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        if (await hashPw(pw) === await hashPw('RatPack#26')) {
+            localStorage.setItem('sgrhn_rat_auth', await hashPw('RatPack#26'));
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    // Resize
+    window.addEventListener('resize', () => { if (selectedPlayId) resizeCanvas(); });
+
+    // Close modals
+    document.getElementById('play-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closePlayForm(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closePlayForm();
+        if (!selectedPlayId) return;
+        if (e.key === 'ArrowLeft') prevPhase();
+        if (e.key === 'ArrowRight') nextPhase();
+        if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+    });
+
+    checkLogin();
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rugby Team Hub — Projektplan</title>
+<style>
+    @media print {
+        body { background: #fff !important; color: #1a1a1a !important; }
+        .no-print { display: none !important; }
+        .page-break { page-break-before: always; }
+        section { break-inside: avoid; }
+        table { font-size: 11px; }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0f1923;
+        color: #e0e6ed;
+        line-height: 1.6;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 32px;
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        margin-bottom: 48px;
+        padding-bottom: 32px;
+        border-bottom: 2px solid #2ecc71;
+    }
+    .header h1 {
+        font-size: 2.2em;
+        color: #fff;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+    .header .subtitle {
+        font-size: 1.1em;
+        color: #8899aa;
+    }
+    .header .date {
+        margin-top: 12px;
+        font-size: 0.9em;
+        color: #5a7a8a;
+    }
+
+    /* Sections */
+    section {
+        margin-bottom: 40px;
+    }
+    h2 {
+        font-size: 1.4em;
+        color: #2ecc71;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(46,204,113,0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    h2 .icon { font-size: 1.2em; }
+    h3 {
+        font-size: 1.1em;
+        color: #4a9eff;
+        margin: 20px 0 10px;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        font-size: 0.95em;
+    }
+    th {
+        background: rgba(46,204,113,0.12);
+        color: #2ecc71;
+        padding: 10px 14px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    td {
+        padding: 10px 14px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    tr:hover td {
+        background: rgba(255,255,255,0.03);
+    }
+
+    /* Status badges */
+    .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+    }
+    .badge-done {
+        background: rgba(46,204,113,0.15);
+        color: #2ecc71;
+    }
+    .badge-open {
+        background: rgba(232,160,32,0.15);
+        color: #e8a020;
+    }
+    .badge-idea {
+        background: rgba(74,158,255,0.15);
+        color: #4a9eff;
+    }
+
+    /* Cards */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+        margin: 12px 0;
+    }
+    .card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px;
+        padding: 18px;
+    }
+    .card h4 {
+        color: #fff;
+        font-size: 1em;
+        margin-bottom: 6px;
+    }
+    .card p {
+        color: #8899aa;
+        font-size: 0.88em;
+        line-height: 1.5;
+    }
+    .card .file {
+        font-family: 'SF Mono', Monaco, monospace;
+        font-size: 0.78em;
+        color: #5a7a8a;
+        margin-top: 8px;
+    }
+
+    /* Changelog */
+    .changelog-item {
+        display: flex;
+        gap: 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .changelog-date {
+        flex-shrink: 0;
+        font-family: 'SF Mono', Monaco, monospace;
+        font-size: 0.85em;
+        color: #2ecc71;
+        width: 90px;
+    }
+    .changelog-text {
+        color: #c0cad6;
+        font-size: 0.92em;
+    }
+
+    /* Backlog items */
+    .backlog-item {
+        background: rgba(255,255,255,0.03);
+        border-left: 3px solid #4a9eff;
+        padding: 14px 18px;
+        margin: 10px 0;
+        border-radius: 0 8px 8px 0;
+    }
+    .backlog-item h4 {
+        color: #fff;
+        font-size: 0.95em;
+        margin-bottom: 6px;
+    }
+    .backlog-item ul {
+        list-style: none;
+        padding: 0;
+    }
+    .backlog-item li {
+        color: #8899aa;
+        font-size: 0.88em;
+        padding: 2px 0;
+    }
+    .backlog-item li::before {
+        content: '→ ';
+        color: #4a9eff;
+    }
+
+    /* Tech section */
+    .tech-box {
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin: 10px 0;
+        font-family: 'SF Mono', Monaco, monospace;
+        font-size: 0.85em;
+        color: #8899aa;
+        white-space: pre-wrap;
+        line-height: 1.7;
+    }
+
+    /* Print button */
+    .print-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #2ecc71;
+        color: #000;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 16px rgba(46,204,113,0.3);
+        z-index: 100;
+    }
+    .print-btn:hover { background: #27ae60; }
+
+    /* Zugang box */
+    .zugang-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 12px 0;
+    }
+    .zugang-item {
+        background: rgba(255,255,255,0.04);
+        border-radius: 8px;
+        padding: 14px;
+        text-align: center;
+    }
+    .zugang-item .label {
+        font-size: 0.78em;
+        color: #5a7a8a;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .zugang-item .value {
+        font-family: 'SF Mono', Monaco, monospace;
+        font-size: 1.1em;
+        color: #fff;
+        margin-top: 4px;
+    }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">Als PDF speichern</button>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Rugby Team Hub</h1>
+        <div class="subtitle">Projektplan & Fortschritt</div>
+        <div class="date">Stand: 23. Februar 2026</div>
+    </div>
+
+    <!-- ZUGANG -->
+    <section>
+        <h2><span class="icon">🔐</span> Zugang</h2>
+        <div class="zugang-grid">
+            <div class="zugang-item">
+                <div class="label">Team-Login</div>
+                <div class="value">RatPack#26</div>
+            </div>
+            <div class="zugang-item">
+                <div class="label">Trainer-PIN</div>
+                <div class="value">7831</div>
+            </div>
+            <div class="zugang-item">
+                <div class="label">Trainingsplan</div>
+                <div class="value">Nur Trainer</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEITEN -->
+    <section>
+        <h2><span class="icon">📄</span> Seiten-Übersicht</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h4>Startseite</h4>
+                <p>News & Navigation zum gesamten Team Hub</p>
+                <div class="file">index.html</div>
+            </div>
+            <div class="card">
+                <h4>Kader</h4>
+                <p>Spielerliste mit Fotos und Positionen</p>
+                <div class="file">kader.html</div>
+            </div>
+            <div class="card">
+                <h4>Aufstellung</h4>
+                <p>Drag & Drop Aufstellung für Spieltage</p>
+                <div class="file">aufstellung.html</div>
+            </div>
+            <div class="card">
+                <h4>Mannschaftsrat</h4>
+                <p>Abstimmungen im Team</p>
+                <div class="file">mannschaftsrat.html</div>
+            </div>
+            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+                <h4>Spielzüge</h4>
+                <p>Animierte Spielzug-Visualisierung auf Canvas mit Phasen, Pass-Animation und Drag & Drop Editor</p>
+                <div class="file">spielzuege.html</div>
+            </div>
+            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+                <h4>Trainingsplan</h4>
+                <p>Trainingsplanung mit Zeitblöcken, Timeline und Druckansicht. Nur für den Trainer sichtbar.</p>
+                <div class="file">trainingsplan.html</div>
+            </div>
+            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+                <h4>Videos</h4>
+                <p>Video-Bibliothek mit YouTube, Vimeo & Loom Einbettung</p>
+                <div class="file">videos.html</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORTSCHRITT -->
+    <section>
+        <h2><span class="icon">✅</span> Fortschritt</h2>
+        <table>
+            <thead>
+                <tr><th>Aufgabe</th><th>Status</th><th>Datum</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Navigation in allen bestehenden Seiten updaten</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>videos.html — Video-Bibliothek</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>trainingsplan.html — Trainingsplanung</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>spielzuege.html — Spielzug-Visualisierung</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>Trainingsplan nur für Trainer sichtbar</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>Cross-References zwischen Seiten</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>Formationen & Ball-Carrier-Auswahl</td><td><span class="badge badge-done">Fertig</span></td><td>22.02.</td></tr>
+                <tr><td>Pass-Animation (gerade Linie, rückwärts)</td><td><span class="badge badge-done">Fertig</span></td><td>23.02.</td></tr>
+                <tr><td>Nahtlose Phasen-Übergänge</td><td><span class="badge badge-done">Fertig</span></td><td>23.02.</td></tr>
+                <tr><td>Weitere Startformationen (Viererraute, 22er Ports)</td><td><span class="badge badge-open">Offen</span></td><td>—</td></tr>
+                <tr><td>SpielerPlus-Integration (Anwesenheit/Statistiken)</td><td><span class="badge badge-open">Offen</span></td><td>—</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- CHANGELOG -->
+    <section>
+        <h2><span class="icon">📝</span> Changelog</h2>
+        <div class="changelog-item">
+            <div class="changelog-date">23.02.2026</div>
+            <div class="changelog-text">Nahtlose Phasen-Übergänge: Überschuss wird mitgenommen, lineare Spielerbewegung</div>
+        </div>
+        <div class="changelog-item">
+            <div class="changelog-date">23.02.2026</div>
+            <div class="changelog-text">Pass-Animation: Ball fliegt als gerade Linie rückwärts (Rugby-Regel), Abwurf bei 15% / Fang bei 55%</div>
+        </div>
+        <div class="changelog-item">
+            <div class="changelog-date">22.02.2026</div>
+            <div class="changelog-text">Spielzüge: Gedränge-Formation korrigiert, Ball-Icon, 5 Startformationen, Spieler hinzufügen/entfernen</div>
+        </div>
+        <div class="changelog-item">
+            <div class="changelog-date">22.02.2026</div>
+            <div class="changelog-text">Cross-References: Trainingsplan-Blöcke verknüpfen Spielzüge & Videos</div>
+        </div>
+        <div class="changelog-item">
+            <div class="changelog-date">22.02.2026</div>
+            <div class="changelog-text">Trainingsplan hinter Trainer-PIN-Gate (nur Steffen sieht die Seite)</div>
+        </div>
+        <div class="changelog-item">
+            <div class="changelog-date">22.02.2026</div>
+            <div class="changelog-text">Alle 3 Playbook-Seiten erstellt, Navigation in allen bestehenden Seiten ergänzt</div>
+        </div>
+    </section>
+
+    <!-- BACKLOG -->
+    <section class="page-break">
+        <h2><span class="icon">💡</span> Offene Ideen / Backlog</h2>
+
+        <div class="backlog-item">
+            <h4>Weitere Startformationen</h4>
+            <ul>
+                <li>Viererraute (Diamond): 4 Spieler in Rautenformation</li>
+                <li>22er Ports mit Viererraute und Dreier-Position</li>
+                <li>Formationen per Spracheingabe beschreiben</li>
+            </ul>
+        </div>
+
+        <div class="backlog-item" style="border-left-color: #e8a020;">
+            <h4>SpielerPlus-Integration — Trainingsbeteiligung</h4>
+            <ul>
+                <li>Screenshots von SpielerPlus auswerten</li>
+                <li>Pro Spieler: Trainingseinheiten (anwesend/gesamt) + Quote in %</li>
+                <li>Pro Spieler: Spiele (anwesend/gesamt) + Quote in %</li>
+                <li>Übersicht als Tabelle/Ranking im Team Hub</li>
+                <li>Historischer Verlauf über die Saison</li>
+            </ul>
+        </div>
+
+        <div class="backlog-item" style="border-left-color: #2ecc71;">
+            <h4>Playbook-Erweiterungen</h4>
+            <ul>
+                <li>Gegnerische Spieler (andere Farbe) für Verteidigungsszenarien</li>
+                <li>Kick-Visualisierung (hohe Bälle, Grubber)</li>
+                <li>Export als GIF/Video für WhatsApp-Gruppe</li>
+                <li>Spielzug-Vorlagen zum Kopieren/Anpassen</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- TECHNIK -->
+    <section>
+        <h2><span class="icon">⚙️</span> Technische Architektur</h2>
+
+        <h3>Stack</h3>
+        <div class="tech-box">Standalone HTML + Inline CSS/JS (kein Build-Tool)
+Firebase Compat SDK v10.14.1 (Realtime Database)
+Anonymous Auth nach Team-Login
+LocalStorage als Offline-Fallback
+Dark Theme mit CSS Custom Properties
+Responsive (Mobile + Desktop)</div>
+
+        <h3>Firebase Datenbank-Struktur</h3>
+        <div class="tech-box">rugby-team-hub/
+├── videos/
+│   └── {id}/ → title, url, platform, category, description, createdAt
+├── trainingsplaene/
+│   └── {id}/ → date, startTime, duration, location
+│       └── blocks/ → {index}/ { name, type, duration, description, playRef?, videoRef? }
+├── spielzuege/
+│   └── {id}/ → name, category
+│       └── phases/ → {index}/ { players: {nr: {x,y}}, ball: {carrier, passTo}, notes }
+└── trainingsbeteiligung/  (geplant)
+    └── {spielerId}/ → trainings, spiele, quoten</div>
+
+        <h3>Spielzug-Animation</h3>
+        <div class="tech-box">Koordinaten: Normalisiert (0.0–1.0) für Auflösungsunabhängigkeit
+Rendering:  requestAnimationFrame + lineare Interpolation
+Input:      Pointer Events API (Touch + Mouse unified)
+Canvas:     devicePixelRatio-Skalierung für Retina
+Pass:       Gerade Linie, Abwurf bei 15%, Fang bei 55% der Phase
+Bewegung:   Spieler laufen durchgängig (0%→100%), nahtlose Übergänge
+Formationen: Offen, Scrum, Lineout, Backs, Forwards (+ weitere geplant)</div>
+    </section>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übungen — SG Rugbyunion Hohen Neuendorf</title>
+    <style>
+        :root {
+            --green: #1b8a3e; --green-dark: #145a2a;
+            --blue: #1a5fb4; --blue-dark: #0f3d7a;
+            --primary: #152030; --primary-light: #1c3048;
+            --accent: #2ecc71; --accent-blue: #4a9eff;
+            --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
+            --text: #e8ecf0; --text-muted: #7a90a8;
+            --danger: #e04040; --warning: #e8a020; --success: #40c060;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+
+        /* LOGIN */
+        .login-gate { position: fixed; inset: 0; z-index: 1000; background: var(--bg); display: flex; align-items: center; justify-content: center; }
+        .login-gate.hidden { display: none; }
+        .login-box { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center; }
+        .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .club-green { color: var(--accent); }
+        .club-x { margin: 0 0.3rem; }
+        .club-blue { color: var(--accent-blue); }
+        .login-input { width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: var(--primary); color: var(--text); font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center; }
+        .login-input:focus { border-color: var(--accent); }
+        .login-input::placeholder { color: var(--text-muted); }
+        .login-btn { width: 100%; padding: 0.8rem; border: none; border-radius: 8px; background: linear-gradient(135deg, var(--green), var(--blue)); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .login-btn:hover { opacity: 0.9; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+
+        /* NAV */
+        .topnav { position: sticky; top: 0; z-index: 100; background: rgba(12,20,32,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 0.5rem 1rem; display: none; }
+        .topnav.visible { display: flex; }
+        .topnav-inner { display: flex; gap: 0.3rem; align-items: center; max-width: 1100px; margin: 0 auto; width: 100%; overflow-x: auto; }
+        .topnav a { color: var(--text-muted); text-decoration: none; font-size: 0.75rem; font-weight: 600; padding: 0.4rem 0.7rem; border-radius: 6px; white-space: nowrap; transition: all 0.2s; }
+        .topnav a:hover, .topnav a.active { color: var(--text); background: rgba(255,255,255,0.08); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* HEADER */
+        .page-header { background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%); padding: 1.2rem 1rem; text-align: center; border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1; }
+        .page-header h1 { font-size: 1.5rem; font-weight: 800; }
+        .page-header .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+        /* CONTAINER */
+        .container { max-width: 900px; margin: 0 auto; padding: 1.2rem; }
+
+        /* TRAINER BAR */
+        .trainer-bar { background: linear-gradient(135deg, rgba(27,138,62,0.15), rgba(26,95,180,0.15)); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.7rem 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap; }
+        .trainer-info { font-size: 0.82rem; color: var(--text-muted); }
+        .trainer-info.unlocked { color: var(--accent); }
+        .trainer-btn { padding: 0.45rem 1rem; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; background: var(--primary-light); color: var(--text); font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .trainer-btn:hover { background: var(--green-dark); border-color: var(--accent); }
+        .trainer-btn.locked { background: linear-gradient(135deg, var(--green), var(--blue)); border: none; color: white; }
+
+        /* CATEGORY FILTER */
+        .cat-filter { display: flex; gap: 0.4rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.3rem; }
+        .cat-pill { padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
+        .cat-pill:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+        .cat-pill.active { color: #fff; border-color: transparent; }
+
+        /* DRILL LIST */
+        .drill-list { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.3rem; }
+        .drill-pill { padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
+        .drill-pill:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+        .drill-pill.active { background: var(--primary-light); color: var(--text); border-color: var(--accent); }
+        .drill-cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
+
+        /* CANVAS */
+        .canvas-wrap { position: relative; margin-bottom: 0.5rem; }
+        #drill-canvas { width: 100%; display: block; border-radius: 10px; touch-action: none; cursor: default; }
+        #drill-canvas.editing { cursor: grab; }
+
+        /* LEGEND */
+        .legend { display: flex; gap: 1rem; flex-wrap: wrap; padding: 0.5rem 0.8rem; background: var(--bg-card); border-radius: 8px; margin-bottom: 1rem; font-size: 0.75rem; color: var(--text-muted); }
+        .legend-item { display: flex; align-items: center; gap: 0.3rem; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .legend-dash { width: 18px; height: 0; border-top: 2px dashed rgba(232,160,32,0.7); flex-shrink: 0; }
+        .legend-zone { width: 14px; height: 3px; background: rgba(255,160,160,0.6); border-radius: 2px; flex-shrink: 0; }
+
+        /* EDIT BAR */
+        .edit-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; padding: 0.6rem; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; }
+        .edit-bar button { padding: 0.4rem 0.8rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; background: var(--primary-light); color: var(--text); font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+        .edit-bar button:hover { background: var(--bg-card-hover); }
+        .edit-bar button.primary { background: linear-gradient(135deg, var(--green), var(--blue)); border: none; color: white; }
+        .edit-bar button.danger { color: var(--danger); border-color: var(--danger); }
+        .edit-bar .spacer { flex: 1; }
+
+        /* DRILL INFO */
+        .drill-info { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.2rem; }
+        .drill-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .drill-cat-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; }
+        .drill-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
+        .drill-rules-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); }
+        .drill-rules { list-style: none; }
+        .drill-rules li { position: relative; padding-left: 1.2rem; margin-bottom: 0.4rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; }
+        .drill-rules li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+        .drill-rules li.warning { color: var(--danger); }
+        .drill-rules li.warning::before { background: var(--danger); }
+        .trainer-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
+        .trainer-actions button { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.12); background: var(--primary-light); color: var(--text); }
+        .trainer-actions button:hover { background: var(--bg-card-hover); }
+        .trainer-actions button.danger { color: var(--danger); border-color: rgba(224,64,64,0.3); }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        .empty-state p { font-size: 0.95rem; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
+        .modal { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; width: min(92vw, 440px); max-height: 85vh; overflow-y: auto; }
+        .modal h3 { font-size: 1.1rem; margin-bottom: 1rem; }
+        .modal label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; margin-top: 0.8rem; }
+        .modal input, .modal select, .modal textarea { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: var(--primary); color: var(--text); font-size: 0.9rem; outline: none; font-family: inherit; }
+        .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); }
+        .modal textarea { min-height: 80px; resize: vertical; }
+        .modal-btns { display: flex; gap: 0.5rem; margin-top: 1.2rem; justify-content: flex-end; }
+        .modal-btns button { padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; }
+        .modal-btns .cancel { background: var(--primary-light); color: var(--text-muted); }
+        .modal-btns .save { background: linear-gradient(135deg, var(--green), var(--blue)); color: white; }
+
+        @media (max-width: 600px) {
+            .container { padding: 0.8rem; }
+            .page-header h1 { font-size: 1.2rem; }
+            .trainer-bar { font-size: 0.78rem; }
+            .drill-info { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN GATE -->
+    <div class="login-gate" id="login-gate">
+        <div class="login-box">
+            <h2>Team Hub</h2>
+            <div class="login-clubs">
+                <span class="club-green">RU Hohen Neuendorf</span>
+                <span class="club-x">&times;</span>
+                <span class="club-blue">Stahl Hennigsdorf</span>
+            </div>
+            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <button class="login-btn" id="login-btn">Anmelden</button>
+            <div class="login-error" id="login-error">Falsches Passwort</div>
+        </div>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav app-content" id="topnav">
+        <div class="topnav-inner">
+            <a href="index.html">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+            <a href="mannschaftsrat.html">Mannschaftsrat</a>
+            <span class="nav-sep">|</span>
+            <a href="spielzuege.html">Spielzüge</a>
+            <a href="uebungen.html" class="active">Übungen</a>
+            <a href="trainingsplan.html">Training</a>
+            <a href="videos.html">Videos</a>
+            <span class="nav-sep">|</span>
+            <a href="trainingsbeteiligung.html">Beteiligung</a>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="app-content" id="main-content">
+        <header class="page-header">
+            <h1>Übungen</h1>
+            <p class="subtitle">Drills & Warm-Up Bibliothek</p>
+        </header>
+
+        <div class="container">
+            <!-- Trainer Bar -->
+            <div class="trainer-bar" id="trainer-bar" style="display:none">
+                <span class="trainer-info" id="trainer-info">Spieler-Ansicht</span>
+                <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="cat-filter" id="cat-filter"></div>
+
+            <!-- Drill List -->
+            <div class="drill-list" id="drill-list"></div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state" style="display:none">
+                <div class="icon">&#9917;</div>
+                <p>Noch keine Übungen vorhanden.</p>
+            </div>
+
+            <!-- Drill Detail -->
+            <div id="drill-detail" style="display:none">
+                <div class="canvas-wrap" id="canvas-wrap">
+                    <canvas id="drill-canvas"></canvas>
+                </div>
+                <div class="legend" id="legend"></div>
+                <div class="edit-bar" id="edit-bar" style="display:none"></div>
+                <div class="drill-info" id="drill-info"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="drill-modal" style="display:none">
+        <div class="modal">
+            <h3 id="modal-title">Neue Übung</h3>
+            <label>Name</label>
+            <input type="text" id="m-name" placeholder="z.B. Ball-Klau">
+            <label>Kategorie</label>
+            <select id="m-cat">
+                <option value="warm-up">Warm-Up</option>
+                <option value="handling">Handling</option>
+                <option value="kontakt">Kontakt</option>
+                <option value="fitness">Fitness</option>
+                <option value="taktik">Taktik</option>
+                <option value="kondition">Kondition</option>
+            </select>
+            <label>Beschreibung</label>
+            <textarea id="m-desc" placeholder="Kurze Beschreibung der Übung"></textarea>
+            <label>Regeln (eine pro Zeile)</label>
+            <textarea id="m-rules" rows="5" placeholder="Regel 1&#10;Regel 2&#10;..."></textarea>
+            <div class="modal-btns">
+                <button class="cancel" onclick="closeModal()">Abbrechen</button>
+                <button class="save" onclick="saveModal()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script>
+    // ===== STATE =====
+    let drills = {};
+    let selectedId = null;
+    let trainerMode = false;
+    let editMode = false;
+    let dragging = null; // {type:'player'|'cone', team, index}
+    let activeCat = 'alle';
+    let modalMode = null; // 'add' | 'edit'
+
+    const CATS = {
+        'warm-up':   { label: 'Warm-Up',   color: '#e8a020' },
+        'handling':  { label: 'Handling',   color: '#2ecc71' },
+        'kontakt':   { label: 'Kontakt',    color: '#e04040' },
+        'fitness':   { label: 'Fitness',    color: '#9b59b6' },
+        'taktik':    { label: 'Taktik',     color: '#4a9eff' },
+        'kondition': { label: 'Kondition',  color: '#e67e22' }
+    };
+
+    // ===== CANVAS =====
+    const canvas = document.getElementById('drill-canvas');
+    const ctx = canvas.getContext('2d');
+    let W = 800, H = 560;
+    const PAD = 0.09;
+    let fX, fY, fW, fH;
+
+    function resizeCanvas() {
+        const wrap = document.getElementById('canvas-wrap');
+        const w = wrap.clientWidth;
+        const h = Math.round(w * 0.68);
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        W = w; H = h;
+        fX = W * PAD; fY = H * PAD;
+        fW = W * (1 - 2 * PAD); fH = H * (1 - 2 * PAD);
+        if (selectedId && drills[selectedId]) drawDrill(drills[selectedId]);
+    }
+
+    function fx(n) { return fX + n * fW; }
+    function fy(n) { return fY + n * fH; }
+    function toNX(px) { return (px - fX) / fW; }
+    function toNY(py) { return (py - fY) / fH; }
+
+    // ===== FIREBASE =====
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+    firebase.auth().signInAnonymously().catch(e => console.error('Auth:', e));
+
+    // ===== AUTH =====
+    async function hashPw(pw) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        if (await hashPw(pw) === await hashPw('RatPack#26')) {
+            localStorage.setItem('sgrhn_rat_auth', await hashPw(pw));
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+    async function checkLogin() {
+        const s = localStorage.getItem('sgrhn_rat_auth');
+        if (s && s === await hashPw('RatPack#26')) unlock();
+    }
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.getElementById('topnav').classList.add('visible');
+        document.getElementById('main-content').classList.add('visible');
+        document.getElementById('trainer-bar').style.display = 'flex';
+        checkTrainerAuth();
+        loadDrills();
+        resizeCanvas();
+    }
+    async function checkTrainerAuth() {
+        const s = localStorage.getItem('sgrhn_trainer_auth');
+        if (s && s === await hashPw('7831')) enableTrainer();
+    }
+    async function promptTrainerPIN() {
+        const pin = prompt('Trainer-PIN eingeben:');
+        if (pin === null) return;
+        if (await hashPw(pin) === await hashPw('7831')) {
+            localStorage.setItem('sgrhn_trainer_auth', await hashPw('7831'));
+            enableTrainer();
+        } else { alert('Falscher PIN.'); }
+    }
+    function enableTrainer() {
+        trainerMode = true;
+        document.getElementById('trainer-info').textContent = 'Trainer-Modus aktiv';
+        document.getElementById('trainer-info').classList.add('unlocked');
+        const btn = document.getElementById('trainer-btn');
+        btn.textContent = 'Neue Übung';
+        btn.classList.remove('locked');
+        btn.onclick = () => openModal('add');
+        renderUI();
+    }
+
+    // ===== SEED DATA =====
+    const SEED_DRILL = {
+        name: 'Ball-Klau',
+        category: 'warm-up',
+        description: 'Zwei Teams stehen in einem durch 4 Kegel markierten Feld. Das Angriffsteam passt sich den Ball zu, während das Verteidigungsteam versucht, den Ball abzufangen. Intensives Warm-Up für Passspiel, Reaktion und Kommunikation.',
+        rules: [
+            'Zwei Teams spielen gegeneinander im markierten Feld',
+            'Das Angriffsteam passt sich den Ball untereinander zu',
+            'Das Verteidigungsteam versucht den Ball abzufangen',
+            'NICHT zwischen Sperrzone und Kegel hindurchlaufen um den Ball zu blocken',
+            'Abfangen nur im offenen Feld erlaubt — vor der Sperrzone',
+            'Nach Ballgewinn tauschen die Teams die Rollen'
+        ],
+        setup: {
+            cones: [
+                { x: 0.0, y: 0.0 }, { x: 1.0, y: 0.0 },
+                { x: 0.0, y: 1.0 }, { x: 1.0, y: 1.0 }
+            ],
+            zones: [
+                { x1: -0.10, y1: 0.18, x2: 0.18, y2: -0.10 },
+                { x1: 0.82, y1: -0.10, x2: 1.10, y2: 0.18 },
+                { x1: -0.10, y1: 0.82, x2: 0.18, y2: 1.10 },
+                { x1: 0.82, y1: 1.10, x2: 1.10, y2: 0.82 }
+            ],
+            teams: {
+                a: {
+                    label: 'Angriff', color: '#9b59b6',
+                    players: [
+                        { x: 0.15, y: 0.78 }, { x: 0.30, y: 0.42 },
+                        { x: 0.50, y: 0.55 }, { x: 0.40, y: 0.25 },
+                        { x: 0.70, y: 0.35 }, { x: 0.22, y: 0.58 },
+                        { x: 0.62, y: 0.68 }, { x: 0.78, y: 0.52 }
+                    ]
+                },
+                b: {
+                    label: 'Verteidigung', color: '#3498db',
+                    players: [
+                        { x: 0.55, y: 0.42 }, { x: 0.45, y: 0.65 },
+                        { x: 0.65, y: 0.55 }, { x: 0.35, y: 0.60 },
+                        { x: 0.60, y: 0.75 }, { x: 0.28, y: 0.32 },
+                        { x: 0.72, y: 0.22 }, { x: 0.48, y: 0.48 }
+                    ]
+                }
+            },
+            ball: { team: 'a', playerIndex: 0 },
+            passLines: [
+                { x1: 0.15, y1: 0.78, x2: 0.35, y2: 0.52, dashed: true }
+            ]
+        },
+        animated: false,
+        createdAt: Date.now()
+    };
+
+    // ===== DATA =====
+    function loadDrills() {
+        // 1. Sofort aus Cache laden
+        const cached = localStorage.getItem('uebungen_fallback');
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                // Pruefen ob Cache veraltete Daten hat (keine zones)
+                const hasZones = Object.values(parsed).some(d => d.setup && d.setup.zones);
+                if (hasZones) drills = parsed;
+            } catch(e) {}
+        }
+        // 2. Falls leer oder veraltet: Seed-Daten sofort anzeigen
+        if (Object.keys(drills).length === 0) {
+            drills['local-seed'] = SEED_DRILL;
+        }
+        // 3. Sofort rendern (kein Warten auf Firebase)
+        renderUI();
+
+        // 4. Firebase-Sync im Hintergrund
+        db.ref('/uebungen').on('value', snap => {
+            const data = snap.val();
+            if (data && Object.keys(data).length > 0) {
+                drills = data;
+                localStorage.setItem('uebungen_fallback', JSON.stringify(drills));
+                renderUI();
+            } else {
+                // Seed in Firebase schreiben
+                const ref = db.ref('/uebungen').push();
+                ref.set(SEED_DRILL);
+            }
+        });
+    }
+
+    function persistDrill(id) {
+        db.ref('/uebungen/' + id).set(drills[id]).catch(e => console.error('Save:', e));
+    }
+
+    // Firebase gibt Arrays manchmal als Objekte zurueck
+    function toArr(v) { return Array.isArray(v) ? v : (v ? Object.values(v) : []); }
+
+    // ===== DRAWING =====
+    function drawRugbyBall(cx, cy, size, angle, color) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(angle);
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.beginPath();
+        ctx.ellipse(1, 1, size, size * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Ball body
+        ctx.fillStyle = color || '#c0392b';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, size, size * 0.55, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // Seam
+        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(-size * 0.55, 0);
+        ctx.lineTo(size * 0.55, 0);
+        ctx.stroke();
+        // Cross stitches
+        const st = size * 0.12;
+        for (let i = -2; i <= 2; i++) {
+            const sx = i * size * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(sx, -st); ctx.lineTo(sx, st);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function drawDrill(drill) {
+        if (!drill || !drill.setup) { ctx.clearRect(0, 0, W, H); return; }
+        const s = drill.setup;
+
+        // Background
+        ctx.fillStyle = '#0d1a12';
+        ctx.fillRect(0, 0, W, H);
+
+        // Field
+        ctx.fillStyle = '#1a3825';
+        ctx.fillRect(fX, fY, fW, fH);
+
+        // Field grass texture
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < fH; i += 12) {
+            ctx.beginPath(); ctx.moveTo(fX, fY + i); ctx.lineTo(fX + fW, fY + i); ctx.stroke();
+        }
+
+        // Field border
+        ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 6]);
+        ctx.strokeRect(fX, fY, fW, fH);
+        ctx.setLineDash([]);
+
+        // Exclusion zones (eigene Linien)
+        if (s.zones) drawZones(toArr(s.zones));
+
+        // Pass lines (behind players)
+        if (s.passLines) drawPassLines(toArr(s.passLines));
+
+        // Cones with rugby balls
+        if (s.cones) drawCones(toArr(s.cones));
+
+        // Players
+        if (s.teams) drawPlayers(s.teams, s.ball);
+    }
+
+    function drawZones(zones) {
+        zones.forEach((z, i) => {
+            const px1 = fx(z.x1), py1 = fy(z.y1);
+            const px2 = fx(z.x2), py2 = fy(z.y2);
+
+            // Glow/fill behind the line
+            ctx.strokeStyle = 'rgba(255, 120, 120, 0.2)';
+            ctx.lineWidth = Math.max(12, W * 0.018);
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
+
+            // Main line
+            ctx.strokeStyle = 'rgba(255, 140, 140, 0.7)';
+            ctx.lineWidth = Math.max(4, W * 0.006);
+            ctx.lineCap = 'round';
+            ctx.beginPath(); ctx.moveTo(px1, py1); ctx.lineTo(px2, py2); ctx.stroke();
+
+            // Edit mode: endpoints
+            if (editMode) {
+                const hr = 5;
+                ctx.fillStyle = 'rgba(255, 140, 140, 0.9)';
+                ctx.beginPath(); ctx.arc(px1, py1, hr, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(px2, py2, hr, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+    }
+
+    function drawCones(cones) {
+        const r = Math.max(13, Math.min(20, W / 38));
+        const ballSize = r * 0.5;
+        cones.forEach(c => {
+            const px = fx(c.x), py = fy(c.y);
+            // Shadow
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.beginPath(); ctx.arc(px + 1, py + 1, r, 0, Math.PI * 2); ctx.fill();
+            // Cone body
+            ctx.fillStyle = '#1a5fb4';
+            ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            // Rugby ball on top
+            drawRugbyBall(px, py, ballSize, Math.PI * 0.25, '#c0392b');
+        });
+    }
+
+    function drawPlayers(teams, ball) {
+        const r = Math.max(10, Math.min(15, W / 48));
+        Object.entries(teams).forEach(([key, team]) => {
+            toArr(team.players).forEach((p, i) => {
+                const px = fx(p.x), py = fy(p.y);
+                const isBall = ball && ball.team === key && ball.playerIndex === i;
+                // Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                ctx.beginPath(); ctx.arc(px + 1, py + 1, r, 0, Math.PI * 2); ctx.fill();
+                // Circle
+                ctx.fillStyle = isBall ? '#e8a020' : team.color;
+                ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = isBall ? '#fff' : 'rgba(255,255,255,0.45)';
+                ctx.lineWidth = isBall ? 2.5 : 1.5;
+                ctx.stroke();
+                // Rugby ball neben Balltraeger
+                if (isBall) {
+                    drawRugbyBall(px + r * 1.1, py - r * 0.6, r * 0.5, Math.PI * 0.2, '#c0392b');
+                }
+                // Edit mode: dashed ring
+                if (editMode) {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath(); ctx.arc(px, py, r + 4, 0, Math.PI * 2); ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            });
+        });
+    }
+
+    function drawPassLines(lines) {
+        lines.forEach((l, i) => {
+            const x1 = fx(l.x1), y1 = fy(l.y1), x2 = fx(l.x2), y2 = fy(l.y2);
+            ctx.strokeStyle = 'rgba(232, 160, 32, 0.5)';
+            ctx.lineWidth = 2;
+            if (l.dashed) ctx.setLineDash([8, 5]);
+            ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            ctx.setLineDash([]);
+            // Arrow
+            const a = Math.atan2(y2 - y1, x2 - x1);
+            const al = 12;
+            ctx.fillStyle = 'rgba(232, 160, 32, 0.7)';
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - al * Math.cos(a - 0.4), y2 - al * Math.sin(a - 0.4));
+            ctx.lineTo(x2 - al * Math.cos(a + 0.4), y2 - al * Math.sin(a + 0.4));
+            ctx.closePath(); ctx.fill();
+            // Edit mode: draggable endpoints
+            if (editMode) {
+                const hr = 5;
+                ctx.fillStyle = 'rgba(232, 160, 32, 0.8)';
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.arc(x1, y1, hr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+                ctx.beginPath(); ctx.arc(x2, y2, hr, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            }
+        });
+    }
+
+    // ===== CANVAS INTERACTION =====
+    canvas.addEventListener('pointerdown', e => {
+        if (!editMode || !selectedId) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = toNX(e.clientX - rect.left);
+        const my = toNY(e.clientY - rect.top);
+        const s = drills[selectedId].setup;
+        const hitR = 0.05;
+
+        // Check pass line endpoints first (small targets)
+        const pLines = toArr(s.passLines);
+        for (let i = 0; i < pLines.length; i++) {
+            const l = pLines[i];
+            if (Math.hypot(l.x2 - mx, l.y2 - my) < hitR) {
+                dragging = { type: 'passline-end', index: i };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+            if (Math.hypot(l.x1 - mx, l.y1 - my) < hitR) {
+                dragging = { type: 'passline-start', index: i };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+        }
+
+        // Check zone lines (grab near midpoint or endpoints)
+        const zones = toArr(s.zones);
+        for (let i = 0; i < zones.length; i++) {
+            const z = zones[i];
+            // Check endpoints
+            if (Math.hypot(z.x1 - mx, z.y1 - my) < hitR) {
+                dragging = { type: 'zone-p1', index: i };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+            if (Math.hypot(z.x2 - mx, z.y2 - my) < hitR) {
+                dragging = { type: 'zone-p2', index: i };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+            // Check midpoint (grab whole line)
+            const midX = (z.x1 + z.x2) / 2, midY = (z.y1 + z.y2) / 2;
+            if (Math.hypot(midX - mx, midY - my) < hitR * 1.5) {
+                dragging = { type: 'zone-move', index: i, offX: mx - midX, offY: my - midY };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+        }
+
+        // Check players
+        for (const [key, team] of Object.entries(s.teams || {})) {
+            const players = toArr(team.players);
+            for (let i = 0; i < players.length; i++) {
+                const p = players[i];
+                if (Math.hypot(p.x - mx, p.y - my) < hitR) {
+                    dragging = { type: 'player', team: key, index: i };
+                    canvas.setPointerCapture(e.pointerId); return;
+                }
+            }
+        }
+
+        // Check cones
+        const cones = toArr(s.cones);
+        for (let i = 0; i < cones.length; i++) {
+            const c = cones[i];
+            if (Math.hypot(c.x - mx, c.y - my) < hitR) {
+                dragging = { type: 'cone', index: i };
+                canvas.setPointerCapture(e.pointerId); return;
+            }
+        }
+    });
+
+    canvas.addEventListener('pointermove', e => {
+        if (!dragging || !selectedId) return;
+        const rect = canvas.getBoundingClientRect();
+        const nx = Math.max(-0.15, Math.min(1.15, toNX(e.clientX - rect.left)));
+        const ny = Math.max(-0.15, Math.min(1.15, toNY(e.clientY - rect.top)));
+        const s = drills[selectedId].setup;
+
+        if (dragging.type === 'player') {
+            s.teams[dragging.team].players = toArr(s.teams[dragging.team].players);
+            s.teams[dragging.team].players[dragging.index] = { x: nx, y: ny };
+            // Update pass line origin if this is ball carrier
+            const pl = toArr(s.passLines);
+            if (s.ball && s.ball.team === dragging.team && s.ball.playerIndex === dragging.index && pl[0]) {
+                pl[0].x1 = nx;
+                pl[0].y1 = ny;
+                s.passLines = pl;
+            }
+        } else if (dragging.type === 'cone') {
+            const ca = toArr(s.cones);
+            ca[dragging.index] = { x: nx, y: ny };
+            s.cones = ca;
+        } else if (dragging.type === 'zone-p1') {
+            const za = toArr(s.zones);
+            za[dragging.index].x1 = nx;
+            za[dragging.index].y1 = ny;
+            s.zones = za;
+        } else if (dragging.type === 'zone-p2') {
+            const za = toArr(s.zones);
+            za[dragging.index].x2 = nx;
+            za[dragging.index].y2 = ny;
+            s.zones = za;
+        } else if (dragging.type === 'zone-move') {
+            const za = toArr(s.zones);
+            const z = za[dragging.index];
+            const midX = (z.x1 + z.x2) / 2, midY = (z.y1 + z.y2) / 2;
+            const dx = (nx - dragging.offX) - midX;
+            const dy = (ny - dragging.offY) - midY;
+            z.x1 += dx; z.y1 += dy;
+            z.x2 += dx; z.y2 += dy;
+            s.zones = za;
+        } else if (dragging.type === 'passline-start') {
+            const pl = toArr(s.passLines);
+            pl[dragging.index].x1 = nx;
+            pl[dragging.index].y1 = ny;
+            s.passLines = pl;
+        } else if (dragging.type === 'passline-end') {
+            const pl = toArr(s.passLines);
+            pl[dragging.index].x2 = nx;
+            pl[dragging.index].y2 = ny;
+            s.passLines = pl;
+        }
+        drawDrill(drills[selectedId]);
+    });
+
+    canvas.addEventListener('pointerup', () => {
+        if (dragging && selectedId) {
+            persistDrill(selectedId);
+            dragging = null;
+        }
+    });
+
+    // ===== UI =====
+    function renderUI() {
+        renderCatFilter();
+        renderDrillList();
+        const ids = getFilteredIds();
+        if (ids.length === 0) {
+            document.getElementById('empty-state').style.display = 'block';
+            document.getElementById('drill-detail').style.display = 'none';
+        } else {
+            document.getElementById('empty-state').style.display = 'none';
+            if (!selectedId || !drills[selectedId]) selectDrill(ids[0]);
+            else renderDetail();
+        }
+    }
+
+    function getFilteredIds() {
+        return Object.keys(drills).filter(id => {
+            if (activeCat === 'alle') return true;
+            return drills[id].category === activeCat;
+        }).sort((a, b) => (drills[a].name || '').localeCompare(drills[b].name || ''));
+    }
+
+    function renderCatFilter() {
+        const el = document.getElementById('cat-filter');
+        const usedCats = [...new Set(Object.values(drills).map(d => d.category))];
+        let html = `<span class="cat-pill ${activeCat === 'alle' ? 'active' : ''}" style="${activeCat === 'alle' ? 'background:var(--primary-light);color:var(--text)' : ''}" onclick="filterCat('alle')">Alle</span>`;
+        usedCats.forEach(c => {
+            const cat = CATS[c] || { label: c, color: '#888' };
+            const isActive = activeCat === c;
+            html += `<span class="cat-pill ${isActive ? 'active' : ''}" style="${isActive ? 'background:' + cat.color : ''}" onclick="filterCat('${c}')">${cat.label}</span>`;
+        });
+        el.innerHTML = html;
+    }
+
+    function filterCat(c) {
+        activeCat = c;
+        renderUI();
+    }
+
+    function renderDrillList() {
+        const el = document.getElementById('drill-list');
+        const ids = getFilteredIds();
+        el.innerHTML = ids.map(id => {
+            const d = drills[id];
+            const cat = CATS[d.category] || { color: '#888' };
+            const active = id === selectedId;
+            return `<span class="drill-pill ${active ? 'active' : ''}" onclick="selectDrill('${id}')"><span class="drill-cat-dot" style="background:${cat.color}"></span>${d.name || 'Unbenannt'}</span>`;
+        }).join('');
+    }
+
+    function selectDrill(id) {
+        if (editMode) toggleEditMode();
+        selectedId = id;
+        renderDrillList();
+        renderDetail();
+    }
+
+    function renderDetail() {
+        if (!selectedId || !drills[selectedId]) return;
+        document.getElementById('drill-detail').style.display = 'block';
+        resizeCanvas();
+        renderLegend(drills[selectedId]);
+        renderInfo(drills[selectedId]);
+    }
+
+    function renderLegend(d) {
+        const s = d.setup;
+        if (!s || !s.teams) return;
+        const el = document.getElementById('legend');
+        let html = '';
+        Object.values(s.teams).forEach(t => {
+            html += `<span class="legend-item"><span class="legend-dot" style="background:${t.color}"></span> ${t.label}</span>`;
+        });
+        html += `<span class="legend-item"><span class="legend-dot" style="background:#e8a020"></span> Ballträger</span>`;
+        html += `<span class="legend-item"><span class="legend-dot" style="background:#1a5fb4"></span> Kegel</span>`;
+        html += `<span class="legend-item"><span class="legend-dash"></span> Passweg</span>`;
+        html += `<span class="legend-item"><span class="legend-zone"></span> Sperrzone</span>`;
+        el.innerHTML = html;
+    }
+
+    function renderInfo(d) {
+        const cat = CATS[d.category] || { label: d.category, color: '#888' };
+        const rules = toArr(d.rules).map(r => {
+            const warn = r.toUpperCase().startsWith('NICHT') ? ' warning' : '';
+            return `<li class="${warn}">${r}</li>`;
+        }).join('');
+        let actions = '';
+        if (trainerMode) {
+            actions = `<div class="trainer-actions">
+                <button onclick="openModal('edit')">Info bearbeiten</button>
+                <button onclick="toggleEditMode()">${editMode ? 'Bearbeitung beenden' : 'Aufstellung bearbeiten'}</button>
+                <button class="danger" onclick="deleteDrill()">Löschen</button>
+            </div>`;
+        }
+        document.getElementById('drill-info').innerHTML = `
+            <div class="drill-title">${d.name || 'Unbenannt'}</div>
+            <span class="drill-cat-badge" style="background:${cat.color}">${cat.label}</span>
+            <p class="drill-desc">${d.description || ''}</p>
+            ${rules ? `<div class="drill-rules-title">Regeln</div><ul class="drill-rules">${rules}</ul>` : ''}
+            ${actions}
+        `;
+    }
+
+    // ===== EDIT MODE =====
+    function toggleEditMode() {
+        editMode = !editMode;
+        canvas.classList.toggle('editing', editMode);
+        const bar = document.getElementById('edit-bar');
+        if (editMode && selectedId) {
+            const s = drills[selectedId].setup;
+            const teamKeys = Object.keys(s.teams || {});
+            let html = '';
+            teamKeys.forEach(k => {
+                const t = s.teams[k];
+                html += `<button onclick="addPlayer('${k}')">+ ${t.label}</button>`;
+                html += `<button onclick="removePlayer('${k}')">- ${t.label}</button>`;
+            });
+            html += `<span class="spacer"></span>`;
+            html += `<button class="primary" onclick="toggleEditMode()">Fertig</button>`;
+            bar.innerHTML = html;
+            bar.style.display = 'flex';
+        } else {
+            bar.style.display = 'none';
+        }
+        if (selectedId && drills[selectedId]) {
+            drawDrill(drills[selectedId]);
+            renderInfo(drills[selectedId]);
+        }
+    }
+
+    function addPlayer(team) {
+        if (!selectedId) return;
+        const s = drills[selectedId].setup;
+        if (!s.teams[team]) return;
+        s.teams[team].players = toArr(s.teams[team].players);
+        s.teams[team].players.push({ x: 0.5, y: 0.5 });
+        persistDrill(selectedId);
+        drawDrill(drills[selectedId]);
+    }
+
+    function removePlayer(team) {
+        if (!selectedId) return;
+        const s = drills[selectedId].setup;
+        if (!s.teams[team]) return;
+        s.teams[team].players = toArr(s.teams[team].players);
+        if (s.teams[team].players.length === 0) return;
+        s.teams[team].players.pop();
+        // Fix ball reference
+        if (s.ball && s.ball.team === team && s.ball.playerIndex >= s.teams[team].players.length) {
+            s.ball.playerIndex = Math.max(0, s.teams[team].players.length - 1);
+        }
+        persistDrill(selectedId);
+        drawDrill(drills[selectedId]);
+    }
+
+    // ===== MODAL =====
+    function openModal(mode) {
+        modalMode = mode;
+        document.getElementById('modal-title').textContent = mode === 'add' ? 'Neue Übung' : 'Übung bearbeiten';
+        if (mode === 'edit' && selectedId && drills[selectedId]) {
+            const d = drills[selectedId];
+            document.getElementById('m-name').value = d.name || '';
+            document.getElementById('m-cat').value = d.category || 'warm-up';
+            document.getElementById('m-desc').value = d.description || '';
+            document.getElementById('m-rules').value = toArr(d.rules).join('\n');
+        } else {
+            document.getElementById('m-name').value = '';
+            document.getElementById('m-cat').value = 'warm-up';
+            document.getElementById('m-desc').value = '';
+            document.getElementById('m-rules').value = '';
+        }
+        document.getElementById('drill-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('drill-modal').style.display = 'none';
+        modalMode = null;
+    }
+
+    function saveModal() {
+        const name = document.getElementById('m-name').value.trim();
+        if (!name) { alert('Bitte Name eingeben.'); return; }
+        const cat = document.getElementById('m-cat').value;
+        const desc = document.getElementById('m-desc').value.trim();
+        const rules = document.getElementById('m-rules').value.split('\n').map(r => r.trim()).filter(r => r);
+
+        if (modalMode === 'edit' && selectedId) {
+            drills[selectedId].name = name;
+            drills[selectedId].category = cat;
+            drills[selectedId].description = desc;
+            drills[selectedId].rules = rules;
+            persistDrill(selectedId);
+        } else {
+            const newDrill = {
+                name, category: cat, description: desc, rules,
+                setup: {
+                    cones: [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }],
+                    zones: [
+                        { x1: -0.10, y1: 0.18, x2: 0.18, y2: -0.10 },
+                        { x1: 0.82, y1: -0.10, x2: 1.10, y2: 0.18 },
+                        { x1: -0.10, y1: 0.82, x2: 0.18, y2: 1.10 },
+                        { x1: 0.82, y1: 1.10, x2: 1.10, y2: 0.82 }
+                    ],
+                    teams: {
+                        a: { label: 'Team A', color: '#9b59b6', players: [] },
+                        b: { label: 'Team B', color: '#3498db', players: [] }
+                    },
+                    ball: { team: 'a', playerIndex: 0 },
+                    passLines: []
+                },
+                animated: false,
+                createdAt: Date.now()
+            };
+            const ref = db.ref('/uebungen').push();
+            drills[ref.key] = newDrill;
+            ref.set(newDrill);
+            selectedId = ref.key;
+        }
+        closeModal();
+        renderUI();
+    }
+
+    function deleteDrill() {
+        if (!selectedId || !confirm('Übung wirklich löschen?')) return;
+        db.ref('/uebungen/' + selectedId).remove();
+        delete drills[selectedId];
+        selectedId = null;
+        renderUI();
+    }
+
+    // ===== EVENTS =====
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    window.addEventListener('resize', resizeCanvas);
+
+    // ===== INIT =====
+    checkLogin();
+    </script>
+</body>
+</html>

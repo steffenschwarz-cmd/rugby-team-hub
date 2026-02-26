@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainingsbeteiligung — SG Rugby Team Hub</title>
+    <style>
+        :root {
+            --green: #1b8a3e;
+            --green-dark: #145a2a;
+            --blue: #1a5fb4;
+            --blue-dark: #0f3d7a;
+            --primary: #152030;
+            --primary-light: #1c3048;
+            --accent: #2ecc71;
+            --accent-blue: #4a9eff;
+            --bg: #0c1420;
+            --bg-card: #131f30;
+            --bg-card-hover: #1a2a40;
+            --text: #e8ecf0;
+            --text-muted: #7a90a8;
+            --danger: #e04040;
+            --success: #40c060;
+            --warning: #e8a020;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* LOGIN GATE */
+        .login-gate {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #0a1018 0%, #0c1420 50%, #0a1220 100%);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-gate.hidden { display: none; }
+        .login-box { text-align: center; padding: 2rem; }
+        .login-box h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .login-clubs { font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted); }
+        .club-green { color: var(--accent); }
+        .club-blue { color: var(--accent-blue); }
+        .club-x { color: var(--text-muted); margin: 0 0.4rem; }
+        .login-input {
+            display: block; width: 260px; margin: 0 auto 1rem;
+            padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15);
+            background: var(--primary-light); color: var(--text); font-size: 1rem; text-align: center;
+        }
+        .login-input:focus { outline: none; border-color: var(--accent); }
+        .login-btn {
+            display: block; width: 260px; margin: 0 auto; padding: 0.8rem;
+            background: var(--accent); color: #000; font-weight: 700; font-size: 1rem;
+            border: none; border-radius: 8px; cursor: pointer;
+        }
+        .login-btn:hover { background: #27ae60; }
+        .login-error { color: var(--danger); margin-top: 0.8rem; display: none; font-size: 0.85rem; }
+
+        /* NAV */
+        .topnav {
+            background: var(--primary); border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.6rem 1rem; overflow-x: auto; white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        .topnav-inner {
+            display: flex; gap: 0.3rem; justify-content: center; align-items: center;
+            max-width: 1100px; margin: 0 auto;
+        }
+        .topnav a {
+            color: var(--text-muted); text-decoration: none; font-size: 0.8rem; font-weight: 500;
+            padding: 0.35rem 0.6rem; border-radius: 6px; transition: all 0.2s; flex-shrink: 0;
+        }
+        .topnav a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+        .topnav a.active { color: var(--accent); background: rgba(46,204,113,0.1); }
+        .nav-sep { color: rgba(255,255,255,0.15); margin: 0 0.2rem; font-size: 0.7rem; }
+
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            padding: 1.5rem; text-align: center;
+            border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+        }
+        .hero h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+        .hero-sub { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* TRAINER BAR */
+        .trainer-bar {
+            display: flex; align-items: center; justify-content: center; gap: 1rem;
+            padding: 0.6rem 1rem; background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .trainer-info { font-size: 0.8rem; color: var(--text-muted); }
+        .trainer-info.unlocked { color: var(--accent); }
+        .trainer-btn {
+            padding: 0.4rem 1rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--text-muted);
+        }
+        .trainer-btn.locked:hover { background: rgba(255,255,255,0.06); }
+
+        /* CONTAINER */
+        .container { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+
+        /* STATS SUMMARY */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem; margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card); border-radius: 10px; padding: 1rem;
+            text-align: center; border: 1px solid rgba(255,255,255,0.06);
+        }
+        .stat-value {
+            font-size: 2rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent-blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* TABS */
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab-btn {
+            padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .tab-btn:hover { background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: rgba(46,204,113,0.12); color: var(--accent); border-color: rgba(46,204,113,0.3); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* PLAYER TABLE */
+        .player-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .player-table th {
+            text-align: left; padding: 0.7rem 0.8rem; font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
+            border-bottom: 2px solid rgba(46,204,113,0.2); white-space: nowrap;
+        }
+        .player-table th.right, .player-table td.right { text-align: right; }
+        .player-table td {
+            padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .player-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .player-name { font-weight: 600; }
+        .pct-bar {
+            display: inline-block; height: 6px; border-radius: 3px; min-width: 2px;
+            vertical-align: middle; margin-right: 6px;
+        }
+        .pct-high { background: var(--accent); }
+        .pct-mid { background: var(--warning); }
+        .pct-low { background: var(--danger); }
+        .rank-badge {
+            display: inline-block; width: 22px; height: 22px; line-height: 22px;
+            text-align: center; border-radius: 50%; font-size: 0.7rem; font-weight: 700;
+        }
+        .rank-1 { background: rgba(232,160,32,0.2); color: #e8a020; }
+        .rank-2 { background: rgba(192,192,192,0.15); color: #c0c0c0; }
+        .rank-3 { background: rgba(180,120,60,0.15); color: #b4783c; }
+
+        /* SESSION CARDS */
+        .session-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .session-card {
+            background: var(--bg-card); border-radius: 10px; padding: 1rem 1.2rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .session-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;
+        }
+        .session-date { font-weight: 700; font-size: 1rem; }
+        .session-type {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+            padding: 0.2rem 0.6rem; border-radius: 10px;
+        }
+        .type-training { background: rgba(46,204,113,0.12); color: var(--accent); }
+        .type-spiel { background: rgba(74,158,255,0.12); color: var(--accent-blue); }
+        .session-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .session-players {
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+        }
+        .sp-tag {
+            font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px;
+            background: rgba(255,255,255,0.05); color: var(--text-muted);
+        }
+        .sp-tag a { color: var(--text-muted); text-decoration: none; }
+        .sp-tag a:hover { color: var(--accent); }
+        .sp-absent { background: rgba(224,64,64,0.08); border: 1px solid rgba(224,64,64,0.15); }
+        .sp-absent a { color: var(--text-muted); }
+        .sp-absent a:hover { color: var(--danger); }
+
+        /* Player links in ranking */
+        .player-link {
+            color: var(--text); text-decoration: none;
+            border-bottom: 1px solid rgba(46,204,113,0.3); transition: all 0.2s;
+        }
+        .player-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+        .session-actions { margin-top: 0.8rem; display: none; }
+        .trainer-active .session-actions { display: flex; gap: 0.5rem; }
+        .btn-sm {
+            padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1); background: transparent;
+            color: var(--text-muted); cursor: pointer;
+        }
+        .btn-sm:hover { background: rgba(255,255,255,0.05); }
+        .btn-sm.danger { border-color: rgba(224,64,64,0.3); color: var(--danger); }
+        .btn-sm.danger:hover { background: rgba(224,64,64,0.1); }
+
+        /* ADD SESSION FORM */
+        .add-form {
+            background: var(--bg-card); border-radius: 12px; padding: 1.2rem;
+            border: 1px solid rgba(46,204,113,0.2); margin-bottom: 1.5rem; display: none;
+        }
+        .trainer-active .add-form-show { display: block; }
+        .form-row { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; flex-wrap: wrap; align-items: end; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .form-group input, .form-group select {
+            padding: 0.5rem 0.8rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);
+            background: var(--primary-light); color: var(--text); font-size: 0.9rem;
+        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+        .btn-primary {
+            padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+            border: none; background: var(--accent); color: #000; cursor: pointer;
+        }
+        .btn-primary:hover { background: #27ae60; }
+
+        /* PLAYER CHECKLIST */
+        .player-checklist {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.4rem; margin: 0.8rem 0;
+        }
+        .pc-item {
+            display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.06); transition: all 0.15s;
+        }
+        .pc-item:hover { background: rgba(255,255,255,0.04); }
+        .pc-item.checked { background: rgba(46,204,113,0.08); border-color: rgba(46,204,113,0.25); color: var(--accent); }
+        .pc-check {
+            width: 18px; height: 18px; border-radius: 4px; border: 2px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            font-size: 0.7rem; transition: all 0.15s;
+        }
+        .pc-item.checked .pc-check { background: var(--accent); border-color: var(--accent); color: #000; }
+
+        /* ADD PLAYER ROW */
+        .add-player-row {
+            display: none; margin-top: 0.8rem; gap: 0.5rem; align-items: center;
+        }
+        .trainer-active .add-player-row { display: flex; }
+        .add-player-row input {
+            flex: 1; padding: 0.4rem 0.8rem; border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.12); background: var(--primary-light);
+            color: var(--text); font-size: 0.85rem;
+        }
+
+        /* TOGGLE ALL */
+        .toggle-btns { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+
+        /* SAVE INDICATOR */
+        .save-indicator {
+            position: fixed; bottom: 1rem; right: 1rem;
+            background: rgba(46,204,113,0.9); color: #000; padding: 0.5rem 1rem;
+            border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+        }
+        .save-indicator.show { opacity: 1; }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .player-table { font-size: 0.78rem; }
+            .player-table th, .player-table td { padding: 0.5rem 0.4rem; }
+            .form-row { flex-direction: column; }
+            .player-checklist { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="login-gate" id="login-gate">
+    <div class="login-box">
+        <h2>Team Hub</h2>
+        <div class="login-clubs">
+            <span class="club-green">RU Hohen Neuendorf</span>
+            <span class="club-x">&times;</span>
+            <span class="club-blue">Stahl Hennigsdorf</span>
+        </div>
+        <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+        <button class="login-btn" id="login-btn">Anmelden</button>
+        <div class="login-error" id="login-error">Falsches Passwort</div>
+    </div>
+</div>
+
+<!-- NAV -->
+<nav class="topnav app-content" id="topnav">
+    <div class="topnav-inner">
+        <a href="index.html">Hub</a>
+        <span class="nav-sep">|</span>
+        <a href="kader.html">Kader</a>
+        <a href="aufstellung.html">Aufstellung</a>
+        <a href="mannschaftsrat.html">Mannschaftsrat</a>
+        <span class="nav-sep">|</span>
+        <a href="spielzuege.html">Spielzüge</a>
+        <a href="uebungen.html">Übungen</a>
+        <a href="trainingsplan.html">Training</a>
+        <a href="videos.html">Videos</a>
+        <span class="nav-sep">|</span>
+        <a href="trainingsbeteiligung.html" class="active">Beteiligung</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero app-content">
+    <h1>Trainingsbeteiligung</h1>
+    <div class="hero-sub">Anwesenheit bei Training & Spielen</div>
+</div>
+
+<!-- TRAINER BAR -->
+<div class="trainer-bar app-content">
+    <span class="trainer-info" id="trainer-info">Nur-Lese-Modus</span>
+    <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
+</div>
+<div class="save-indicator" id="save-indicator">Gespeichert</div>
+
+<!-- MAIN -->
+<div class="container app-content" id="main-content">
+
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-value" id="stat-sessions">0</div><div class="stat-label">Einheiten</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-games">0</div><div class="stat-label">Spiele</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-players">0</div><div class="stat-label">Spieler</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-avg">0%</div><div class="stat-label">Schnitt</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="ranking" onclick="switchTab('ranking')">Ranking</button>
+        <button class="tab-btn" data-tab="einheiten" onclick="switchTab('einheiten')">Einheiten</button>
+    </div>
+
+    <!-- TAB: RANKING -->
+    <div class="tab-content active" id="tab-ranking">
+        <table class="player-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Spieler</th>
+                    <th class="right">Training</th>
+                    <th class="right">%</th>
+                    <th class="right">Spiele</th>
+                    <th class="right">%</th>
+                    <th class="right">Gesamt</th>
+                </tr>
+            </thead>
+            <tbody id="ranking-body"></tbody>
+        </table>
+    </div>
+
+    <!-- TAB: EINHEITEN -->
+    <div class="tab-content" id="tab-einheiten">
+
+        <!-- ADD SESSION FORM (trainer only) -->
+        <div class="add-form" id="add-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Datum</label>
+                    <input type="date" id="new-date">
+                </div>
+                <div class="form-group">
+                    <label>Typ</label>
+                    <select id="new-type">
+                        <option value="training">Training</option>
+                        <option value="spiel">Spiel</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="addSession()">Einheit anlegen</button>
+            </div>
+        </div>
+
+        <div class="session-grid" id="session-grid"></div>
+    </div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+    // --- FIREBASE ---
+    firebase.initializeApp({
+        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
+        authDomain: "rugby-team-hub.firebaseapp.com",
+        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "rugby-team-hub",
+        storageBucket: "rugby-team-hub.firebasestorage.app",
+        messagingSenderId: "484420740610",
+        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
+    });
+    const db = firebase.database();
+
+    let trainerMode = false;
+    let sessions = {};
+
+    // Known roster (grows automatically from data)
+    let allPlayers = new Set();
+
+    // --- TRAINER PIN ---
+    async function hashPw(pw) {
+        const data = new TextEncoder().encode(pw);
+        const buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkTrainerAuth() {
+        const stored = localStorage.getItem('sgrhn_trainer_auth');
+        if (stored === await hashPw('7831')) enableTrainer();
+    }
+
+    function enableTrainer() {
+        trainerMode = true;
+        document.getElementById('main-content').classList.add('trainer-active');
+        document.getElementById('add-form').classList.add('add-form-show');
+        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
+        document.getElementById('trainer-info').classList.add('unlocked');
+        document.getElementById('trainer-btn').textContent = 'Entsperrt';
+        document.getElementById('trainer-btn').classList.remove('locked');
+        document.getElementById('trainer-btn').disabled = true;
+        document.getElementById('trainer-btn').style.opacity = '0.6';
+        document.getElementById('trainer-btn').style.cursor = 'default';
+        render();
+    }
+
+    async function promptTrainerPIN() {
+        const pin = prompt('Trainer-PIN eingeben:');
+        if (pin === null) return;
+        if (await hashPw(pin) === await hashPw('7831')) {
+            localStorage.setItem('sgrhn_trainer_auth', await hashPw(pin));
+            enableTrainer();
+        } else {
+            alert('Falscher PIN.');
+        }
+    }
+
+    // --- LOGIN ---
+    function unlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        firebase.auth().signInAnonymously().then(() => {
+            loadData();
+            checkTrainerAuth();
+        }).catch(err => {
+            console.warn('Firebase Auth failed, loading from localStorage', err);
+            loadData();
+            checkTrainerAuth();
+        });
+    }
+
+    async function checkLogin() {
+        const stored = localStorage.getItem('sgrhn_rat_auth');
+        if (!stored) return;
+        if (stored === await hashPw('RatPack#26')) unlock();
+        else localStorage.removeItem('sgrhn_rat_auth');
+    }
+
+    async function tryLogin() {
+        const pw = document.getElementById('login-pw').value;
+        if (await hashPw(pw) === await hashPw('RatPack#26')) {
+            localStorage.setItem('sgrhn_rat_auth', await hashPw(pw));
+            unlock();
+        } else {
+            document.getElementById('login-error').style.display = 'block';
+            document.getElementById('login-pw').value = '';
+        }
+    }
+
+    document.getElementById('login-btn').addEventListener('click', tryLogin);
+    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+    // --- NAME MAP: SpielerPlus short names → full kader names ---
+    const NAME_MAP = {
+        'Angelo': 'Angelo Galster',
+        'Anton': 'Anton Hanetzok',
+        'Basti': 'Sebastian Hildebrandt',
+        'Ben Johnston': 'Ben Johnston',
+        'Chris': 'Christopher Bunge',
+        'Connor': 'Connor Peise',
+        'Daniel': 'Daniel Kainer',
+        'Enrico': 'Enrico Marco Stenzel',
+        'Fabian': 'Fabian Wendt',
+        'Felix': 'Felix Berg',
+        'Florian': 'Florian Neumann',
+        'Fynn': 'Fynn Lauer',
+        'Gustav': 'Gustav Palm',
+        'Hannes': 'Hannes Bartelt',
+        'Jonas': 'Jonas Hinz',
+        'Joshua': 'Joshua Walker',
+        'Julius': 'Julius Laetsch',
+        'Kai': 'Kai Friesicke',
+        'Keno': 'Keno Filietz',
+        'Kevin': 'Kevin Pilz',
+        'Kimi': 'Kimi Döpke',
+        'Luca': 'Luca Karim Borgwardt',
+        'Lucas': 'Lucas Eichler',
+        'Lukas Laetsch': 'Lukas Laetsch',
+        'Marcel': 'Marcel Grabow',
+        'Matti': 'Matti Erik Eschwe',
+        'Maurice': 'Maurice Peter Sankeralli',
+        'Max H.': 'Maximilian Hildebrandt',
+        'Max L.': 'Max Langer',
+        'Michael': 'Michael Galster',
+        'Moritz': 'Moritz Janosch',
+        'Moritz G.': 'Moritz Gollnick',
+        'Norman': 'Norman Guido Kranert',
+        'Oliver H.': 'Oliver Herrmann',
+        'Oliver T.': 'Oliver Tschetsch',
+        'Paul C.': 'Paul Chukwu',
+        'Paul Z.': 'Paul Zyparth',
+        'Philip': 'Philip Simon',
+        'Rico': 'Rico Schomacker',
+        'Robert': 'Robert Woelki',
+        'Ronny': 'Ronny Sager',
+        'Sarvan': 'Sarvan Aziz',
+        'Sascha': 'Sascha Kosanke',
+        'Sebastian': 'Sebastian Hildebrandt',
+        'Shawn': 'Shawn Ahrens',
+        'Silas': 'Silas Rathke',
+        'Simon': 'Simon Csehan',
+        'Steffen': 'Steffen Schwarz',
+        'Steven': 'Steven Müller',
+        'Theo': 'Theo Schmidt',
+        'Tim': 'Tim Förster',
+        'Timo': 'Timo Schmidt',
+        'Tobi': 'Tobias Ehrlich',
+        'Tom K.': 'Tom König',
+        'Tom L.': 'Tom Lebus',
+        'Tristan': 'Tristan Schöntag',
+        'Woelki': 'Robert Woelki',
+        'Wolfi': 'Wolf-Dietrich Hildebrandt',
+        'Xavier': 'Xavier Mbrim A Fiediek',
+        'Rooney': 'Ronny Sager',
+        'Simon Reichelt': 'Simon Reichelt',
+        'Josh': 'Joshua Walker',
+        'Enrico Stenzel': 'Enrico Marco Stenzel',
+        'Oli T.': 'Oliver Tschetsch',
+        'Felix Berg': 'Felix Berg',
+    };
+
+    function resolvePlayerName(shortName) {
+        return NAME_MAP[shortName] || shortName;
+    }
+
+    // Full name → kader player ID (for linking)
+    const KADER_IDS = {
+        'Angelo Galster':18, 'Anton Hanetzok':24, 'Ben Johnston':68, 'Christopher Bunge':6,
+        'Connor Peise':46, 'Daniel Kainer':31, 'Enrico Marco Stenzel':59, 'Fabian Wendt':64,
+        'Felix Berg':4, 'Florian Neumann':44, 'Fynn Lauer':40, 'Gustav Palm':45,
+        'Hannes Bartelt':3, 'Jonas Hinz':29, 'Joshua Walker':63, 'Julius Laetsch':37,
+        'Kai Friesicke':15, 'Keno Filietz':14, 'Kevin Pilz':47, 'Kimi Döpke':10,
+        'Luca Karim Borgwardt':5, 'Lucas Eichler':11, 'Lukas Laetsch':38, 'Marcel Grabow':21,
+        'Matti Erik Eschwe':13, 'Maurice Peter Sankeralli':52, 'Max Langer':39,
+        'Maximilian Hildebrandt':28, 'Michael Galster':17, 'Moritz Gollnick':19, 'Moritz Janosch':30,
+        'Norman Guido Kranert':35, 'Oliver Herrmann':25, 'Oliver Tschetsch':61,
+        'Paul Chukwu':7, 'Paul Zyparth':67, 'Philip Simon':58, 'Rico Schomacker':55,
+        'Robert Woelki':66, 'Ronny Sager':51, 'Sarvan Aziz':2, 'Sascha Kosanke':34,
+        'Sebastian Hildebrandt':26, 'Shawn Ahrens':1, 'Silas Rathke':49, 'Simon Csehan':8,
+        'Simon Reichelt':69, 'Steffen Schwarz':57, 'Steven Müller':43, 'Theo Schmidt':53, 'Tim Förster':16,
+        'Timo Schmidt':54, 'Tobias Ehrlich':12, 'Tom König':33, 'Tom Lebus':41,
+        'Tristan Schöntag':56, 'Wolf-Dietrich Hildebrandt':27, 'Xavier Mbrim A Fiediek':42,
+    };
+
+    // --- DATA ---
+    const SEED_DATA = {
+        '20260218_training': {
+            date: '2026-02-18',
+            type: 'training',
+            present: {
+                'Anton Hanetzok': true, 'Ben Johnston': true, 'Jonas Hinz': true, 'Julius Laetsch': true,
+                'Kimi Döpke': true, 'Lukas Laetsch': true, 'Matti Erik Eschwe': true, 'Maurice Peter Sankeralli': true,
+                'Max Langer': true, 'Moritz Janosch': true, 'Paul Chukwu': true, 'Steven Müller': true, 'Theo Schmidt': true, 'Timo Schmidt': true
+            }
+        },
+        '20260220_training': {
+            date: '2026-02-20',
+            type: 'training',
+            present: {
+                'Angelo Galster': true, 'Anton Hanetzok': true, 'Sebastian Hildebrandt': true, 'Ben Johnston': true,
+                'Christopher Bunge': true, 'Gustav Palm': true, 'Jonas Hinz': true, 'Julius Laetsch': true,
+                'Kimi Döpke': true, 'Lukas Laetsch': true, 'Matti Erik Eschwe': true, 'Maurice Peter Sankeralli': true,
+                'Maximilian Hildebrandt': true, 'Max Langer': true, 'Paul Chukwu': true, 'Paul Zyparth': true,
+                'Theo Schmidt': true, 'Timo Schmidt': true, 'Tobias Ehrlich': true, 'Robert Woelki': true, 'Wolf-Dietrich Hildebrandt': true
+            }
+        },
+        '20260224_training': {
+            date: '2026-02-24',
+            type: 'training',
+            present: {
+                'Angelo Galster': true, 'Anton Hanetzok': true, 'Ben Johnston': true, 'Gustav Palm': true,
+                'Jonas Hinz': true, 'Julius Laetsch': true, 'Kimi Döpke': true, 'Lukas Laetsch': true,
+                'Matti Erik Eschwe': true, 'Maurice Peter Sankeralli': true, 'Maximilian Hildebrandt': true,
+                'Max Langer': true, 'Moritz Janosch': true, 'Paul Chukwu': true, 'Philip Simon': true,
+                'Rico Schomacker': true, 'Shawn Ahrens': true, 'Silas Rathke': true,
+                'Theo Schmidt': true, 'Timo Schmidt': true, 'Robert Woelki': true, 'Simon Reichelt': true
+            },
+            absent: {
+                'Sebastian Hildebrandt': 'Hannover', 'Christopher Bunge': 'Arbeit', 'Daniel Kainer': '',
+                'Enrico Marco Stenzel': 'Fuß', 'Fabian Wendt': 'Krankheitsbedingt', 'Felix Berg': 'Verletzt',
+                'Fynn Lauer': 'Uni', 'Joshua Walker': 'Arbeit', 'Kevin Pilz': '',
+                'Norman Guido Kranert': 'Verletzung', 'Oliver Tschetsch': 'Krank',
+                'Paul Zyparth': '', 'Ronny Sager': '', 'Tobias Ehrlich': 'Arbeiten auswärts'
+            }
+        }
+    };
+
+    function migrateShortNames() {
+        // Migrate old short names to full kader names
+        let changed = false;
+        for (const [id, s] of Object.entries(sessions)) {
+            if (!s.present) continue;
+            const newPresent = {};
+            for (const name of Object.keys(s.present)) {
+                const full = resolvePlayerName(name);
+                if (full !== name) changed = true;
+                newPresent[full] = true;
+            }
+            s.present = newPresent;
+        }
+        if (changed) {
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung').set(sessions).catch(() => {});
+        }
+    }
+
+    function loadData() {
+        // 1) Load from localStorage first (instant)
+        const local = localStorage.getItem('sgrhn_beteiligung');
+        if (local) {
+            try { sessions = JSON.parse(local); } catch(e) { sessions = {}; }
+        }
+
+        // 2) If still empty, use seed data
+        if (Object.keys(sessions).length === 0) {
+            sessions = JSON.parse(JSON.stringify(SEED_DATA));
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+        }
+
+        // 3) Migrate any old short names to full names
+        migrateShortNames();
+
+        // 3b) Patch: Steven Müller was at 18.02. training (no SpielerPlus account)
+        if (sessions['20260218_training'] && !sessions['20260218_training'].present['Steven Müller']) {
+            sessions['20260218_training'].present['Steven Müller'] = true;
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260218_training/present/Steven Müller').set(true).catch(() => {});
+        }
+
+        // 3c) Patch: 24.02. Training — inject if not yet present
+        if (!sessions['20260224_training']) {
+            sessions['20260224_training'] = SEED_DATA['20260224_training'];
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260224_training').set(sessions['20260224_training']).catch(() => {});
+        }
+        // 3d) Patch: 24.02. Absagen nachtragen falls Session schon ohne absent existiert
+        if (sessions['20260224_training'] && !sessions['20260224_training'].absent) {
+            sessions['20260224_training'].absent = SEED_DATA['20260224_training'].absent;
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260224_training/absent').set(sessions['20260224_training'].absent).catch(() => {});
+        }
+
+        // 3) Render immediately
+        buildRoster();
+        render();
+
+        // 4) Then try Firebase sync in background
+        db.ref('trainingsbeteiligung').on('value', snap => {
+            const fbData = snap.val();
+            if (fbData && Object.keys(fbData).length > 0) {
+                sessions = fbData;
+                localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+                buildRoster();
+                render();
+            } else {
+                // Firebase empty — push our local data up
+                db.ref('trainingsbeteiligung').set(sessions).catch(() => {});
+            }
+        }, err => {
+            console.warn('Firebase read failed, using local data:', err);
+        });
+    }
+
+    function saveSession(id) {
+        db.ref('trainingsbeteiligung/' + id).set(sessions[id]);
+        localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+        showSaved();
+    }
+
+    function showSaved() {
+        const el = document.getElementById('save-indicator');
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 1500);
+    }
+
+    function buildRoster() {
+        allPlayers = new Set();
+        for (const s of Object.values(sessions)) {
+            if (s.present) Object.keys(s.present).forEach(p => allPlayers.add(p));
+        }
+    }
+
+    // --- TABS ---
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    // --- RENDER ---
+    function render() {
+        renderStats();
+        renderRanking();
+        renderSessions();
+    }
+
+    function getSortedSessions() {
+        return Object.entries(sessions).sort((a, b) => (b[1].date || '').localeCompare(a[1].date || ''));
+    }
+
+    function renderStats() {
+        const entries = Object.values(sessions);
+        const trainings = entries.filter(s => s.type === 'training');
+        const games = entries.filter(s => s.type === 'spiel');
+        const totalSessions = entries.length;
+
+        document.getElementById('stat-sessions').textContent = trainings.length;
+        document.getElementById('stat-games').textContent = games.length;
+        document.getElementById('stat-players').textContent = allPlayers.size;
+
+        if (totalSessions > 0 && allPlayers.size > 0) {
+            let totalPresent = 0;
+            entries.forEach(s => { totalPresent += Object.keys(s.present || {}).length; });
+            const avg = Math.round((totalPresent / (totalSessions * allPlayers.size)) * 100);
+            document.getElementById('stat-avg').textContent = avg + '%';
+        } else {
+            document.getElementById('stat-avg').textContent = '—';
+        }
+    }
+
+    function renderRanking() {
+        const entries = Object.values(sessions);
+        const trainings = entries.filter(s => s.type === 'training');
+        const games = entries.filter(s => s.type === 'spiel');
+        const totalAll = entries.length;
+
+        const stats = [];
+        for (const name of allPlayers) {
+            const tPresent = trainings.filter(s => s.present && s.present[name]).length;
+            const gPresent = games.filter(s => s.present && s.present[name]).length;
+            const tPct = trainings.length > 0 ? Math.round((tPresent / trainings.length) * 100) : 0;
+            const gPct = games.length > 0 ? Math.round((gPresent / games.length) * 100) : 0;
+            const totalPresent = tPresent + gPresent;
+            const totalPct = totalAll > 0 ? Math.round((totalPresent / totalAll) * 100) : 0;
+            stats.push({ name, tPresent, tTotal: trainings.length, tPct, gPresent, gTotal: games.length, gPct, totalPresent, totalAll, totalPct });
+        }
+
+        stats.sort((a, b) => b.totalPct - a.totalPct || a.name.localeCompare(b.name));
+
+        const tbody = document.getElementById('ranking-body');
+        tbody.innerHTML = stats.map((s, i) => {
+            const rank = i + 1;
+            const rankClass = rank <= 3 ? `rank-${rank}` : '';
+            const pctClass = s.totalPct >= 75 ? 'pct-high' : s.totalPct >= 50 ? 'pct-mid' : 'pct-low';
+            const barW = Math.max(2, s.totalPct * 0.6);
+            const kaderId = KADER_IDS[s.name];
+            const nameHtml = kaderId
+                ? `<a href="kader.html#player-${kaderId}" class="player-link">${s.name}</a>`
+                : s.name;
+            return `<tr>
+                <td>${rankClass ? `<span class="rank-badge ${rankClass}">${rank}</span>` : rank}</td>
+                <td class="player-name">${nameHtml}</td>
+                <td class="right">${s.tPresent}/${s.tTotal}</td>
+                <td class="right">${s.tPct}%</td>
+                <td class="right">${s.gPresent}/${s.gTotal}</td>
+                <td class="right">${s.gTotal > 0 ? s.gPct + '%' : '—'}</td>
+                <td class="right"><span class="pct-bar ${pctClass}" style="width:${barW}px"></span>${s.totalPct}%</td>
+            </tr>`;
+        }).join('');
+    }
+
+    function renderSessions() {
+        const sorted = getSortedSessions();
+        const grid = document.getElementById('session-grid');
+
+        grid.innerHTML = sorted.map(([id, s]) => {
+            const presentNames = Object.keys(s.present || {}).sort((a, b) => a.localeCompare(b));
+            const d = s.date ? formatDate(s.date) : '—';
+            const typeClass = s.type === 'spiel' ? 'type-spiel' : 'type-training';
+            const typeLabel = s.type === 'spiel' ? 'Spiel' : 'Training';
+
+            const absentEntries = Object.entries(s.absent || {}).sort((a, b) => a[0].localeCompare(b[0]));
+            const absentCount = absentEntries.length;
+
+            return `<div class="session-card" id="session-${id}">
+                <div class="session-header">
+                    <span class="session-date">${d}</span>
+                    <span class="session-type ${typeClass}">${typeLabel}</span>
+                </div>
+                <div class="session-count">${presentNames.length} zugesagt${absentCount > 0 ? ` · <span style="color:var(--danger)">${absentCount} abgesagt</span>` : ''}</div>
+                <div class="session-players">${presentNames.map(n => {
+                    const kid = KADER_IDS[n];
+                    return kid
+                        ? `<span class="sp-tag"><a href="kader.html#player-${kid}">${n}</a></span>`
+                        : `<span class="sp-tag">${n}</span>`;
+                }).join('')}</div>
+                ${absentCount > 0 ? `<div style="margin-top:0.6rem">
+                    <div style="font-size:0.75rem;color:var(--danger);font-weight:600;margin-bottom:0.3rem">Absagen</div>
+                    <div class="session-players">${absentEntries.map(([n, reason]) => {
+                        const kid = KADER_IDS[n];
+                        const label = reason ? `${n} <span style="color:var(--text-muted);font-style:italic">(${reason})</span>` : n;
+                        const linkLabel = reason ? `<a href="kader.html#player-${kid}">${n}</a> <span style="color:var(--text-muted);font-style:italic">(${reason})</span>` : `<a href="kader.html#player-${kid}">${n}</a>`;
+                        return kid
+                            ? `<span class="sp-tag sp-absent">${linkLabel}</span>`
+                            : `<span class="sp-tag sp-absent">${label}</span>`;
+                    }).join('')}</div>
+                </div>` : ''}
+                <div class="session-actions">
+                    <button class="btn-sm" onclick="editSession('${id}')">Bearbeiten</button>
+                    <button class="btn-sm danger" onclick="deleteSession('${id}')">Löschen</button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function formatDate(dateStr) {
+        const [y, m, d] = dateStr.split('-');
+        const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+        const dt = new Date(dateStr);
+        return `${days[dt.getDay()]}, ${d}.${m}.${y}`;
+    }
+
+    // --- ACTIONS ---
+    function addSession() {
+        const date = document.getElementById('new-date').value;
+        const type = document.getElementById('new-type').value;
+        if (!date) { alert('Bitte Datum eingeben'); return; }
+
+        const id = date.replace(/-/g, '') + '_' + type;
+        if (sessions[id]) { alert('Diese Einheit existiert bereits'); return; }
+
+        sessions[id] = { date, type, present: {} };
+        saveSession(id);
+        // Switch to edit mode for this session
+        setTimeout(() => editSession(id), 300);
+    }
+
+    function editSession(id) {
+        const s = sessions[id];
+        if (!s) return;
+
+        const card = document.getElementById('session-' + id);
+        if (!card) return;
+        if (card.querySelector('.edit-panel')) return; // already editing
+
+        const present = s.present || {};
+        const rosterSorted = [...allPlayers].sort((a, b) => a.localeCompare(b));
+
+        const panel = document.createElement('div');
+        panel.className = 'edit-panel';
+        panel.style.marginTop = '1rem';
+        panel.style.paddingTop = '1rem';
+        panel.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+
+        panel.innerHTML = `
+            <div class="toggle-btns">
+                <button class="btn-sm" onclick="toggleAll('${id}', true)">Alle an</button>
+                <button class="btn-sm" onclick="toggleAll('${id}', false)">Alle aus</button>
+            </div>
+            <div class="player-checklist" id="checklist-${id}">
+                ${rosterSorted.map(name => {
+                    const checked = present[name] ? 'checked' : '';
+                    return `<div class="pc-item ${checked}" onclick="togglePlayer('${id}','${name.replace(/'/g, "\\'")}',this)">
+                        <div class="pc-check">${present[name] ? '✓' : ''}</div>
+                        <span>${name}</span>
+                    </div>`;
+                }).join('')}
+            </div>
+            <div class="add-player-row">
+                <input type="text" id="new-player-${id}" placeholder="Neuen Spieler hinzufügen">
+                <button class="btn-sm" onclick="addNewPlayer('${id}')">+</button>
+            </div>
+            <div style="margin-top:0.8rem">
+                <button class="btn-primary" onclick="closeEdit('${id}')">Fertig</button>
+            </div>
+        `;
+
+        card.appendChild(panel);
+    }
+
+    function togglePlayer(sessionId, name, el) {
+        const s = sessions[sessionId];
+        if (!s.present) s.present = {};
+
+        if (s.present[name]) {
+            delete s.present[name];
+            el.classList.remove('checked');
+            el.querySelector('.pc-check').textContent = '';
+        } else {
+            s.present[name] = true;
+            el.classList.add('checked');
+            el.querySelector('.pc-check').textContent = '✓';
+        }
+        saveSession(sessionId);
+    }
+
+    function toggleAll(sessionId, state) {
+        const s = sessions[sessionId];
+        if (!s.present) s.present = {};
+
+        if (state) {
+            allPlayers.forEach(name => { s.present[name] = true; });
+        } else {
+            s.present = {};
+        }
+        saveSession(sessionId);
+        // Re-render the checklist
+        const card = document.getElementById('session-' + sessionId);
+        const panel = card.querySelector('.edit-panel');
+        if (panel) panel.remove();
+        setTimeout(() => editSession(sessionId), 50);
+    }
+
+    function addNewPlayer(sessionId) {
+        const input = document.getElementById('new-player-' + sessionId);
+        const raw = input.value.trim();
+        if (!raw) return;
+        const name = resolvePlayerName(raw);
+
+        allPlayers.add(name);
+        if (!sessions[sessionId].present) sessions[sessionId].present = {};
+        sessions[sessionId].present[name] = true;
+        saveSession(sessionId);
+
+        // Re-render edit panel
+        const card = document.getElementById('session-' + sessionId);
+        const panel = card.querySelector('.edit-panel');
+        if (panel) panel.remove();
+        setTimeout(() => editSession(sessionId), 50);
+    }
+
+    function closeEdit(sessionId) {
+        const card = document.getElementById('session-' + sessionId);
+        const panel = card.querySelector('.edit-panel');
+        if (panel) panel.remove();
+        render();
+    }
+
+    function deleteSession(id) {
+        if (!confirm('Einheit wirklich löschen?')) return;
+        delete sessions[id];
+        db.ref('trainingsbeteiligung/' + id).remove();
+        localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+        buildRoster();
+        render();
+    }
+
+
+    // --- INIT ---
+    checkLogin();
+
+    // Set default date for new session form
+    document.getElementById('new-date').valueAsDate = new Date();
+</script>
+</body>
+</html>

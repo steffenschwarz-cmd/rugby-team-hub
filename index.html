@@ -789,8 +789,58 @@
             background: rgba(255,255,255,0.08);
         }
 
+        .nav-sep {
+            color: rgba(255,255,255,0.15);
+            margin: 0 0.2rem;
+            font-size: 0.7rem;
+        }
+
+        /* Section Nav (Abschnitts-Anker, nur index.html) */
+        .section-nav {
+            position: sticky;
+            top: 42px;
+            z-index: 99;
+            background: rgba(18,28,42,0.94);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 0.4rem 1rem;
+            display: none;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .section-nav.visible { display: flex; }
+
+        .section-nav-inner {
+            display: flex;
+            gap: 0.4rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.65rem;
+            border-radius: 12px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .section-nav a:hover, .section-nav a.active {
+            color: var(--text);
+            background: rgba(46,204,113,0.12);
+            border-color: rgba(46,204,113,0.3);
+        }
+
         html { scroll-behavior: smooth; }
-        section[id] { scroll-margin-top: 50px; }
+        section[id] { scroll-margin-top: 90px; }
     </style>
 </head>
 <body>
@@ -810,9 +860,27 @@
         </div>
     </div>
 
-    <!-- STICKY NAV -->
+    <!-- STICKY NAV: Seiten-Links (identisch mit anderen Seiten) -->
     <nav class="topnav app-content" id="topnav">
         <div class="topnav-inner">
+            <a href="index.html" class="active">Hub</a>
+            <span class="nav-sep">|</span>
+            <a href="kader.html">Kader</a>
+            <a href="aufstellung.html">Aufstellung</a>
+            <a href="mannschaftsrat.html">Mannschaftsrat</a>
+            <span class="nav-sep">|</span>
+            <a href="spielzuege.html">Spielzüge</a>
+            <a href="uebungen.html">Übungen</a>
+            <a href="trainingsplan.html">Training</a>
+            <a href="videos.html">Videos</a>
+            <span class="nav-sep">|</span>
+            <a href="trainingsbeteiligung.html">Beteiligung</a>
+        </div>
+    </nav>
+
+    <!-- SECTION NAV: Abschnitts-Anker (nur index.html) -->
+    <div class="section-nav app-content" id="section-nav">
+        <div class="section-nav-inner">
             <a href="#sec-spielplan">Spielplan</a>
             <a href="#sec-termine">Termine</a>
             <a href="#sec-training">Training</a>
@@ -821,12 +889,8 @@
             <a href="#sec-events">Events</a>
             <a href="#sec-rat">Mannschaftsrat</a>
             <a href="#sec-teams">Teams</a>
-            <span style="color:rgba(255,255,255,0.15);margin:0 0.2rem;font-size:0.7rem">|</span>
-            <a href="kader.html">Kader</a>
-            <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
         </div>
-    </nav>
+    </div>
 
     <div class="app-content" id="app-content">
 
@@ -1777,6 +1841,12 @@
         // Zum Aktualisieren: neuen Eintrag oben einfügen
         const attendanceData = [
             {
+                kw: 9, label: 'KW 9', range: '24.–27.02.',
+                sessions: [
+                    { day: 'Mo', date: '24.02.', yes: 22, maybe: 0, no: 14 },
+                ]
+            },
+            {
                 kw: 8, label: 'KW 8', range: '18.–20.02.',
                 sessions: [
                     { day: 'Mi', date: '18.02.', yes: 13, maybe: 3, no: 16 },
@@ -1874,6 +1944,7 @@
             document.getElementById('app-content').classList.add('visible');
             document.getElementById('app-footer').classList.add('visible');
             document.getElementById('topnav').classList.add('visible');
+            document.getElementById('section-nav').classList.add('visible');
             // Init app
             updateCountdown();
             generateSchedule();
@@ -1901,6 +1972,20 @@
 
         // Check if already logged in
         checkLogin();
+
+        // Section-Nav: Active-State beim Scrollen
+        const secNavLinks = document.querySelectorAll('.section-nav a');
+        const sectionIds = Array.from(secNavLinks).map(a => a.getAttribute('href').slice(1));
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const link = document.querySelector(`.section-nav a[href="#${entry.target.id}"]`);
+                if (link) link.classList.toggle('active', entry.isIntersecting);
+            });
+        }, { rootMargin: '-90px 0px -60% 0px' });
+        sectionIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
     </script>
 
 </body>

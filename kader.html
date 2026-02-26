@@ -189,6 +189,11 @@
             background: var(--bg-card-hover);
             border-color: rgba(255,255,255,0.12);
         }
+        .player-card.highlighted {
+            border-color: var(--accent);
+            background: rgba(46,204,113,0.06);
+            box-shadow: 0 0 0 2px rgba(46,204,113,0.2);
+        }
 
         .player-avatar {
             width: 40px; height: 40px; border-radius: 50%;
@@ -226,6 +231,24 @@
         .badge-vc { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
 
         .player-badges { display: flex; gap: 0.3rem; flex-shrink: 0; }
+
+        /* Attendance stats */
+        .player-attendance {
+            display: flex; gap: 0.6rem; margin-top: 0.2rem;
+        }
+        .att-stat {
+            font-size: 0.7rem; color: var(--text-muted);
+        }
+        .att-stat strong { color: var(--text); }
+        .att-pct { font-weight: 700; }
+        .att-pct.high { color: var(--accent); }
+        .att-pct.mid { color: var(--warning); }
+        .att-pct.low { color: var(--danger); }
+        .att-link {
+            font-size: 0.7rem; color: var(--accent); text-decoration: none;
+            opacity: 0.7; transition: opacity 0.2s;
+        }
+        .att-link:hover { opacity: 1; }
 
         /* Empty state */
         .empty-state {
@@ -273,6 +296,13 @@
             <a href="kader.html" class="active">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
             <a href="mannschaftsrat.html">Mannschaftsrat</a>
+            <span class="nav-sep">|</span>
+            <a href="spielzuege.html">Spielzüge</a>
+            <a href="uebungen.html">Übungen</a>
+            <a href="trainingsplan.html">Training</a>
+            <a href="videos.html">Videos</a>
+            <span class="nav-sep">|</span>
+            <a href="trainingsbeteiligung.html">Beteiligung</a>
         </div>
     </nav>
 
@@ -368,6 +398,7 @@
         { id:1, v:'Shawn', n:'Ahrens', geb:'2007-03-08', verein:'H/V', pos:['sh','wg'], u18:false },
         { id:49, v:'Silas', n:'Rathke', geb:'2007-04-12', verein:'H/V', pos:['zr','dr'], u18:false },
         { id:8, v:'Simon', n:'Csehan', geb:'2004-07-04', verein:'?', pos:['wg'], u18:false },
+        { id:69, v:'Simon', n:'Reichelt', geb:null, verein:'HN', pos:['wg'], u18:false },
         { id:57, v:'Steffen', n:'Schwarz', geb:'1981-03-05', verein:'HN', pos:['er'], u18:false },
         { id:43, v:'Steven', n:'Müller', geb:'2001-02-24', verein:'H/V', pos:['wg'], u18:false },
         { id:53, v:'Theo', n:'Schmidt', geb:'2003-12-17', verein:'HN', pos:['fb','ct'], u18:false },
@@ -397,6 +428,42 @@
 
     function getInitials(p) {
         return (p.v.charAt(0) + p.n.charAt(0)).toUpperCase();
+    }
+
+    // --- ATTENDANCE DATA ---
+    let attendanceData = {}; // { playerFullName: { training: N, trainingTotal: N, spiel: N, spielTotal: N } }
+
+    function loadAttendance() {
+        const local = localStorage.getItem('sgrhn_beteiligung');
+        if (!local) return;
+        let sessions;
+        try { sessions = JSON.parse(local); } catch(e) { return; }
+
+        const entries = Object.values(sessions);
+        const trainings = entries.filter(s => s.type === 'training');
+        const games = entries.filter(s => s.type === 'spiel');
+
+        // Build lookup: full name → stats
+        const allNames = new Set();
+        entries.forEach(s => {
+            if (s.present) Object.keys(s.present).forEach(n => allNames.add(n));
+        });
+
+        for (const name of allNames) {
+            const tPresent = trainings.filter(s => s.present && s.present[name]).length;
+            const gPresent = games.filter(s => s.present && s.present[name]).length;
+            attendanceData[name] = {
+                training: tPresent,
+                trainingTotal: trainings.length,
+                spiel: gPresent,
+                spielTotal: games.length
+            };
+        }
+    }
+
+    function getAttendanceForPlayer(p) {
+        const fullName = p.v + ' ' + p.n;
+        return attendanceData[fullName] || null;
     }
 
     // --- STATE ---
@@ -445,12 +512,26 @@
             }
             if (p.u18) badges += '<span class="badge badge-u18">U18</span>';
 
+            // Attendance stats
+            const att = getAttendanceForPlayer(p);
+            let attHtml = '';
+            if (att) {
+                const tPct = att.trainingTotal > 0 ? Math.round((att.training / att.trainingTotal) * 100) : 0;
+                const gPct = att.spielTotal > 0 ? Math.round((att.spiel / att.spielTotal) * 100) : 0;
+                const tClass = tPct >= 75 ? 'high' : tPct >= 50 ? 'mid' : 'low';
+                attHtml = `<div class="player-attendance">
+                    <span class="att-stat">Training: <strong>${att.training}/${att.trainingTotal}</strong> <span class="att-pct ${tClass}">${tPct}%</span></span>
+                    ${att.spielTotal > 0 ? `<span class="att-stat">Spiele: <strong>${att.spiel}/${att.spielTotal}</strong> <span class="att-pct">${gPct}%</span></span>` : ''}
+                </div>`;
+            }
+
             return `
-                <div class="player-card">
+                <div class="player-card" id="player-${p.id}">
                     <div class="player-avatar">${getInitials(p)}</div>
                     <div class="player-info">
                         <div class="player-name">${p.v} ${p.n}</div>
-                        <div class="player-meta">${ageStr}</div>
+                        <div class="player-meta">${ageStr}${attHtml ? '' : ''}</div>
+                        ${attHtml}
                     </div>
                     <div class="player-badges">${badges}</div>
                 </div>
@@ -483,9 +564,25 @@
     function unlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        loadAttendance();
         renderStats();
         renderPlayers();
+        scrollToHash();
     }
+
+    function scrollToHash() {
+        const hash = window.location.hash;
+        if (!hash || !hash.startsWith('#player-')) return;
+        setTimeout(() => {
+            const el = document.getElementById(hash.slice(1));
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlighted');
+            setTimeout(() => el.classList.remove('highlighted'), 3000);
+        }, 200);
+    }
+
+    window.addEventListener('hashchange', scrollToHash);
 
     async function checkLogin() {
         const stored = localStorage.getItem('sgrhn_rat_auth');
