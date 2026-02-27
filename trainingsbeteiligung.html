@@ -618,6 +618,26 @@
                 'Norman Guido Kranert': 'Verletzung', 'Oliver Tschetsch': 'Krank',
                 'Paul Zyparth': '', 'Ronny Sager': '', 'Tobias Ehrlich': 'Arbeiten auswärts'
             }
+        },
+        '20260227_training': {
+            date: '2026-02-27',
+            type: 'training',
+            present: {
+                'Sebastian Hildebrandt': true, 'Ben Johnston': true, 'Christopher Bunge': true, 'Jonas Hinz': true,
+                'Julius Laetsch': true, 'Kevin Pilz': true, 'Kimi Döpke': true, 'Lukas Laetsch': true,
+                'Matti Erik Eschwe': true, 'Maximilian Hildebrandt': true, 'Max Langer': true, 'Moritz Janosch': true,
+                'Paul Zyparth': true, 'Philip Simon': true, 'Rico Schomacker': true, 'Shawn Ahrens': true,
+                'Silas Rathke': true, 'Theo Schmidt': true, 'Tobias Ehrlich': true, 'Wolf-Dietrich Hildebrandt': true,
+                'Kai Friesicke': true
+            },
+            absent: {
+                'Angelo Galster': 'Arbeit', 'Anton Hanetzok': '', 'Daniel Kainer': 'Familie',
+                'Enrico Marco Stenzel': 'Tochter', 'Felix Berg': 'Verletzt', 'Fynn Lauer': 'Uni',
+                'Gustav Palm': 'Geburtstag', 'Joshua Walker': 'Arbeit', 'Lucas Eichler': '',
+                'Marcel Grabow': 'Arbeit', 'Maurice Peter Sankeralli': '', 'Moritz Gollnick': '',
+                'Norman Guido Kranert': 'Arbeit', 'Oliver Tschetsch': 'Krank', 'Paul Chukwu': 'Verletzt',
+                'Ronny Sager': 'Ohne Kontakt', 'Timo Schmidt': '', 'Robert Woelki': 'Krank'
+            }
         }
     };
 
@@ -674,6 +694,13 @@
             sessions['20260224_training'].absent = SEED_DATA['20260224_training'].absent;
             localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
             db.ref('trainingsbeteiligung/20260224_training/absent').set(sessions['20260224_training'].absent).catch(() => {});
+        }
+
+        // 3e) Patch: 27.02. Training einfügen
+        if (!sessions['20260227_training']) {
+            sessions['20260227_training'] = SEED_DATA['20260227_training'];
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260227_training').set(sessions['20260227_training']).catch(() => {});
         }
 
         // 3) Render immediately
