@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SG Rugbyunion Hohen Neuendorf — Team Hub</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* Hero */
         .hero {
@@ -1674,16 +1675,6 @@
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
 
-        // --- LOGIN GATE ---
-        // SHA-256 hash of password (not plaintext in source)
-        const PW_HASH = 'a]PLACEHOLDER';
-
-        async function hashPw(pw) {
-            const data = new TextEncoder().encode(pw);
-            const buf = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
         // Trainingsbeteiligung — Daten pro Woche (neueste zuerst)
         // Zum Aktualisieren: neuen Eintrag oben einfügen
         const attendanceData = [
@@ -1776,16 +1767,6 @@
             }
         }
 
-        async function checkLogin() {
-            const stored = localStorage.getItem('sgrhn_auth');
-            if (!stored) return;
-            if (stored === await hashPw('ScrumHN!2026')) {
-                unlock();
-            } else {
-                localStorage.removeItem('sgrhn_auth');
-            }
-        }
-
         function unlock() {
             document.getElementById('login-gate').classList.add('hidden');
             document.getElementById('app-content').classList.add('visible');
@@ -1799,26 +1780,7 @@
             setInterval(updateCountdown, 60000);
         }
 
-        async function tryLogin() {
-            const pw = document.getElementById('login-pw').value;
-            const hash = await hashPw(pw);
-            const correctHash = await hashPw('ScrumHN!2026');
-            if (hash === correctHash) {
-                localStorage.setItem('sgrhn_auth', hash);
-                unlock();
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-                document.getElementById('login-pw').value = '';
-            }
-        }
-
-        document.getElementById('login-btn').addEventListener('click', tryLogin);
-        document.getElementById('login-pw').addEventListener('keydown', e => {
-            if (e.key === 'Enter') tryLogin();
-        });
-
-        // Check if already logged in
-        checkLogin();
+        setupLogin({ pwHash: HASH_SCRUM, storageKey: 'sgrhn_auth', onUnlock: unlock });
 
         // Section-Nav: Active-State beim Scrollen
         const secNavLinks = document.querySelectorAll('.section-nav a');

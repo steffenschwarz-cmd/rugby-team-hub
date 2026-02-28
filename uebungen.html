@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Übungen — SG Rugbyunion Hohen Neuendorf</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* Container override */
         .container { max-width: 900px; padding: 1.2rem; }
@@ -236,58 +237,9 @@
     function toNY(py) { return (py - fY) / fH; }
 
     // ===== FIREBASE =====
-    firebase.initializeApp({
-        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
-        authDomain: "rugby-team-hub.firebaseapp.com",
-        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "rugby-team-hub",
-        storageBucket: "rugby-team-hub.firebasestorage.app",
-        messagingSenderId: "484420740610",
-        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
-    });
-    const db = firebase.database();
-    firebase.auth().signInAnonymously().catch(e => console.error('Auth:', e));
+    const db = initFirebase();
 
     // ===== AUTH =====
-    async function hashPw(pw) {
-        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-    async function tryLogin() {
-        const pw = document.getElementById('login-pw').value;
-        if (await hashPw(pw) === await hashPw('RatPack#26')) {
-            localStorage.setItem('sgrhn_rat_auth', await hashPw(pw));
-            unlock();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-            document.getElementById('login-pw').value = '';
-        }
-    }
-    async function checkLogin() {
-        const s = localStorage.getItem('sgrhn_rat_auth');
-        if (s && s === await hashPw('RatPack#26')) unlock();
-    }
-    function unlock() {
-        document.getElementById('login-gate').classList.add('hidden');
-        document.getElementById('topnav').classList.add('visible');
-        document.getElementById('main-content').classList.add('visible');
-        document.getElementById('trainer-bar').style.display = 'flex';
-        checkTrainerAuth();
-        loadDrills();
-        resizeCanvas();
-    }
-    async function checkTrainerAuth() {
-        const s = localStorage.getItem('sgrhn_trainer_auth');
-        if (s && s === await hashPw('7831')) enableTrainer();
-    }
-    async function promptTrainerPIN() {
-        const pin = prompt('Trainer-PIN eingeben:');
-        if (pin === null) return;
-        if (await hashPw(pin) === await hashPw('7831')) {
-            localStorage.setItem('sgrhn_trainer_auth', await hashPw('7831'));
-            enableTrainer();
-        } else { alert('Falscher PIN.'); }
-    }
     function enableTrainer() {
         trainerMode = true;
         document.getElementById('trainer-info').textContent = 'Trainer-Modus aktiv';
@@ -1212,12 +1164,23 @@
     }
 
     // ===== EVENTS =====
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
     window.addEventListener('resize', resizeCanvas);
 
     // ===== INIT =====
-    checkLogin();
+    const trainer = setupTrainerPIN({ onEnable: enableTrainer });
+
+    setupLogin({ onUnlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        document.getElementById('topnav').classList.add('visible');
+        document.getElementById('main-content').classList.add('visible');
+        document.getElementById('trainer-bar').style.display = 'flex';
+        firebase.auth().signInAnonymously().then(() => {
+            trainer.checkTrainerAuth(); loadDrills(); resizeCanvas();
+        }).catch(err => {
+            console.warn('Firebase Auth failed, loading from localStorage', err);
+            trainer.checkTrainerAuth(); loadDrills(); resizeCanvas();
+        });
+    }});
     </script>
 </body>
 </html>

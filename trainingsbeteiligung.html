@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainingsbeteiligung — SG Rugby Team Hub</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* LOGIN GATE overrides */
         .login-gate {
@@ -359,17 +360,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
-    // --- FIREBASE ---
-    firebase.initializeApp({
-        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
-        authDomain: "rugby-team-hub.firebaseapp.com",
-        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "rugby-team-hub",
-        storageBucket: "rugby-team-hub.firebasestorage.app",
-        messagingSenderId: "484420740610",
-        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
-    });
-    const db = firebase.database();
+    const db = initFirebase();
 
     let trainerMode = false;
     let sessions = {};
@@ -377,18 +368,7 @@
     // Known roster (grows automatically from data)
     let allPlayers = new Set();
 
-    // --- TRAINER PIN ---
-    async function hashPw(pw) {
-        const data = new TextEncoder().encode(pw);
-        const buf = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function checkTrainerAuth() {
-        const stored = localStorage.getItem('sgrhn_trainer_auth');
-        if (stored === await hashPw('7831')) enableTrainer();
-    }
-
+    // --- TRAINER ---
     function enableTrainer() {
         trainerMode = true;
         document.getElementById('main-content').classList.add('trainer-active');
@@ -403,51 +383,19 @@
         render();
     }
 
-    async function promptTrainerPIN() {
-        const pin = prompt('Trainer-PIN eingeben:');
-        if (pin === null) return;
-        if (await hashPw(pin) === await hashPw('7831')) {
-            localStorage.setItem('sgrhn_trainer_auth', await hashPw(pin));
-            enableTrainer();
-        } else {
-            alert('Falscher PIN.');
-        }
-    }
+    const trainer = setupTrainerPIN({ onEnable: enableTrainer });
 
     // --- LOGIN ---
-    function unlock() {
+    setupLogin({ onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
         firebase.auth().signInAnonymously().then(() => {
-            loadData();
-            checkTrainerAuth();
+            loadData(); trainer.checkTrainerAuth();
         }).catch(err => {
             console.warn('Firebase Auth failed, loading from localStorage', err);
-            loadData();
-            checkTrainerAuth();
+            loadData(); trainer.checkTrainerAuth();
         });
-    }
-
-    async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_rat_auth');
-        if (!stored) return;
-        if (stored === await hashPw('RatPack#26')) unlock();
-        else localStorage.removeItem('sgrhn_rat_auth');
-    }
-
-    async function tryLogin() {
-        const pw = document.getElementById('login-pw').value;
-        if (await hashPw(pw) === await hashPw('RatPack#26')) {
-            localStorage.setItem('sgrhn_rat_auth', await hashPw(pw));
-            unlock();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-            document.getElementById('login-pw').value = '';
-        }
-    }
-
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    }});
 
     // --- NAME MAP: SpielerPlus short names → full kader names ---
     const NAME_MAP = {
@@ -691,12 +639,6 @@
         db.ref('trainingsbeteiligung/' + id).set(sessions[id]);
         localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
         showSaved();
-    }
-
-    function showSaved() {
-        const el = document.getElementById('save-indicator');
-        el.classList.add('show');
-        setTimeout(() => el.classList.remove('show'), 1500);
     }
 
     function buildRoster() {
@@ -963,8 +905,6 @@
 
 
     // --- INIT ---
-    checkLogin();
-
     // Set default date for new session form
     document.getElementById('new-date').valueAsDate = new Date();
 </script>

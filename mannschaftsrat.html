@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mannschaftsrat — SG Rugbyunion Hohen Neuendorf</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* Container override */
         .container { max-width: 900px; }
@@ -403,17 +404,7 @@
     </footer>
 
 <script>
-    // --- FIREBASE ---
-    firebase.initializeApp({
-        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
-        authDomain: "rugby-team-hub.firebaseapp.com",
-        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "rugby-team-hub",
-        storageBucket: "rugby-team-hub.firebasestorage.app",
-        messagingSenderId: "484420740610",
-        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
-    });
-    const db = firebase.database();
+    const db = initFirebase();
 
     // --- MANNSCHAFTSRAT MEMBERS ---
     const members = [
@@ -499,9 +490,7 @@
         });
         // LocalStorage als Fallback
         localStorage.setItem('sgrhn_rat_assign', JSON.stringify(assignments));
-        const ind = document.getElementById('save-indicator');
-        ind.classList.add('show');
-        setTimeout(() => ind.classList.remove('show'), 1500);
+        showSaved();
     }
 
     function load() {
@@ -701,15 +690,9 @@
     });
 
     // --- LOGIN ---
-    async function hashPw(pw) {
-        const data = new TextEncoder().encode(pw);
-        const buf = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
     function unlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
-        // Firebase Anonymous Auth, dann Daten laden
         firebase.auth().signInAnonymously().then(() => {
             load();
             renderAll();
@@ -719,27 +702,7 @@
             renderAll();
         });
     }
-    async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_rat_auth');
-        if (!stored) { localStorage.removeItem('sgrhn_auth'); return; }
-        if (stored === await hashPw('RatPack#26')) unlock();
-        else localStorage.removeItem('sgrhn_rat_auth');
-    }
-    async function tryLogin() {
-        const pw = document.getElementById('login-pw').value;
-        const hash = await hashPw(pw);
-        const correctHash = await hashPw('RatPack#26');
-        if (hash === correctHash) {
-            localStorage.setItem('sgrhn_rat_auth', hash);
-            unlock();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-            document.getElementById('login-pw').value = '';
-        }
-    }
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-    checkLogin();
+    setupLogin({ onUnlock: unlock });
     renderFilters();
 </script>
 </body>

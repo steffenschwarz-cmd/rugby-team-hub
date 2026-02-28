@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spielzüge — SG Rugbyunion Hohen Neuendorf</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* Filter */
         .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
@@ -335,17 +336,7 @@
     </div>
 
 <script>
-    // --- FIREBASE ---
-    firebase.initializeApp({
-        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
-        authDomain: "rugby-team-hub.firebaseapp.com",
-        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "rugby-team-hub",
-        storageBucket: "rugby-team-hub.firebasestorage.app",
-        messagingSenderId: "484420740610",
-        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
-    });
-    const db = firebase.database();
+    const db = initFirebase();
 
     let plays = {};
     let trainerMode = false;
@@ -1191,13 +1182,6 @@
         localStorage.setItem('sgrhn_spielzuege', JSON.stringify(plays));
     }
 
-    function showSaved(text) {
-        const ind = document.getElementById('save-indicator');
-        ind.textContent = text || 'Gespeichert';
-        ind.classList.add('show');
-        setTimeout(() => ind.classList.remove('show'), 2000);
-    }
-
     // --- FILTER ---
     document.getElementById('filter-row').addEventListener('click', e => {
         const btn = e.target.closest('.filter-btn');
@@ -1247,18 +1231,7 @@
         });
     }
 
-    // --- TRAINER PIN ---
-    async function hashPw(pw) {
-        const data = new TextEncoder().encode(pw);
-        const buf = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    async function checkTrainerAuth() {
-        const stored = localStorage.getItem('sgrhn_trainer_auth');
-        if (stored === await hashPw('7831')) enableTrainer();
-    }
-
+    // --- TRAINER ---
     function enableTrainer() {
         trainerMode = true;
         document.getElementById('main-content').classList.add('trainer-active');
@@ -1273,51 +1246,19 @@
         renderList();
     }
 
-    async function promptTrainerPIN() {
-        const pin = prompt('Trainer-PIN eingeben:');
-        if (pin === null) return;
-        if (await hashPw(pin) === await hashPw('7831')) {
-            localStorage.setItem('sgrhn_trainer_auth', await hashPw('7831'));
-            enableTrainer();
-        } else {
-            alert('Falscher PIN.');
-        }
-    }
+    const trainer = setupTrainerPIN({ onEnable: enableTrainer });
 
     // --- LOGIN ---
-    function unlock() {
+    setupLogin({ onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
         firebase.auth().signInAnonymously().then(() => {
-            loadData();
-            checkTrainerAuth();
+            loadData(); trainer.checkTrainerAuth();
         }).catch(err => {
             console.warn('Firebase Auth failed, loading from localStorage', err);
-            loadData();
-            checkTrainerAuth();
+            loadData(); trainer.checkTrainerAuth();
         });
-    }
-
-    async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_rat_auth');
-        if (!stored) return;
-        if (stored === await hashPw('RatPack#26')) unlock();
-        else localStorage.removeItem('sgrhn_rat_auth');
-    }
-
-    async function tryLogin() {
-        const pw = document.getElementById('login-pw').value;
-        if (await hashPw(pw) === await hashPw('RatPack#26')) {
-            localStorage.setItem('sgrhn_rat_auth', await hashPw('RatPack#26'));
-            unlock();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-            document.getElementById('login-pw').value = '';
-        }
-    }
-
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    }});
 
     // Resize
     window.addEventListener('resize', () => { if (selectedPlayId) resizeCanvas(); });
@@ -1332,7 +1273,6 @@
         if (e.key === ' ') { e.preventDefault(); togglePlay(); }
     });
 
-    checkLogin();
 </script>
 </body>
 </html>

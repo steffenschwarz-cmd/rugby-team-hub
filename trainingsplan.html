@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainingsplan — SG Rugbyunion Hohen Neuendorf</title>
     <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
     <style>
         /* Container override */
         .container { max-width: 900px; }
@@ -330,17 +331,7 @@
     </div>
 
 <script>
-    // --- FIREBASE ---
-    firebase.initializeApp({
-        apiKey: "AIzaSyAuHnKJHDOQ5y9nUbmZQV9UlSKO2LQqbvc",
-        authDomain: "rugby-team-hub.firebaseapp.com",
-        databaseURL: "https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "rugby-team-hub",
-        storageBucket: "rugby-team-hub.firebasestorage.app",
-        messagingSenderId: "484420740610",
-        appId: "1:484420740610:web:65c1dbf3aadb985281e91b"
-    });
-    const db = firebase.database();
+    const db = initFirebase();
 
     let sessions = {};
     let refPlays = {};
@@ -621,13 +612,6 @@
         localStorage.setItem('sgrhn_trainingsplaene', JSON.stringify(sessions));
     }
 
-    function showSaved(text) {
-        const ind = document.getElementById('save-indicator');
-        ind.textContent = text || 'Gespeichert';
-        ind.classList.add('show');
-        setTimeout(() => ind.classList.remove('show'), 2000);
-    }
-
     // --- LOAD ---
     function loadData() {
         try {
@@ -664,40 +648,12 @@
         });
     }
 
-    // --- TRAINER PIN ---
-    async function hashPw(pw) {
-        const data = new TextEncoder().encode(pw);
-        const buf = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
+    // --- TRAINER ---
     function enableTrainer() {
         trainerMode = true;
         document.getElementById('main-content').classList.add('trainer-active');
         document.getElementById('fab-add').style.display = 'flex';
         render();
-    }
-
-    // --- LOGIN ---
-    // Step 1: Team login -> show trainer gate
-    function unlock() {
-        document.getElementById('login-gate').classList.add('hidden');
-        firebase.auth().signInAnonymously().catch(err => {
-            console.warn('Firebase Auth failed', err);
-        });
-        // Check if trainer PIN is already stored
-        checkTrainerGate();
-    }
-
-    async function checkTrainerGate() {
-        const stored = localStorage.getItem('sgrhn_trainer_auth');
-        if (stored === await hashPw('7831')) {
-            // Trainer already authenticated -> show content
-            showContent();
-        } else {
-            // Show trainer PIN gate
-            document.getElementById('trainer-gate').style.display = 'flex';
-        }
     }
 
     // Step 2: Trainer PIN -> show actual content
@@ -708,10 +664,20 @@
         loadData();
     }
 
+    async function checkTrainerGate() {
+        const stored = localStorage.getItem('sgrhn_trainer_auth');
+        if (stored === HASH_PIN) {
+            showContent();
+        } else {
+            document.getElementById('trainer-gate').style.display = 'flex';
+        }
+    }
+
     async function tryTrainerPin() {
         const pin = document.getElementById('trainer-pin-input').value;
-        if (await hashPw(pin) === await hashPw('7831')) {
-            localStorage.setItem('sgrhn_trainer_auth', await hashPw('7831'));
+        const hash = await hashPw(pin);
+        if (hash === HASH_PIN) {
+            localStorage.setItem('sgrhn_trainer_auth', hash);
             showContent();
         } else {
             document.getElementById('trainer-pin-error').style.display = 'block';
@@ -722,33 +688,20 @@
     document.getElementById('trainer-pin-btn').addEventListener('click', tryTrainerPin);
     document.getElementById('trainer-pin-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryTrainerPin(); });
 
-    async function checkLogin() {
-        const stored = localStorage.getItem('sgrhn_rat_auth');
-        if (!stored) return;
-        if (stored === await hashPw('RatPack#26')) unlock();
-        else localStorage.removeItem('sgrhn_rat_auth');
-    }
-
-    async function tryLogin() {
-        const pw = document.getElementById('login-pw').value;
-        if (await hashPw(pw) === await hashPw('RatPack#26')) {
-            localStorage.setItem('sgrhn_rat_auth', await hashPw('RatPack#26'));
-            unlock();
-        } else {
-            document.getElementById('login-error').style.display = 'block';
-            document.getElementById('login-pw').value = '';
-        }
-    }
-
-    document.getElementById('login-btn').addEventListener('click', tryLogin);
-    document.getElementById('login-pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+    // --- LOGIN (Step 1: Team login -> show trainer gate) ---
+    setupLogin({ onUnlock() {
+        document.getElementById('login-gate').classList.add('hidden');
+        firebase.auth().signInAnonymously().catch(err => {
+            console.warn('Firebase Auth failed', err);
+        });
+        checkTrainerGate();
+    }});
 
     // Close modals
     document.getElementById('session-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeSessionForm(); });
     document.getElementById('block-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeBlockForm(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeSessionForm(); closeBlockForm(); } });
 
-    checkLogin();
 </script>
 </body>
 </html>
