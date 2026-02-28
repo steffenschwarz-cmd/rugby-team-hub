@@ -318,16 +318,17 @@
     }
 
     function getEmbedUrl(platform, id) {
-        if (platform === 'youtube') return `https://www.youtube.com/embed/${id}`;
-        if (platform === 'vimeo') return `https://player.vimeo.com/video/${id}`;
+        if (platform === 'youtube') return `https://www.youtube-nocookie.com/embed/${id}`;
+        if (platform === 'vimeo') return `https://player.vimeo.com/video/${id}?dnt=1`;
         if (platform === 'loom') return `https://www.loom.com/embed/${id}`;
         return '';
     }
 
-    function getThumbnail(platform, id) {
-        if (platform === 'youtube') return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-        // Vimeo/Loom: no easy static thumb, use placeholder
-        return '';
+    function getPlatformLabel(platform) {
+        if (platform === 'youtube') return 'YouTube';
+        if (platform === 'vimeo') return 'Vimeo';
+        if (platform === 'loom') return 'Loom';
+        return 'Video';
     }
 
     const catLabels = { spielzuege: 'Spielzüge', spielanalyse: 'Spielanalyse', training: 'Training', highlights: 'Highlights' };
@@ -354,13 +355,16 @@
 
         grid.innerHTML = filtered.map(([id, v]) => {
             const parsed = parseVideoUrl(v.url || '');
-            const thumb = parsed ? getThumbnail(parsed.platform, parsed.id) : '';
+            const platformLabel = parsed ? getPlatformLabel(parsed.platform) : 'Video';
             const catClass = 'cat-' + (v.category || 'training');
             const date = v.createdAt ? new Date(v.createdAt).toLocaleDateString('de-DE') : '';
             return `
                 <div class="video-card" onclick="openPlay('${id}')">
                     <div class="video-thumb">
-                        ${thumb ? `<img src="${thumb}" alt="" loading="lazy">` : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;opacity:0.3">&#127909;</div>`}
+                        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.3rem;opacity:0.5;font-size:0.8rem;color:var(--text-muted)">
+                            <span style="font-size:2.5rem">&#9654;</span>
+                            <span>${platformLabel}</span>
+                        </div>
                         <div class="play-overlay"><span>&#9654;</span></div>
                     </div>
                     <div class="video-info">
@@ -388,7 +392,13 @@
         const parsed = parseVideoUrl(v.url || '');
         const modal = document.getElementById('play-modal');
         if (parsed) {
-            document.getElementById('modal-video').innerHTML = `<iframe src="${getEmbedUrl(parsed.platform, parsed.id)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>`;
+            const label = getPlatformLabel(parsed.platform);
+            document.getElementById('modal-video').innerHTML = `
+                <div id="embed-consent" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;background:var(--bg-card);cursor:pointer;" onclick="loadEmbed('${parsed.platform}','${parsed.id}')">
+                    <span style="font-size:3rem">&#9654;</span>
+                    <span style="color:var(--text)">Klicken, um ${label}-Video zu laden</span>
+                    <span style="font-size:0.75rem;color:var(--text-muted)">Beim Laden werden Daten an ${label} übermittelt. <a href="datenschutz.html" style="color:var(--accent-blue)">Mehr erfahren</a></span>
+                </div>`;
         } else {
             document.getElementById('modal-video').innerHTML = `<div style="padding:2rem;text-align:center;color:var(--text-muted)">Video-URL konnte nicht erkannt werden</div>`;
         }
@@ -397,6 +407,10 @@
         const date = v.createdAt ? new Date(v.createdAt).toLocaleDateString('de-DE') : '';
         document.getElementById('modal-meta').textContent = `${catLabels[v.category] || v.category} · ${date}`;
         modal.classList.add('open');
+    }
+
+    function loadEmbed(platform, id) {
+        document.getElementById('modal-video').innerHTML = `<iframe src="${getEmbedUrl(platform, id)}" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>`;
     }
 
     function closePlayModal() {
@@ -537,5 +551,11 @@
     });
 
 </script>
+
+<footer style="text-align:center; padding:2rem 1rem; color:var(--text-muted); font-size:0.85rem;" class="app-content">
+    <a href="index.html" style="color:var(--text-muted);">&larr; Team Hub</a> &middot;
+    <a href="impressum.html" style="color:var(--text-muted);">Impressum</a> &middot;
+    <a href="datenschutz.html" style="color:var(--text-muted);">Datenschutz</a>
+</footer>
 </body>
 </html>
