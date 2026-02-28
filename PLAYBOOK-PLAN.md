@@ -43,6 +43,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 | Navigation in allen Seiten: Übungen-Link | Fertig | 25.02.2026 |
 | Erster Drill: "Ball-Klau" (Warm-Up) als Seed | Fertig | 25.02.2026 |
 | 6 weitere Warm-Up Drills + Farb-Zonen + kontextabhängige Legende | Fertig | 26.02.2026 |
+| CSS-Refactoring: common.css für alle 9 Dark-Theme-Seiten | Fertig | 28.02.2026 |
 | SpielerPlus-Integration (weitere Screenshots) | Offen | — |
 
 ### Changelog
@@ -56,6 +57,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 - **23.02.2026**: Kader ↔ Beteiligung verknüpft: Klickbare Namen in Beteiligung → springt zum Spieler im Kader (mit Highlight). Kader zeigt Training-/Spiel-Statistik pro Spieler.
 - **25.02.2026**: Übungsbibliothek (uebungen.html): Separate Drill-Seite mit Canvas-Visualisierung, Kategoriefilter, Trainer-Modus (CRUD, Drag&Drop), Firebase-Persistenz. Erster Drill: "Ball-Klau" (Warm-Up). Navigation in allen 8 bestehenden Seiten aktualisiert.
 - **26.02.2026**: 6 weitere Warm-Up Drills: Ball-Klau (2 Bälle), Endzone, Schwänzchen-Fangen, Rondo (Rugby), Sumo-Ring, King of the Hill. Farbige Zonen (grün für Endzone), kontextabhängige Legende (Ball/Kegel/Passweg/Sperrzone nur wenn vorhanden), automatische Seed-Migration in Firebase.
+- **28.02.2026**: CSS-Refactoring: Gemeinsame Styles aus 9 Dark-Theme-Seiten in `common.css` ausgelagert. 920 Zeilen Duplikation entfernt, 121 Zeilen zentral. Vorteil: Farben, Navigation, Login, Header, Footer etc. müssen nur noch an einer Stelle geändert werden statt in 9 Dateien.
 
 ## Offene Ideen / Backlog
 
@@ -84,7 +86,8 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 ## Technische Architektur
 
 ### Stack
-- Standalone HTML mit Inline CSS/JS (kein Build-Tool)
+- Standalone HTML mit Inline JS (kein Build-Tool)
+- Gemeinsame CSS-Styles in `common.css` (9 Dark-Theme-Seiten), seitenspezifische Overrides inline
 - Firebase Compat SDK v10.14.1 (app + auth + database)
 - Anonymous Auth nach Team-Login
 - LocalStorage als Offline-Fallback
@@ -135,9 +138,11 @@ rugby-team-hub/
 
 ### Muster für neue Seiten
 Jede Seite folgt dem gleichen Template:
-1. Login-Gate mit SHA-256 Hash von "RatPack#26"
-2. Trainer-Bar mit PIN-Eingabe (7831)
-3. Firebase Init + Anonymous Auth
-4. CRUD-Operationen über Firebase Realtime Database
-5. LocalStorage-Fallback
-6. Responsive Grid/Cards
+1. `<link rel="stylesheet" href="common.css">` im Head einbinden
+2. Login-Gate mit SHA-256 Hash von "RatPack#26"
+3. Trainer-Bar mit PIN-Eingabe (7831)
+4. Seitenspezifische CSS-Overrides im `<style>`-Tag (z.B. Container-Breite)
+5. Firebase Init + Anonymous Auth
+6. CRUD-Operationen über Firebase Realtime Database
+7. LocalStorage-Fallback
+8. Responsive Grid/Cards
