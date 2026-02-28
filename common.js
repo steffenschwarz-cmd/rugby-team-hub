@@ -9,7 +9,7 @@ async function hashPw(pw) {
 
 // --- 2. Pre-computed hashes ---
 const HASH_RAT   = '0d14c977977df8a9154991206a8cbf1b395b1c40ae5902851619f0a6749b8c9b'; // RatPack#26
-const HASH_SCRUM = '59fc319761c6dbb5147b99b9667a9d9c27ac8eb4c168448892d95982274a66ad'; // ScrumHN!2026
+const HASH_SCRUM = '6abd4e9cf71535c17d7ffd07eb6af6bcaebd69885bc0238da35ed17a1842d581'; // ScrumHN!2026
 const HASH_PIN   = '2ac5b691fa275be817b9c8cd1a90d23383ca77c1b20fa4058caf3de6260425d2'; // 7831
 
 // --- 3. Firebase Init ---
