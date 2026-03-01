@@ -347,20 +347,41 @@ function filterNav(role) {
         if (level < minLevel) el.style.display = 'none';
     });
 
-    // Hide group labels whose links are all hidden
-    nav.querySelectorAll('.nav-group-label').forEach(label => {
-        let next = label.nextElementSibling;
-        let hasVisible = false;
-        while (next && !next.classList.contains('nav-group-label')) {
-            if (next.tagName === 'A' && next.style.display !== 'none') {
-                hasVisible = true;
-                break;
-            }
-            next = next.nextElementSibling;
-        }
-        if (!hasVisible) label.style.display = 'none';
+    // Hide entire nav-group if all its dropdown links are hidden
+    nav.querySelectorAll('.nav-group').forEach(group => {
+        const dropdown = group.querySelector('.nav-group-dropdown');
+        if (!dropdown) return;
+        const links = dropdown.querySelectorAll('a');
+        const hasVisible = Array.from(links).some(a => a.style.display !== 'none');
+        if (!hasVisible) group.style.display = 'none';
+    });
+
+    // Mark group labels that contain the active page
+    nav.querySelectorAll('.nav-group').forEach(group => {
+        const hasActive = group.querySelector('.nav-group-dropdown a.active');
+        const label = group.querySelector('.nav-group-label');
+        if (label && hasActive) label.classList.add('has-active');
     });
 }
+
+function toggleNavGroup(labelEl) {
+    // Only on desktop (mobile shows all links)
+    if (window.innerWidth <= 768) return;
+    const group = labelEl.closest('.nav-group');
+    if (!group) return;
+    const wasOpen = group.classList.contains('open');
+    // Close all groups
+    document.querySelectorAll('.nav-group.open').forEach(g => g.classList.remove('open'));
+    // Toggle clicked group
+    if (!wasOpen) group.classList.add('open');
+}
+
+// Close nav dropdowns when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-group')) {
+        document.querySelectorAll('.nav-group.open').forEach(g => g.classList.remove('open'));
+    }
+});
 
 function toggleNav() {
     const inner = document.getElementById('topnav-inner');
