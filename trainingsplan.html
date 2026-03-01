@@ -160,7 +160,7 @@
         /* Print */
         @media print {
             body { background: white; color: black; }
-            .topnav, .trainer-bar, .login-gate, #trainer-gate, .fab, .block-actions, .session-actions,
+            .topnav, .trainer-bar, .login-gate, .fab, .block-actions, .session-actions,
             .save-indicator, .session-chevron { display: none !important; }
             .app-content { display: block !important; }
             .session-body { display: block !important; }
@@ -190,41 +190,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autocomplete="off">
             <button class="login-btn" id="login-btn">Anmelden</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
-        </div>
-    </div>
-
-    <!-- TRAINER-ONLY GATE (after team login) -->
-    <div class="login-gate" id="trainer-gate" style="display:none">
-        <div class="login-box">
-            <h2>Trainingsplan</h2>
-            <div class="login-clubs" style="margin-bottom:0.8rem">Nur für Trainer zugänglich</div>
-            <input type="password" class="login-input" id="trainer-pin-input" placeholder="Trainer-PIN eingeben" autocomplete="off" inputmode="numeric">
-            <button class="login-btn" id="trainer-pin-btn">Freischalten</button>
-            <div class="login-error" id="trainer-pin-error">Falscher PIN</div>
-            <div style="margin-top:1rem">
-                <a href="index.html" style="color:var(--text-muted);font-size:0.8rem;text-decoration:none">Zurück zum Hub</a>
-            </div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html" class="active">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" class="active" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -656,45 +646,18 @@
         render();
     }
 
-    // Step 2: Trainer PIN -> show actual content
-    function showContent() {
-        document.getElementById('trainer-gate').style.display = 'none';
-        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
-        enableTrainer();
-        loadData();
-    }
-
-    async function checkTrainerGate() {
-        const stored = localStorage.getItem('sgrhn_trainer_auth');
-        if (stored === HASH_PIN) {
-            showContent();
-        } else {
-            document.getElementById('trainer-gate').style.display = 'flex';
-        }
-    }
-
-    async function tryTrainerPin() {
-        const pin = document.getElementById('trainer-pin-input').value;
-        const hash = await hashPw(pin);
-        if (hash === HASH_PIN) {
-            localStorage.setItem('sgrhn_trainer_auth', hash);
-            showContent();
-        } else {
-            document.getElementById('trainer-pin-error').style.display = 'block';
-            document.getElementById('trainer-pin-input').value = '';
-        }
-    }
-
-    document.getElementById('trainer-pin-btn').addEventListener('click', tryTrainerPin);
-    document.getElementById('trainer-pin-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryTrainerPin(); });
-
-    // --- LOGIN (Step 1: Team login -> show trainer gate) ---
-    setupLogin({ onUnlock() {
+    // --- LOGIN ---
+    setupLogin({ db, minRole: ROLE_TRAINER, onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
-        firebase.auth().signInAnonymously().catch(err => {
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+        firebase.auth().signInAnonymously().then(() => {
+            enableTrainer();
+            loadData();
+        }).catch(err => {
             console.warn('Firebase Auth failed', err);
+            enableTrainer();
+            loadData();
         });
-        checkTrainerGate();
     }});
 
     // Close modals

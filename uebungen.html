@@ -98,27 +98,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autocomplete="off">
             <button class="login-btn" id="login-btn">Anmelden</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html" class="active">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" class="active" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -130,11 +134,6 @@
         </header>
 
         <div class="container">
-            <!-- Trainer Bar -->
-            <div class="trainer-bar" id="trainer-bar" style="display:none">
-                <span class="trainer-info" id="trainer-info">Spieler-Ansicht</span>
-                <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
-            </div>
 
             <!-- Category Filter -->
             <div class="cat-filter" id="cat-filter"></div>
@@ -242,12 +241,6 @@
     // ===== AUTH =====
     function enableTrainer() {
         trainerMode = true;
-        document.getElementById('trainer-info').textContent = 'Trainer-Modus aktiv';
-        document.getElementById('trainer-info').classList.add('unlocked');
-        const btn = document.getElementById('trainer-btn');
-        btn.textContent = 'Neue Übung';
-        btn.classList.remove('locked');
-        btn.onclick = () => openModal('add');
         renderUI();
     }
 
@@ -1167,18 +1160,16 @@
     window.addEventListener('resize', resizeCanvas);
 
     // ===== INIT =====
-    const trainer = setupTrainerPIN({ onEnable: enableTrainer });
-
-    setupLogin({ onUnlock() {
+    setupLogin({ db, minRole: ROLE_TRAINER, onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
-        document.getElementById('topnav').classList.add('visible');
-        document.getElementById('main-content').classList.add('visible');
-        document.getElementById('trainer-bar').style.display = 'flex';
+        document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
         firebase.auth().signInAnonymously().then(() => {
-            trainer.checkTrainerAuth(); loadDrills(); resizeCanvas();
+            enableTrainer();
+            loadDrills(); resizeCanvas();
         }).catch(err => {
-            console.warn('Firebase Auth failed, loading from localStorage', err);
-            trainer.checkTrainerAuth(); loadDrills(); resizeCanvas();
+            console.warn('Firebase Auth failed', err);
+            enableTrainer();
+            loadDrills(); resizeCanvas();
         });
     }});
     </script>

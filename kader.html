@@ -170,27 +170,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">SV Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autofocus>
             <button class="login-btn" id="login-btn">Einloggen</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html" class="active">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -224,6 +228,18 @@
             <div class="result-count" id="result-count"></div>
         </div>
         <div class="player-grid" id="player-grid"></div>
+    </div>
+
+    <!-- ADMIN SECTION (Trainer only) -->
+    <div class="container app-content admin-section" id="admin-section" style="display:none">
+        <div class="admin-header">
+            <h2>Spieler-Verwaltung</h2>
+            <div class="admin-actions">
+                <button class="admin-btn primary" id="admin-refresh" onclick="refreshAdminList()">Aktualisieren</button>
+            </div>
+        </div>
+        <div id="admin-user-list"></div>
+        <div id="code-display" style="display:none"></div>
     </div>
 
     <!-- FOOTER -->
@@ -461,19 +477,21 @@
         renderPlayers();
         scrollToHash();
 
-        // Load birth dates from Firebase (shown only when logged in)
-        firebase.auth().signInAnonymously().then(() => {
-            db.ref('players_meta').once('value', snap => {
-                const data = snap.val();
-                if (data) {
-                    for (const [id, meta] of Object.entries(data)) {
-                        if (meta && meta.geb) playerBirthDates[id] = meta.geb;
-                    }
-                    renderPlayers();
+        // Show admin section for trainers
+        if (isTrainer()) {
+            document.getElementById('admin-section').style.display = 'block';
+            refreshAdminList();
+        }
+
+        // Load birth dates from Firebase
+        db.ref('players_meta').once('value', snap => {
+            const data = snap.val();
+            if (data) {
+                for (const [id, meta] of Object.entries(data)) {
+                    if (meta && meta.geb) playerBirthDates[id] = meta.geb;
                 }
-            });
-        }).catch(err => {
-            console.warn('Firebase Auth failed, ages not available', err);
+                renderPlayers();
+            }
         });
     }
 
@@ -491,7 +509,87 @@
 
     window.addEventListener('hashchange', scrollToHash);
 
-    setupLogin({ onUnlock: unlock });
+    // --- ADMIN FUNCTIONS ---
+    async function refreshAdminList() {
+        usersCache = null;
+        const users = await loadUsers(db);
+        const list = document.getElementById('admin-user-list');
+        const entries = Object.entries(users).sort((a, b) => a[1].name.localeCompare(b[1].name, 'de'));
+
+        if (entries.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Noch keine Accounts vorhanden. Spieler k\u00f6nnen sich \u00fcber die Login-Seite selbst registrieren.</p>';
+            return;
+        }
+
+        const roleLabels = { team: 'Team', rat: 'Mannschaftsrat', trainer: 'Trainer' };
+
+        list.innerHTML = `
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Name</th><th>Rolle</th><th>Status</th><th>Aktionen</th></tr>
+                </thead>
+                <tbody>
+                    ${entries.map(([uid, u]) => `
+                        <tr class="${u.active ? '' : 'inactive'}">
+                            <td style="font-weight:600;">${u.name}</td>
+                            <td>
+                                <select class="admin-role-select" onchange="changeRole('${uid}', this.value)" ${u.active ? '' : 'disabled'}>
+                                    <option value="team" ${u.role === 'team' ? 'selected' : ''}>Team</option>
+                                    <option value="rat" ${u.role === 'rat' ? 'selected' : ''}>Mannschaftsrat</option>
+                                    <option value="trainer" ${u.role === 'trainer' ? 'selected' : ''}>Trainer</option>
+                                </select>
+                            </td>
+                            <td>${u.active ? '<span style="color:var(--accent);">Aktiv</span>' : '<span style="color:var(--text-muted);">Inaktiv</span>'}</td>
+                            <td>
+                                <button class="admin-btn" onclick="resetCode('${uid}', '${u.name.replace(/'/g, "\\'")}')">Code zur\u00fccksetzen</button>
+                                ${u.active
+                                    ? `<button class="admin-btn" onclick="toggleActive('${uid}', false)" style="color:var(--danger);">Deaktivieren</button>`
+                                    : `<button class="admin-btn" onclick="toggleActive('${uid}', true)" style="color:var(--accent);">Aktivieren</button>`
+                                }
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+
+    async function changeRole(uid, newRole) {
+        await updateUserRole(db, uid, newRole);
+        showSaved('Rolle ge\u00e4ndert');
+    }
+
+    async function toggleActive(uid, active) {
+        if (active) {
+            await activateUser(db, uid);
+        } else {
+            await deactivateUser(db, uid);
+        }
+        refreshAdminList();
+        showSaved(active ? 'Aktiviert' : 'Deaktiviert');
+    }
+
+    async function resetCode(uid, name) {
+        if (!confirm('Neuen Code f\u00fcr ' + name + ' generieren? Der alte Code wird ung\u00fcltig.')) return;
+        const newCode = await regenerateCode(db, uid);
+        const display = document.getElementById('code-display');
+        display.style.display = 'block';
+        display.innerHTML = `
+            <h3>Neuer Code f\u00fcr ${name}</h3>
+            <div class="code-list">
+                <div class="code-item">
+                    <span>${name}</span>
+                    <span class="code-value">${newCode}</span>
+                </div>
+            </div>
+            <p style="color:var(--text-muted);font-size:0.75rem;margin-top:0.5rem;">
+                Bitte den Code an den Spieler weitergeben. Er wird nur einmal angezeigt.
+            </p>
+        `;
+        display.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    setupLogin({ db, onUnlock: unlock });
 </script>
 
 </body>

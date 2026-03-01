@@ -702,27 +702,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">SV Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autofocus>
             <button class="login-btn" id="login-btn">Einloggen</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- STICKY NAV: Seiten-Links (identisch mit anderen Seiten) -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html" class="active">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home active">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -1454,7 +1458,12 @@
         <a href="datenschutz.html" style="color:var(--text-muted);font-size:0.85rem;">Datenschutz</a>
     </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
     <script>
+        const db = initFirebase();
+
         // All Rückrunde games — 1. XV (2. Bundesliga Nord)
         const games = [
             { date: '2026-03-07', time: '14:00', opponent: 'Rugby Club Leipzig', home: true, team: '1. XV' },
@@ -1783,7 +1792,7 @@
             setInterval(updateCountdown, 60000);
         }
 
-        setupLogin({ pwHash: HASH_SCRUM, storageKey: 'sgrhn_auth', onUnlock: unlock });
+        setupLogin({ db, onUnlock: unlock });
 
         // Section-Nav: Active-State beim Scrollen
         const secNavLinks = document.querySelectorAll('.section-nav a');

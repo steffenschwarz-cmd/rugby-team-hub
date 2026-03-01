@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup — Team Hub</title>
+    <link rel="stylesheet" href="common.css">
+    <script src="common.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;">
+        <div class="login-box" style="max-width:480px;">
+            <h2>Ersteinrichtung</h2>
+            <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:1.5rem;">
+                Erstellt den ersten Trainer-Account. Diese Seite kann nach der Einrichtung gel&ouml;scht werden.
+            </p>
+            <div id="status" style="margin-bottom:1rem;"></div>
+            <button class="login-btn" id="setup-btn" onclick="doSetup()">Trainer-Account erstellen</button>
+            <div id="result" style="margin-top:1rem;display:none;"></div>
+        </div>
+    </div>
+<script>
+    const db = initFirebase();
+
+    async function doSetup() {
+        const statusEl = document.getElementById('status');
+        const resultEl = document.getElementById('result');
+        const btn = document.getElementById('setup-btn');
+
+        btn.disabled = true;
+        btn.textContent = 'Wird erstellt...';
+        statusEl.innerHTML = '<span style="color:var(--text-muted);">Firebase-Anmeldung...</span>';
+
+        try {
+            await firebase.auth().signInAnonymously();
+            statusEl.innerHTML = '<span style="color:var(--accent);">Angemeldet.</span>';
+
+            // Check if users already exist
+            const snapshot = await db.ref('users').once('value');
+            const existing = snapshot.val();
+
+            if (existing && Object.values(existing).some(u => u.role === 'trainer' && u.active)) {
+                statusEl.innerHTML = '<span style="color:var(--warning);">Es existiert bereits ein Trainer-Account.</span>';
+                btn.textContent = 'Bereits eingerichtet';
+                return;
+            }
+
+            // Create Steffen's trainer account
+            const code = generateCode();
+            const codeHash = await hashPw(code);
+            const userId = 'player_steffen_trainer';
+
+            await db.ref('users/' + userId).set({
+                name: 'Steffen Schwarz',
+                codeHash: codeHash,
+                role: 'trainer',
+                active: true
+            });
+
+            statusEl.innerHTML = '<span style="color:var(--accent);">Trainer-Account erstellt!</span>';
+            resultEl.style.display = 'block';
+            resultEl.innerHTML = `
+                <div style="background:var(--primary);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:1rem;text-align:center;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.5rem;">Dein pers&ouml;nlicher Login-Code:</div>
+                    <div style="font-size:2rem;font-weight:800;letter-spacing:0.15em;color:var(--accent);font-family:monospace;">${code}</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;">
+                        Merke dir diesen Code! Er wird nur einmal angezeigt.<br>
+                        Du kannst ihn sp&auml;ter in der Admin-UI zur&uuml;cksetzen.
+                    </div>
+                </div>
+                <div style="margin-top:1rem;">
+                    <a href="index.html" style="color:var(--accent);font-weight:600;">Zum Team Hub &rarr;</a>
+                </div>
+            `;
+            btn.style.display = 'none';
+
+        } catch (err) {
+            console.error('Setup failed', err);
+            statusEl.innerHTML = `<span style="color:var(--danger);">Fehler: ${err.message}</span>`;
+            btn.disabled = false;
+            btn.textContent = 'Erneut versuchen';
+        }
+    }
+</script>
+</body>
+</html>

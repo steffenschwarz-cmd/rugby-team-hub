@@ -190,27 +190,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Passwort eingeben" autocomplete="off">
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autocomplete="off">
             <button class="login-btn" id="login-btn">Anmelden</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html" class="active">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html" class="active">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -223,10 +227,6 @@
     <!-- MAIN -->
     <div class="app-content" id="main-content">
         <div class="container">
-            <div class="trainer-bar">
-                <span class="trainer-info" id="trainer-info">Nur-Lese-Modus</span>
-                <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Trainer-Modus</button>
-            </div>
             <div class="save-indicator" id="save-indicator">Gespeichert</div>
 
             <!-- Filter -->
@@ -1236,27 +1236,20 @@
         trainerMode = true;
         document.getElementById('main-content').classList.add('trainer-active');
         document.getElementById('fab-add').style.display = 'flex';
-        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
-        document.getElementById('trainer-info').classList.add('unlocked');
-        document.getElementById('trainer-btn').textContent = 'Entsperrt';
-        document.getElementById('trainer-btn').classList.remove('locked');
-        document.getElementById('trainer-btn').disabled = true;
-        document.getElementById('trainer-btn').style.opacity = '0.6';
-        document.getElementById('trainer-btn').style.cursor = 'default';
         renderList();
     }
 
-    const trainer = setupTrainerPIN({ onEnable: enableTrainer });
-
     // --- LOGIN ---
-    setupLogin({ onUnlock() {
+    setupLogin({ db, onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
         firebase.auth().signInAnonymously().then(() => {
-            loadData(); trainer.checkTrainerAuth();
+            loadData();
+            if (isTrainer()) enableTrainer();
         }).catch(err => {
-            console.warn('Firebase Auth failed, loading from localStorage', err);
-            loadData(); trainer.checkTrainerAuth();
+            console.warn('Firebase Auth failed', err);
+            loadData();
+            if (isTrainer()) enableTrainer();
         });
     }});
 

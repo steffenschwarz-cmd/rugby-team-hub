@@ -174,27 +174,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">SV Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autofocus>
             <button class="login-btn" id="login-btn">Einloggen</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html">Aufstellung</a>
-            <a href="mannschaftsrat.html" class="active">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" class="active" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -700,12 +704,12 @@
             load();
             renderAll();
         }).catch(err => {
-            console.warn('Firebase Auth failed, loading from localStorage', err);
+            console.warn('Firebase Auth failed', err);
             load();
             renderAll();
         });
     }
-    setupLogin({ onUnlock: unlock });
+    setupLogin({ db, minRole: ROLE_RAT, onUnlock: unlock });
     renderFilters();
 </script>
 </body>

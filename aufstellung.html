@@ -179,27 +179,31 @@
                 <span class="club-x">&times;</span>
                 <span class="club-blue">SV Stahl Hennigsdorf</span>
             </div>
-            <input type="password" class="login-input" id="login-pw" placeholder="Team-Passwort" autofocus>
+            <input type="password" class="login-input" id="login-pw" placeholder="Persönlicher Code" autofocus>
             <button class="login-btn" id="login-btn">Einloggen</button>
-            <div class="login-error" id="login-error">Falsches Passwort</div>
+            <div class="login-error" id="login-error">Falscher Code</div>
         </div>
     </div>
 
     <!-- NAV -->
     <nav class="topnav app-content" id="topnav">
-        <div class="topnav-inner">
-            <a href="index.html">Hub</a>
-            <span class="nav-sep">|</span>
+        <div class="topnav-bar">
+            <a href="index.html" class="nav-home">Hub</a>
+            <button class="hamburger" id="hamburger" onclick="toggleNav()">&#9776;</button>
+        </div>
+        <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
+        <div class="topnav-inner" id="topnav-inner">
+            <div class="nav-group-label">Team</div>
             <a href="kader.html">Kader</a>
             <a href="aufstellung.html" class="active">Aufstellung</a>
-            <a href="mannschaftsrat.html">Mannschaftsrat</a>
-            <span class="nav-sep">|</span>
-            <a href="spielzuege.html">Spielzüge</a>
-            <a href="uebungen.html">Übungen</a>
-            <a href="trainingsplan.html">Training</a>
+            <a href="spielzuege.html">Spielz&uuml;ge</a>
             <a href="videos.html">Videos</a>
-            <span class="nav-sep">|</span>
-            <a href="trainingsbeteiligung.html">Beteiligung</a>
+            <div class="nav-group-label">Mannschaftsrat</div>
+            <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
+            <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
+            <div class="nav-group-label">Trainer</div>
+            <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
+            <a href="trainingsplan.html" data-min-role="trainer">Training</a>
         </div>
     </nav>
 
@@ -216,11 +220,21 @@
     </div>
 
     <!-- MAIN -->
-    <div class="aufstellung-container app-content readonly-mode" id="aufstellung-main">
-        <!-- Trainer PIN Bar -->
-        <div class="trainer-bar" id="trainer-bar">
-            <span class="trainer-info" id="trainer-info">Nur-Lesen-Modus — Trainer-PIN erforderlich zum Bearbeiten</span>
-            <button class="trainer-btn locked" id="trainer-btn" onclick="promptTrainerPIN()">Bearbeiten</button>
+    <div class="aufstellung-container app-content" id="aufstellung-main">
+        <!-- Draft Banner (Trainer only) -->
+        <div class="draft-banner" id="draft-banner" style="display:none">
+            <span id="draft-status">ENTWURF &mdash; nicht ver&ouml;ffentlicht</span>
+            <div class="draft-actions">
+                <button class="draft-btn publish" onclick="publishLineup()">Ver&ouml;ffentlichen</button>
+                <button class="draft-btn hide" onclick="hideLineup()">Verbergen</button>
+                <button class="draft-btn discard" onclick="discardDraft()">Verwerfen</button>
+            </div>
+        </div>
+
+        <!-- Placeholder (Team view when not published) -->
+        <div class="lineup-placeholder" id="lineup-placeholder" style="display:none">
+            <div class="icon">&#128203;</div>
+            <p>Die Aufstellung wird noch vorbereitet.</p>
         </div>
 
         <div class="match-header">
@@ -366,47 +380,151 @@
         return new Set(Object.values(lineup[activeTeam]).filter(Boolean).map(Number));
     }
 
+    // --- DRAFT/PUBLISH STATE ---
+    let isDraft = true; // Trainer sees draft by default
+    let isPublished = true; // Is lineup published for team?
+
     // --- STORAGE ---
     function saveLineup() {
-        // Firebase speichern
-        db.ref('lineup').set(lineup).catch(err => {
-            console.warn('Firebase save failed, using localStorage fallback', err);
+        const path = isTrainer() ? 'lineup_draft' : 'lineup';
+        db.ref(path).set(lineup).catch(err => {
+            console.warn('Firebase save failed', err);
         });
-        // LocalStorage als Fallback
         localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
         showSaved();
     }
 
     function loadLineup() {
-        // Erstmal LocalStorage laden (sofort verfügbar / Offline-Fallback)
         const stored = localStorage.getItem('sgrhn_lineup');
         if (stored) {
             try { lineup = JSON.parse(stored); } catch(e) {}
         }
         if (!lineup['1']) lineup['1'] = {};
         if (!lineup['2']) lineup['2'] = {};
-        // Firebase Echtzeit-Listener — überschreibt LocalStorage wenn online
-        db.ref('lineup').on('value', snapshot => {
-            const data = snapshot.val();
-            // Firebase löscht leere Objekte → null bedeutet "alles geleert"
-            if (data) {
-                lineup = {};
-                // Firebase kann numerische Keys als Array zurückgeben → zu Objekt konvertieren
-                for (const team of ['1', '2']) {
-                    lineup[team] = {};
-                    const teamData = data[team];
-                    if (teamData && typeof teamData === 'object') {
-                        const entries = Array.isArray(teamData) ? teamData.entries() : Object.entries(teamData);
-                        for (const [k, v] of entries) {
-                            if (v != null) lineup[team][k] = v;
+
+        if (isTrainer()) {
+            // Trainer loads from draft
+            db.ref('lineup_draft').on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    lineup = {};
+                    for (const team of ['1', '2']) {
+                        lineup[team] = {};
+                        const teamData = data[team];
+                        if (teamData && typeof teamData === 'object') {
+                            const entries = Array.isArray(teamData) ? teamData.entries() : Object.entries(teamData);
+                            for (const [k, v] of entries) {
+                                if (v != null) lineup[team][k] = v;
+                            }
                         }
                     }
+                } else {
+                    // Draft empty — copy from published lineup
+                    db.ref('lineup').once('value').then(pubSnap => {
+                        const pubData = pubSnap.val();
+                        if (pubData) {
+                            lineup = {};
+                            for (const team of ['1', '2']) {
+                                lineup[team] = {};
+                                const teamData = pubData[team];
+                                if (teamData && typeof teamData === 'object') {
+                                    const entries = Array.isArray(teamData) ? teamData.entries() : Object.entries(teamData);
+                                    for (const [k, v] of entries) {
+                                        if (v != null) lineup[team][k] = v;
+                                    }
+                                }
+                            }
+                            db.ref('lineup_draft').set(lineup);
+                        } else {
+                            lineup = { '1': {}, '2': {} };
+                        }
+                        localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+                        renderAll();
+                    });
+                    return;
                 }
-            } else {
-                lineup = { '1': {}, '2': {} };
-            }
-            localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
-            renderAll();
+                localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+                renderAll();
+            });
+
+            // Also watch publish state
+            db.ref('lineup_meta').on('value', snapshot => {
+                const meta = snapshot.val() || {};
+                isPublished = meta.published !== false;
+                updateDraftBanner();
+            });
+        } else {
+            // Team loads from published lineup
+            db.ref('lineup_meta').once('value').then(metaSnap => {
+                const meta = metaSnap.val() || {};
+                isPublished = meta.published !== false;
+
+                if (!isPublished) {
+                    // Show placeholder
+                    document.getElementById('lineup-placeholder').style.display = 'block';
+                    document.getElementById('lineup-table').style.display = 'none';
+                    document.querySelector('.match-header').style.display = 'none';
+                    document.getElementById('status-bar').style.display = 'none';
+                    document.querySelector('.actions').style.display = 'none';
+                    document.querySelector('.coach-bar').style.display = 'none';
+                    return;
+                }
+
+                db.ref('lineup').on('value', snapshot => {
+                    const data = snapshot.val();
+                    if (data) {
+                        lineup = {};
+                        for (const team of ['1', '2']) {
+                            lineup[team] = {};
+                            const teamData = data[team];
+                            if (teamData && typeof teamData === 'object') {
+                                const entries = Array.isArray(teamData) ? teamData.entries() : Object.entries(teamData);
+                                for (const [k, v] of entries) {
+                                    if (v != null) lineup[team][k] = v;
+                                }
+                            }
+                        }
+                    } else {
+                        lineup = { '1': {}, '2': {} };
+                    }
+                    localStorage.setItem('sgrhn_lineup', JSON.stringify(lineup));
+                    renderAll();
+                });
+            });
+        }
+    }
+
+    function updateDraftBanner() {
+        const banner = document.getElementById('draft-banner');
+        const statusEl = document.getElementById('draft-status');
+        if (!banner) return;
+        if (isPublished) {
+            statusEl.innerHTML = 'ENTWURF &mdash; &Auml;nderungen sind noch nicht ver&ouml;ffentlicht';
+        } else {
+            statusEl.innerHTML = 'ENTWURF &mdash; Aufstellung ist verborgen (Team sieht Platzhalter)';
+        }
+    }
+
+    // --- DRAFT/PUBLISH ACTIONS ---
+    function publishLineup() {
+        if (!confirm('Aufstellung veröffentlichen? Das Team kann sie dann sehen.')) return;
+        db.ref('lineup').set(lineup);
+        db.ref('lineup_meta').set({ published: true, publishedAt: Date.now() });
+        showSaved('Veröffentlicht');
+    }
+
+    function hideLineup() {
+        if (!confirm('Aufstellung verbergen? Das Team sieht dann einen Platzhalter.')) return;
+        db.ref('lineup_meta/published').set(false);
+        showSaved('Verborgen');
+    }
+
+    function discardDraft() {
+        if (!confirm('Entwurf verwerfen und veröffentlichte Aufstellung laden?')) return;
+        db.ref('lineup').once('value').then(snapshot => {
+            const data = snapshot.val() || { '1': {}, '2': {} };
+            db.ref('lineup_draft').set(data);
+            showSaved('Entwurf verworfen');
         });
     }
 
@@ -556,31 +674,29 @@
         }
     });
 
-    // --- TRAINER ---
-    function enableEditing() {
-        const main = document.getElementById('aufstellung-main');
-        main.classList.remove('readonly-mode');
-        document.querySelectorAll('.pos-select').forEach(sel => sel.removeAttribute('disabled'));
-        document.getElementById('trainer-info').textContent = 'Bearbeitungsmodus aktiv';
-        document.getElementById('trainer-info').classList.add('unlocked');
-        document.getElementById('trainer-btn').textContent = 'Entsperrt';
-        document.getElementById('trainer-btn').classList.remove('locked');
-        document.getElementById('trainer-btn').disabled = true;
-        document.getElementById('trainer-btn').style.opacity = '0.6';
-        document.getElementById('trainer-btn').style.cursor = 'default';
-    }
-
-    const trainer = setupTrainerPIN({ onEnable: enableEditing });
-
     // --- LOGIN ---
-    setupLogin({ onUnlock() {
+    setupLogin({ db, onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+
+        if (isTrainer()) {
+            // Show draft banner, enable editing
+            document.getElementById('draft-banner').style.display = 'block';
+            document.getElementById('aufstellung-main').classList.remove('readonly-mode');
+            document.getElementById('btn-clear').style.display = '';
+        } else {
+            // Read-only for team
+            document.getElementById('aufstellung-main').classList.add('readonly-mode');
+            document.getElementById('btn-clear').style.display = 'none';
+        }
+
         firebase.auth().signInAnonymously().then(() => {
-            loadLineup(); renderAll(); trainer.checkTrainerAuth();
+            loadLineup();
+            renderAll();
         }).catch(err => {
-            console.warn('Firebase Auth failed, loading from localStorage', err);
-            loadLineup(); renderAll(); trainer.checkTrainerAuth();
+            console.warn('Firebase Auth failed', err);
+            loadLineup();
+            renderAll();
         });
     }});
 </script>
