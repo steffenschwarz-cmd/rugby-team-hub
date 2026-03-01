@@ -130,24 +130,34 @@ body {
     background: rgba(255,255,255,0.08);
 }
 
-/* Group labels (desktop: subtle text dividers) */
+/* Group labels (colored badges) */
 .nav-group-label {
-    color: rgba(255,255,255,0.2);
-    font-size: 0.55rem;
+    font-size: 0.6rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 0 0.3rem;
+    padding: 0.25rem 0.55rem;
     white-space: nowrap;
-    border-left: 1px solid rgba(255,255,255,0.1);
-    margin-left: 0.2rem;
-    padding-left: 0.5rem;
+    border-radius: 4px;
     line-height: 1;
     user-select: none;
+    margin-left: 0.3rem;
+    color: var(--accent);
+    background: rgba(46,204,113,0.12);
+    border: 1px solid rgba(46,204,113,0.25);
+}
+.nav-group-label[data-group="rat"] {
+    color: var(--accent-blue);
+    background: rgba(74,158,255,0.12);
+    border-color: rgba(74,158,255,0.25);
+}
+.nav-group-label[data-group="trainer"] {
+    color: var(--warning);
+    background: rgba(232,160,32,0.12);
+    border-color: rgba(232,160,32,0.25);
 }
 .nav-group-label:first-child {
-    border-left: none;
     margin-left: 0;
-    padding-left: 0.3rem;
 }
 
 /* User section (name + logout) */
@@ -211,14 +221,16 @@ body {
     }
 
     .nav-group-label {
-        border-left: none;
         margin: 0;
-        padding: 1.2rem 1.5rem 0.4rem;
-        color: var(--accent);
+        padding: 0.35rem 1.5rem;
         font-size: 0.65rem;
         font-weight: 700;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        margin-top: 0.5rem;
     }
-    .nav-group-label:first-child { padding-top: 0.5rem; }
+    .nav-group-label:first-child { margin-top: 0; }
 
     .nav-overlay.open {
         display: block;

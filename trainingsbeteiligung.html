@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainingsbeteiligung — SG Rugby Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=3">
-    <script src="common.js?v=3"></script>
+    <link rel="stylesheet" href="common.css?v=5">
+    <script src="common.js?v=5"></script>
     <style>
         /* LOGIN GATE overrides */
         .login-gate {
@@ -241,15 +241,15 @@
     </div>
     <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
     <div class="topnav-inner" id="topnav-inner">
-        <div class="nav-group-label">Team</div>
+        <div class="nav-group-label" data-group="team">Team</div>
         <a href="kader.html">Kader</a>
         <a href="aufstellung.html">Aufstellung</a>
         <a href="spielzuege.html">Spielz&uuml;ge</a>
         <a href="videos.html">Videos</a>
-        <div class="nav-group-label">Mannschaftsrat</div>
+        <div class="nav-group-label" data-group="rat">Mannschaftsrat</div>
         <a href="mannschaftsrat.html" data-min-role="rat">Mannschaftsrat</a>
         <a href="trainingsbeteiligung.html" class="active" data-min-role="rat">Beteiligung</a>
-        <div class="nav-group-label">Trainer</div>
+        <div class="nav-group-label" data-group="trainer">Trainer</div>
         <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
         <a href="trainingsplan.html" data-min-role="trainer">Training</a>
     </div>
