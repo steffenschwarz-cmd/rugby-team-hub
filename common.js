@@ -364,9 +364,10 @@ function filterNav(role) {
     });
 }
 
-function toggleNavGroup(labelEl) {
+function toggleNavGroup(labelEl, evt) {
     // Only on desktop (mobile shows all links)
     if (window.innerWidth <= 768) return;
+    if (evt) evt.stopPropagation();
     const group = labelEl.closest('.nav-group');
     if (!group) return;
     const wasOpen = group.classList.contains('open');

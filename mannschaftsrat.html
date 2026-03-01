@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mannschaftsrat — SG Rugbyunion Hohen Neuendorf</title>
-    <link rel="stylesheet" href="common.css?v=6">
-    <script src="common.js?v=6"></script>
+    <link rel="stylesheet" href="common.css?v=7">
+    <script src="common.js?v=7"></script>
     <style>
         /* Container override */
         .container { max-width: 900px; }
@@ -189,7 +189,7 @@
         <div class="nav-overlay" id="nav-overlay" onclick="toggleNav()"></div>
         <div class="topnav-inner" id="topnav-inner">
             <div class="nav-group">
-                <div class="nav-group-label" data-group="team" onclick="toggleNavGroup(this)">Team <span class="nav-arrow">&#9662;</span></div>
+                <div class="nav-group-label" data-group="team" onclick="toggleNavGroup(this, event)">Team <span class="nav-arrow">&#9662;</span></div>
                 <div class="nav-group-dropdown">
                     <a href="kader.html">Kader</a>
                     <a href="aufstellung.html">Aufstellung</a>
@@ -198,14 +198,14 @@
                 </div>
             </div>
             <div class="nav-group">
-                <div class="nav-group-label" data-group="rat" onclick="toggleNavGroup(this)">Rat <span class="nav-arrow">&#9662;</span></div>
+                <div class="nav-group-label" data-group="rat" onclick="toggleNavGroup(this, event)">Rat <span class="nav-arrow">&#9662;</span></div>
                 <div class="nav-group-dropdown">
                     <a href="mannschaftsrat.html" class="active" data-min-role="rat">Mannschaftsrat</a>
                     <a href="trainingsbeteiligung.html" data-min-role="rat">Beteiligung</a>
                 </div>
             </div>
             <div class="nav-group">
-                <div class="nav-group-label" data-group="trainer" onclick="toggleNavGroup(this)">Trainer <span class="nav-arrow">&#9662;</span></div>
+                <div class="nav-group-label" data-group="trainer" onclick="toggleNavGroup(this, event)">Trainer <span class="nav-arrow">&#9662;</span></div>
                 <div class="nav-group-dropdown">
                     <a href="uebungen.html" data-min-role="trainer">&Uuml;bungen</a>
                     <a href="trainingsplan.html" data-min-role="trainer">Training</a>
