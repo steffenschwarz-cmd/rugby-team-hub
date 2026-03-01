@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SG Rugbyunion Hohen Neuendorf — Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=3">
-    <script src="common.js?v=3"></script>
+    <link rel="stylesheet" href="common.css?v=4">
+    <script src="common.js?v=4"></script>
     <style>
         /* Hero */
         .hero {
@@ -1687,31 +1687,60 @@
             day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
         });
 
-        // Trainingsbeteiligung — Daten pro Woche (neueste zuerst)
-        // Zum Aktualisieren: neuen Eintrag oben einfügen
-        const attendanceData = [
-            {
-                kw: 9, label: 'KW 9', range: '24.–27.02.',
-                sessions: [
-                    { day: 'Mo', date: '24.02.', yes: 22, maybe: 0, no: 14 },
-                ]
-            },
-            {
-                kw: 8, label: 'KW 8', range: '18.–20.02.',
-                sessions: [
-                    { day: 'Mi', date: '18.02.', yes: 13, maybe: 3, no: 16 },
-                    { day: 'Fr', date: '20.02.', yes: 21, maybe: 4, no: 8 },
-                ]
-            },
-        ];
+        // Trainingsbeteiligung — Live-Daten aus Firebase
+        function getISOWeek(d) {
+            const date = new Date(d.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+        const DAYS_DE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 
-        function renderAttendance() {
+        function renderAttendance(sessionsData) {
             const container = document.getElementById('training-attendance');
-            if (!container || attendanceData.length === 0) return;
+            if (!container) return;
+
+            if (!sessionsData || Object.keys(sessionsData).length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:1rem;">Noch keine Daten vorhanden</div>';
+                return;
+            }
+
+            // Convert Firebase sessions to sorted array
+            const entries = Object.entries(sessionsData)
+                .filter(([, s]) => s.date && s.type === 'training')
+                .map(([id, s]) => {
+                    const d = new Date(s.date + 'T12:00:00');
+                    const count = s.present ? Object.keys(s.present).length : 0;
+                    return {
+                        id, date: s.date, count,
+                        day: DAYS_DE[d.getDay()],
+                        dateLabel: d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }) + '.',
+                        kw: getISOWeek(d),
+                        ts: d.getTime()
+                    };
+                })
+                .sort((a, b) => b.ts - a.ts);
+
+            if (entries.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:1rem;">Noch keine Trainings erfasst</div>';
+                return;
+            }
+
+            // Group by calendar week
+            const weeks = [];
+            const weekMap = {};
+            for (const e of entries) {
+                if (!weekMap[e.kw]) {
+                    weekMap[e.kw] = { kw: e.kw, label: 'KW ' + e.kw, sessions: [] };
+                    weeks.push(weekMap[e.kw]);
+                }
+                weekMap[e.kw].sessions.push(e);
+            }
 
             const goal = 20;
-            const latest = attendanceData[0];
-            const latestAvg = Math.round(latest.sessions.reduce((s, x) => s + x.yes, 0) / latest.sessions.length);
+            const latest = weeks[0];
+            const latestAvg = Math.round(latest.sessions.reduce((s, x) => s + x.count, 0) / latest.sessions.length);
             const pct = Math.min(100, Math.round((latestAvg / 30) * 100));
 
             let html = `
@@ -1726,40 +1755,37 @@
                 </div>
             `;
 
-            // Render week function
             function renderWeek(week, isCurrent) {
                 let w = `<div style="margin-top: ${isCurrent ? '1rem' : '0.8rem'}; font-size: 0.85rem; color: var(--text-muted);">
-                    ${week.label} (${week.range}) — Daten aus <strong>SpielerPlus</strong>
+                    ${week.label} — Anwesenheit erfasst
                 </div>
-                <div style="margin-top: 0.8rem; display: grid; grid-template-columns: repeat(${week.sessions.length}, 1fr); gap: 0.8rem;">`;
+                <div style="margin-top: 0.8rem; display: grid; grid-template-columns: repeat(${Math.min(week.sessions.length, 3)}, 1fr); gap: 0.8rem;">`;
                 for (const s of week.sessions) {
-                    const hit = s.yes >= goal;
+                    const hit = s.count >= goal;
                     const col = hit ? 'var(--success)' : 'var(--danger)';
                     const bg = hit ? 'rgba(64,192,96,0.08)' : 'rgba(224,64,64,0.08)';
                     w += `<div style="background: ${bg}; padding: 0.8rem; border-radius: 8px; text-align: center;">
-                        <div style="font-size: 0.75rem; color: ${col}; font-weight: 600; text-transform: uppercase;">${s.day} ${s.date}</div>
-                        <div style="font-size: 1.5rem; font-weight: 800; color: ${col};">${s.yes}</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted);">Zusagen (+${s.maybe} Vielleicht)</div>
+                        <div style="font-size: 0.75rem; color: ${col}; font-weight: 600; text-transform: uppercase;">${s.day} ${s.dateLabel}</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: ${col};">${s.count}</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">Anwesend</div>
                     </div>`;
                 }
                 w += '</div>';
                 return w;
             }
 
-            // Current week
             html += renderWeek(latest, true);
 
-            // History (past weeks)
-            if (attendanceData.length > 1) {
+            if (weeks.length > 1) {
                 html += `
                     <div style="margin-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.8rem;">
                         <div id="history-toggle" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" onclick="toggleHistory()">
                             <span id="history-arrow" style="transition: transform 0.2s;">&#9654;</span>
-                            Vergangene Wochen (${attendanceData.length - 1})
+                            Vergangene Wochen (${weeks.length - 1})
                         </div>
                         <div id="history-content" style="display: none;">`;
-                for (let i = 1; i < attendanceData.length; i++) {
-                    html += renderWeek(attendanceData[i], false);
+                for (let i = 1; i < weeks.length; i++) {
+                    html += renderWeek(weeks[i], false);
                 }
                 html += '</div></div>';
             }
@@ -1788,8 +1814,13 @@
             // Init app
             updateCountdown();
             generateSchedule();
-            renderAttendance();
             setInterval(updateCountdown, 60000);
+            // Load Trainingsbeteiligung live from Firebase
+            db.ref('trainingsbeteiligung').on('value', snap => {
+                renderAttendance(snap.val());
+            }, () => {
+                renderAttendance(null);
+            });
         }
 
         setupLogin({ db, onUnlock: unlock });
