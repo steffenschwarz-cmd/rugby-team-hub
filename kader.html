@@ -235,7 +235,14 @@
         <a href="datenschutz.html" style="color:var(--text-muted);font-size:0.85rem;">Datenschutz</a>
     </footer>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 <script>
+    const db = initFirebase();
+    let playerBirthDates = {};
+
     // --- POSITION LABELS ---
     const posLabels = {
         er:'1.R', zr:'2.R', dr:'3.R', sh:'SH', fh:'FH', ct:'CT', wg:'WG', fb:'FB'
@@ -243,64 +250,64 @@
 
     // --- PLAYER DATA ---
     const players = [
-        { id:18, v:'Angelo', n:'Galster', geb:'2003-10-22', verein:'HN', pos:['sh','fh','ct'], u18:false },
-        { id:24, v:'Anton', n:'Hanetzok', geb:'1999-07-09', verein:'H/V', pos:['dr'], u18:false, role:'VC' },
-        { id:68, v:'Ben', n:'Johnston', geb:null, verein:'HN', pos:['fh'], u18:false },
-        { id:6, v:'Christopher', n:'Bunge', geb:'1984-09-21', verein:'H/V', pos:['zr'], u18:false },
-        { id:46, v:'Connor', n:'Peise', geb:'2007-05-27', verein:'H/V', pos:['er'], u18:false },
-        { id:31, v:'Daniel', n:'Kainer', geb:'1973-05-03', verein:'HN', pos:['er','zr'], u18:false },
-        { id:59, v:'Enrico Marco', n:'Stenzel', geb:'1986-06-11', verein:'HN', pos:['zr'], u18:false },
-        { id:64, v:'Fabian', n:'Wendt', geb:'1993-08-28', verein:'P', pos:['fh','fb','ct','wg'], u18:false },
-        { id:4, v:'Felix', n:'Berg', geb:'2000-04-13', verein:'HN', pos:['ct','wg'], u18:false },
-        { id:44, v:'Florian', n:'Neumann', geb:'1995-03-04', verein:'HN', pos:['wg'], u18:false },
-        { id:40, v:'Fynn', n:'Lauer', geb:'2004-03-11', verein:'HN', pos:['wg'], u18:false },
-        { id:45, v:'Gustav', n:'Palm', geb:'2007-09-15', verein:'HN', pos:['fb','ct','wg'], u18:false },
-        { id:3, v:'Hannes', n:'Bartelt', geb:'1999-05-30', verein:'HN', pos:['sh','fh','ct'], u18:false },
-        { id:29, v:'Jonas', n:'Hinz', geb:'2001-08-26', verein:'HN', pos:['er','zr','dr'], u18:false, role:'VC' },
-        { id:63, v:'Joshua', n:'Walker', geb:'1996-08-14', verein:'H/V', pos:['dr','fh'], u18:false },
-        { id:37, v:'Julius', n:'Laetsch', geb:'1995-04-19', verein:'H/V', pos:['sh','fh'], u18:false },
-        { id:15, v:'Kai', n:'Friesicke', geb:'1996-01-12', verein:'H/V', pos:['wg'], u18:false },
-        { id:14, v:'Keno', n:'Filietz', geb:'1994-04-18', verein:'H/V', pos:['dr'], u18:false },
-        { id:47, v:'Kevin', n:'Pilz', geb:'1999-06-06', verein:'H/V', pos:['er'], u18:false },
-        { id:10, v:'Kimi', n:'Döpke', geb:'2009-03-05', verein:'HN', pos:['fh'], u18:false },
-        { id:5, v:'Luca Karim', n:'Borgwardt', geb:'2002-02-13', verein:'HN', pos:['er'], u18:false },
-        { id:11, v:'Lucas', n:'Eichler', geb:'2007-07-26', verein:'HN', pos:['sh','wg'], u18:false },
-        { id:38, v:'Lukas', n:'Laetsch', geb:'1999-09-12', verein:'H/V', pos:['fh','fb','ct','wg'], u18:false, role:'VC' },
-        { id:21, v:'Marcel', n:'Grabow', geb:'1997-02-22', verein:'H/V', pos:['er','zr'], u18:false },
-        { id:13, v:'Matti Erik', n:'Eschwe', geb:'2009-07-21', verein:'HN', pos:['ct','wg'], u18:false },
-        { id:52, v:'Maurice Peter', n:'Sankeralli', geb:'1976-11-16', verein:'H/V', pos:['dr'], u18:false },
-        { id:39, v:'Max', n:'Langer', geb:'1995-07-30', verein:'HN', pos:['er','zr'], u18:false },
-        { id:28, v:'Maximilian', n:'Hildebrandt', geb:'2002-11-18', verein:'HN', pos:['dr','fb','ct'], u18:false },
-        { id:17, v:'Michael', n:'Galster', geb:'1977-12-29', verein:'HN', pos:['er','wg'], u18:false },
-        { id:19, v:'Moritz', n:'Gollnick', geb:'2008-05-23', verein:'HN', pos:['zr','dr'], u18:true },
-        { id:30, v:'Moritz', n:'Janosch', geb:null, verein:'HN', pos:['ct','wg'], u18:false },
-        { id:35, v:'Norman Guido', n:'Kranert', geb:'1997-01-01', verein:'HN', pos:['er'], u18:false },
-        { id:25, v:'Oliver', n:'Herrmann', geb:'1998-03-19', verein:'HN', pos:['fb','ct','wg'], u18:false },
-        { id:61, v:'Oliver', n:'Tschetsch', geb:'1988-04-27', verein:'H/V', pos:['er'], u18:false },
-        { id:7, v:'Paul', n:'Chukwu', geb:'2007-08-27', verein:'H/V', pos:['zr'], u18:false },
-        { id:67, v:'Paul', n:'Zyparth', geb:'1995-06-21', verein:'H/V', pos:['zr','dr'], u18:false },
-        { id:58, v:'Philip', n:'Simon', geb:'1998-10-18', verein:'H/V', pos:['er'], u18:false },
-        { id:55, v:'Rico', n:'Schomacker', geb:'1989-12-19', verein:'HN', pos:['zr','dr'], u18:false, role:'C' },
-        { id:66, v:'Robert', n:'Woelki', geb:'1998-11-30', verein:'H/V', pos:['dr','wg'], u18:false },
-        { id:51, v:'Ronny', n:'Sager', geb:'1979-04-24', verein:'HN', pos:['er'], u18:false },
-        { id:2, v:'Sarvan', n:'Aziz', geb:'2008-03-05', verein:'HN', pos:['wg'], u18:true },
-        { id:34, v:'Sascha', n:'Kosanke', geb:'1990-02-14', verein:'H/V', pos:['er','zr','dr'], u18:false },
-        { id:26, v:'Sebastian', n:'Hildebrandt', geb:'2005-05-30', verein:'HN', pos:['sh','fh','ct','wg'], u18:false },
-        { id:1, v:'Shawn', n:'Ahrens', geb:'2007-03-08', verein:'H/V', pos:['sh','wg'], u18:false },
-        { id:49, v:'Silas', n:'Rathke', geb:'2007-04-12', verein:'H/V', pos:['zr','dr'], u18:false },
-        { id:8, v:'Simon', n:'Csehan', geb:'2004-07-04', verein:'?', pos:['wg'], u18:false },
-        { id:69, v:'Simon', n:'Reichelt', geb:null, verein:'HN', pos:['wg'], u18:false },
-        { id:57, v:'Steffen', n:'Schwarz', geb:'1981-03-05', verein:'HN', pos:['er'], u18:false },
-        { id:43, v:'Steven', n:'Müller', geb:'2001-02-24', verein:'H/V', pos:['wg'], u18:false },
-        { id:53, v:'Theo', n:'Schmidt', geb:'2003-12-17', verein:'HN', pos:['fb','ct'], u18:false },
-        { id:16, v:'Tim', n:'Förster', geb:'1999-11-29', verein:'HN', pos:['er'], u18:false },
-        { id:54, v:'Timo', n:'Schmidt', geb:'1997-07-23', verein:'H/V', pos:['sh','fh','wg'], u18:false },
-        { id:12, v:'Tobias', n:'Ehrlich', geb:'1986-08-05', verein:'HN', pos:['zr','dr'], u18:false },
-        { id:33, v:'Tom', n:'König', geb:'1990-01-20', verein:'HN', pos:['er'], u18:false },
-        { id:41, v:'Tom', n:'Lebus', geb:'2000-06-08', verein:'H/V', pos:['ct'], u18:false },
-        { id:56, v:'Tristan', n:'Schöntag', geb:'2000-10-22', verein:'HN', pos:['dr'], u18:false },
-        { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', geb:'1970-07-10', verein:'HN', pos:['wg'], u18:false },
-        { id:42, v:'Xavier', n:'Mbrim A Fiediek', geb:'1988-12-26', verein:'H/V', pos:['zr'], u18:false },
+        { id:18, v:'Angelo', n:'Galster', verein:'HN', pos:['sh','fh','ct'], u18:false },
+        { id:24, v:'Anton', n:'Hanetzok', verein:'H/V', pos:['dr'], u18:false, role:'VC' },
+        { id:68, v:'Ben', n:'Johnston', verein:'HN', pos:['fh'], u18:false },
+        { id:6, v:'Christopher', n:'Bunge', verein:'H/V', pos:['zr'], u18:false },
+        { id:46, v:'Connor', n:'Peise', verein:'H/V', pos:['er'], u18:false },
+        { id:31, v:'Daniel', n:'Kainer', verein:'HN', pos:['er','zr'], u18:false },
+        { id:59, v:'Enrico Marco', n:'Stenzel', verein:'HN', pos:['zr'], u18:false },
+        { id:64, v:'Fabian', n:'Wendt', verein:'P', pos:['fh','fb','ct','wg'], u18:false },
+        { id:4, v:'Felix', n:'Berg', verein:'HN', pos:['ct','wg'], u18:false },
+        { id:44, v:'Florian', n:'Neumann', verein:'HN', pos:['wg'], u18:false },
+        { id:40, v:'Fynn', n:'Lauer', verein:'HN', pos:['wg'], u18:false },
+        { id:45, v:'Gustav', n:'Palm', verein:'HN', pos:['fb','ct','wg'], u18:false },
+        { id:3, v:'Hannes', n:'Bartelt', verein:'HN', pos:['sh','fh','ct'], u18:false },
+        { id:29, v:'Jonas', n:'Hinz', verein:'HN', pos:['er','zr','dr'], u18:false, role:'VC' },
+        { id:63, v:'Joshua', n:'Walker', verein:'H/V', pos:['dr','fh'], u18:false },
+        { id:37, v:'Julius', n:'Laetsch', verein:'H/V', pos:['sh','fh'], u18:false },
+        { id:15, v:'Kai', n:'Friesicke', verein:'H/V', pos:['wg'], u18:false },
+        { id:14, v:'Keno', n:'Filietz', verein:'H/V', pos:['dr'], u18:false },
+        { id:47, v:'Kevin', n:'Pilz', verein:'H/V', pos:['er'], u18:false },
+        { id:10, v:'Kimi', n:'Döpke', verein:'HN', pos:['fh'], u18:false },
+        { id:5, v:'Luca Karim', n:'Borgwardt', verein:'HN', pos:['er'], u18:false },
+        { id:11, v:'Lucas', n:'Eichler', verein:'HN', pos:['sh','wg'], u18:false },
+        { id:38, v:'Lukas', n:'Laetsch', verein:'H/V', pos:['fh','fb','ct','wg'], u18:false, role:'VC' },
+        { id:21, v:'Marcel', n:'Grabow', verein:'H/V', pos:['er','zr'], u18:false },
+        { id:13, v:'Matti Erik', n:'Eschwe', verein:'HN', pos:['ct','wg'], u18:false },
+        { id:52, v:'Maurice Peter', n:'Sankeralli', verein:'H/V', pos:['dr'], u18:false },
+        { id:39, v:'Max', n:'Langer', verein:'HN', pos:['er','zr'], u18:false },
+        { id:28, v:'Maximilian', n:'Hildebrandt', verein:'HN', pos:['dr','fb','ct'], u18:false },
+        { id:17, v:'Michael', n:'Galster', verein:'HN', pos:['er','wg'], u18:false },
+        { id:19, v:'Moritz', n:'Gollnick', verein:'HN', pos:['zr','dr'], u18:true },
+        { id:30, v:'Moritz', n:'Janosch', verein:'HN', pos:['ct','wg'], u18:false },
+        { id:35, v:'Norman Guido', n:'Kranert', verein:'HN', pos:['er'], u18:false },
+        { id:25, v:'Oliver', n:'Herrmann', verein:'HN', pos:['fb','ct','wg'], u18:false },
+        { id:61, v:'Oliver', n:'Tschetsch', verein:'H/V', pos:['er'], u18:false },
+        { id:7, v:'Paul', n:'Chukwu', verein:'H/V', pos:['zr'], u18:false },
+        { id:67, v:'Paul', n:'Zyparth', verein:'H/V', pos:['zr','dr'], u18:false },
+        { id:58, v:'Philip', n:'Simon', verein:'H/V', pos:['er'], u18:false },
+        { id:55, v:'Rico', n:'Schomacker', verein:'HN', pos:['zr','dr'], u18:false, role:'C' },
+        { id:66, v:'Robert', n:'Woelki', verein:'H/V', pos:['dr','wg'], u18:false },
+        { id:51, v:'Ronny', n:'Sager', verein:'HN', pos:['er'], u18:false },
+        { id:2, v:'Sarvan', n:'Aziz', verein:'HN', pos:['wg'], u18:true },
+        { id:34, v:'Sascha', n:'Kosanke', verein:'H/V', pos:['er','zr','dr'], u18:false },
+        { id:26, v:'Sebastian', n:'Hildebrandt', verein:'HN', pos:['sh','fh','ct','wg'], u18:false },
+        { id:1, v:'Shawn', n:'Ahrens', verein:'H/V', pos:['sh','wg'], u18:false },
+        { id:49, v:'Silas', n:'Rathke', verein:'H/V', pos:['zr','dr'], u18:false },
+        { id:8, v:'Simon', n:'Csehan', verein:'?', pos:['wg'], u18:false },
+        { id:69, v:'Simon', n:'Reichelt', verein:'HN', pos:['wg'], u18:false },
+        { id:57, v:'Steffen', n:'Schwarz', verein:'HN', pos:['er'], u18:false },
+        { id:43, v:'Steven', n:'Müller', verein:'H/V', pos:['wg'], u18:false },
+        { id:53, v:'Theo', n:'Schmidt', verein:'HN', pos:['fb','ct'], u18:false },
+        { id:16, v:'Tim', n:'Förster', verein:'HN', pos:['er'], u18:false },
+        { id:54, v:'Timo', n:'Schmidt', verein:'H/V', pos:['sh','fh','wg'], u18:false },
+        { id:12, v:'Tobias', n:'Ehrlich', verein:'HN', pos:['zr','dr'], u18:false },
+        { id:33, v:'Tom', n:'König', verein:'HN', pos:['er'], u18:false },
+        { id:41, v:'Tom', n:'Lebus', verein:'H/V', pos:['ct'], u18:false },
+        { id:56, v:'Tristan', n:'Schöntag', verein:'HN', pos:['dr'], u18:false },
+        { id:27, v:'Wolf-Dietrich', n:'Hildebrandt', verein:'HN', pos:['wg'], u18:false },
+        { id:42, v:'Xavier', n:'Mbrim A Fiediek', verein:'H/V', pos:['zr'], u18:false },
     ];
 
     // Sort alphabetically by first name
@@ -392,7 +399,7 @@
         }
 
         grid.innerHTML = filtered.map(p => {
-            const age = getAge(p.geb);
+            const age = getAge(playerBirthDates[p.id]);
             const ageStr = age !== null ? `${age} J.` : '';
 
             let badges = '';
@@ -453,6 +460,21 @@
         renderStats();
         renderPlayers();
         scrollToHash();
+
+        // Load birth dates from Firebase (shown only when logged in)
+        firebase.auth().signInAnonymously().then(() => {
+            db.ref('players_meta').once('value', snap => {
+                const data = snap.val();
+                if (data) {
+                    for (const [id, meta] of Object.entries(data)) {
+                        if (meta && meta.geb) playerBirthDates[id] = meta.geb;
+                    }
+                    renderPlayers();
+                }
+            });
+        }).catch(err => {
+            console.warn('Firebase Auth failed, ages not available', err);
+        });
     }
 
     function scrollToHash() {
