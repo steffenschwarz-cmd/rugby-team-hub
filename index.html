@@ -1521,8 +1521,11 @@
             let count = 0;
             let d = new Date(from);
             d.setHours(0,0,0,0);
+            const kw10 = new Date(2026, 2, 3);
             while (d < to) {
-                if (d.getDay() === 2 || d.getDay() === 5) count++;
+                const day = d.getDay();
+                // KW9: Di+Fr, ab KW10: Mi+Fr
+                if (d < kw10 ? (day === 2 || day === 5) : (day === 3 || day === 5)) count++;
                 d.setDate(d.getDate() + 1);
             }
             return count;
@@ -1597,22 +1600,27 @@
                 firstFridays.add(ff.toDateString());
             }
 
-            // Sonderregel KW 9 (24.–27.02.): alles 18:30 in Hennigsdorf
-            // Ab KW 10 (03.03.): Di 19:00 Hohen Neuendorf, Fr 18:30 Hennigsdorf
+            // KW 9 (24.–27.02.): Di+Fr 18:30 Hennigsdorf + Stammtisch Di
+            // Ab KW 10 (03.03.): Mi+Fr 18:00 Hennigsdorf, kein Stammtisch
             const kw10Start = new Date(2026, 2, 3); // 3. März, lokale Zeitzone
             while (d <= endDate) {
                 const day = d.getDay();
-                if (day === 2 || day === 5) {
+                const isKW9 = d < kw10Start;
+                // KW9: Di(2)+Fr(5), ab KW10: Mi(3)+Fr(5)
+                const isTrainingDay = isKW9 ? (day === 2 || day === 5) : (day === 3 || day === 5);
+                if (isTrainingDay) {
                     const isFirstFri = day === 5 && firstFridays.has(d.toDateString());
-                    const isKW9 = d < kw10Start;
                     let time, detail, title;
-                    if (day === 2) {
-                        time = isKW9 ? '18:30' : '19:00';
-                        const ort = isKW9 ? 'Hennigsdorf' : 'Hohen Neuendorf';
-                        title = 'Training + Stammtisch';
-                        detail = `Di ${time} ${ort} — danach Stammtisch`;
-                    } else {
+                    if (isKW9 && day === 2) {
                         time = '18:30';
+                        title = 'Training + Stammtisch';
+                        detail = `Di ${time} Hennigsdorf — danach Stammtisch`;
+                    } else if (!isKW9 && day === 3) {
+                        time = '18:00';
+                        title = 'Training';
+                        detail = `Mi ${time} Hennigsdorf`;
+                    } else {
+                        time = isKW9 ? '18:30' : '18:00';
                         title = isFirstFri ? 'Training + Teamabend' : 'Training';
                         detail = isFirstFri ? `Fr ${time} Hennigsdorf — danach Teamabend` : `Fr ${time} Hennigsdorf`;
                     }
