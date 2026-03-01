@@ -184,8 +184,24 @@ function setupLogin({ db, minRole, onUnlock } = {}) {
     }
 
     // --- Registration Form ---
-    function showRegisterForm() {
+    async function showRegisterForm() {
         const loginBox = document.querySelector('.login-box');
+
+        // Load existing users to mark already-registered names
+        const users = await loadUsers(db);
+        const takenNames = new Set();
+        if (users) {
+            for (const u of Object.values(users)) {
+                if (u.active) takenNames.add(u.name);
+            }
+        }
+
+        // Build dropdown options
+        const options = KADER.map(name => {
+            const taken = takenNames.has(name);
+            return `<option value="${name}" ${taken ? 'disabled' : ''}>${name}${taken ? ' (bereits registriert)' : ''}</option>`;
+        }).join('');
+
         loginBox.innerHTML = `
             <h2>Registrieren</h2>
             <div class="login-clubs">
@@ -194,8 +210,10 @@ function setupLogin({ db, minRole, onUnlock } = {}) {
                 <span class="club-blue">SV Stahl Hennigsdorf</span>
             </div>
             <input type="password" class="login-input" id="reg-team-pw" placeholder="Team-Passwort" autocomplete="off">
-            <input type="text" class="login-input" id="reg-vorname" placeholder="Vorname" autocomplete="given-name" style="text-align:left;">
-            <input type="text" class="login-input" id="reg-nachname" placeholder="Nachname" autocomplete="family-name" style="text-align:left;">
+            <select class="login-input" id="reg-name" style="text-align:left;cursor:pointer;">
+                <option value="">-- Name w\u00e4hlen --</option>
+                ${options}
+            </select>
             <input type="password" class="login-input" id="reg-code" placeholder="Pers\u00f6nlichen Code w\u00e4hlen (min. 4 Zeichen)" autocomplete="new-password">
             <input type="password" class="login-input" id="reg-code-confirm" placeholder="Code best\u00e4tigen" autocomplete="new-password">
             <button class="login-btn" id="reg-btn">Account erstellen</button>
@@ -221,12 +239,11 @@ function setupLogin({ db, minRole, onUnlock } = {}) {
         errEl.style.display = 'none';
 
         const teamPw = document.getElementById('reg-team-pw').value.trim();
-        const vorname = document.getElementById('reg-vorname').value.trim();
-        const nachname = document.getElementById('reg-nachname').value.trim();
+        const fullName = document.getElementById('reg-name').value;
         const code = document.getElementById('reg-code').value;
         const codeConfirm = document.getElementById('reg-code-confirm').value;
 
-        if (!teamPw || !vorname || !nachname || !code || !codeConfirm) {
+        if (!teamPw || !fullName || !code || !codeConfirm) {
             errEl.textContent = 'Bitte alle Felder ausf\u00fcllen.';
             errEl.style.display = 'block';
             return;
@@ -255,14 +272,12 @@ function setupLogin({ db, minRole, onUnlock } = {}) {
             return;
         }
 
-        const fullName = vorname + ' ' + nachname;
-
-        // Check for duplicate name
-        usersCache = null; // Force fresh load
+        // Double-check name not taken
+        usersCache = null;
         const users = await loadUsers(db);
         for (const [uid, user] of Object.entries(users)) {
-            if (user.active && user.name.toLowerCase() === fullName.toLowerCase()) {
-                errEl.textContent = 'Ein Account mit diesem Namen existiert bereits. Bitte logge dich mit deinem Code ein.';
+            if (user.active && user.name === fullName) {
+                errEl.textContent = 'Dieser Name ist bereits registriert. Bitte logge dich mit deinem Code ein.';
                 errEl.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'Account erstellen';
@@ -394,7 +409,24 @@ function showSaved(text) {
     setTimeout(() => ind.classList.remove('show'), 2000);
 }
 
-// --- 8. Admin Functions (Trainer only) ---
+// --- 8. Kader (for registration dropdown) ---
+const KADER = [
+    'Angelo Galster','Anton Hanetzok','Ben Johnston','Christopher Bunge','Connor Peise',
+    'Daniel Kainer','Enrico Marco Stenzel','Fabian Wendt','Felix Berg','Florian Neumann',
+    'Fynn Lauer','Gustav Palm','Hannes Bartelt','Jonas Hinz','Joshua Walker',
+    'Julius Laetsch','Kai Friesicke','Keno Filietz','Kevin Pilz','Kimi D\u00f6pke',
+    'Luca Karim Borgwardt','Lucas Eichler','Lukas Laetsch','Marcel Grabow',
+    'Matti Erik Eschwe','Maurice Peter Sankeralli','Max Langer','Maximilian Hildebrandt',
+    'Michael Galster','Moritz Gollnick','Moritz Janosch','Norman Guido Kranert',
+    'Oliver Herrmann','Oliver Tschetsch','Paul Chukwu','Paul Zyparth','Philip Simon',
+    'Rico Schomacker','Robert Woelki','Ronny Sager','Sarvan Aziz','Sascha Kosanke',
+    'Sebastian Hildebrandt','Shawn Ahrens','Silas Rathke','Simon Csehan','Simon Reichelt',
+    'Steffen Schwarz','Steven M\u00fcller','Theo Schmidt','Tim F\u00f6rster','Timo Schmidt',
+    'Tobias Ehrlich','Tom K\u00f6nig','Tom Lebus','Tristan Sch\u00f6ntag',
+    'Wolf-Dietrich Hildebrandt','Xavier Mbrim A Fiediek'
+].sort((a, b) => a.localeCompare(b, 'de'));
+
+// --- 9. Admin Functions (Trainer only) ---
 function generateCode(length = 6) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let code = '';
