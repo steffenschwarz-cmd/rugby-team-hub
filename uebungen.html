@@ -566,6 +566,334 @@
             },
             animated: false,
             createdAt: Date.now()
+        },
+        {
+            name: 'Jailbreak',
+            category: 'warm-up',
+            description: 'Zwei Teams: Gefangene im inneren Kreis, Wächter patrouillieren außen im Quadrat (10×10m). Auf "Jailbreak!" versuchen die Gefangenen aus dem Quadrat zu fliehen — Wächter stoppen durch Two-Hand Touch. Jeder Ausbruch = 1 Punkt. Nach jeder Runde: Teams tauschen.',
+            rules: [
+                'Team A ("Gefangene") läuft im Uhrzeigersinn im inneren Kreis',
+                'Team B ("Wächter") läuft gegen den Uhrzeigersinn außen herum',
+                'Auf "Jailbreak!": Gefangene versuchen über die Quadrat-Grenze zu fliehen',
+                'Wächter stoppen durch Two-Hand Touch (beide Hände am Körper)',
+                'Jeder erfolgreiche Ausbruch = 1 Punkt für die Gefangenen',
+                'Nach jeder Runde: Teams tauschen die Rollen',
+                'Bei ungerader Spielerzahl: Verteidigung bekommt den Extra-Spieler',
+                'Kein Ball — reines Lauf- und Reaktionsspiel'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.50, y: 0.25 }, { x: 0.68, y: 0.32 },
+                    { x: 0.75, y: 0.50 }, { x: 0.68, y: 0.68 },
+                    { x: 0.50, y: 0.75 }, { x: 0.32, y: 0.68 },
+                    { x: 0.25, y: 0.50 }, { x: 0.32, y: 0.32 },
+                    { x: 0.05, y: 0.05 }, { x: 0.95, y: 0.05 },
+                    { x: 0.05, y: 0.95 }, { x: 0.95, y: 0.95 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Gefangene', color: '#e74c3c',
+                        players: [
+                            { x: 0.50, y: 0.38 }, { x: 0.60, y: 0.42 },
+                            { x: 0.62, y: 0.55 }, { x: 0.55, y: 0.63 },
+                            { x: 0.42, y: 0.62 }, { x: 0.38, y: 0.50 },
+                            { x: 0.45, y: 0.42 }
+                        ]
+                    },
+                    b: {
+                        label: 'Wächter', color: '#3498db',
+                        players: [
+                            { x: 0.50, y: 0.10 }, { x: 0.85, y: 0.20 },
+                            { x: 0.88, y: 0.55 }, { x: 0.75, y: 0.85 },
+                            { x: 0.35, y: 0.88 }, { x: 0.12, y: 0.65 },
+                            { x: 0.15, y: 0.25 }
+                        ]
+                    }
+                },
+                ball: null,
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Possession Game (Schnappball)',
+            category: 'warm-up',
+            description: 'Zwei Teams (5 gegen 5) im begrenzten Feld. Das ballbesitzende Team spielt 10 Pässe hintereinander = 1 Punkt. Ball maximal 3 Sekunden halten, Ballträger darf sich nicht bewegen. Trainiert Freilaufen, Passen unter Druck und Kommunikation.',
+            rules: [
+                'Zwei Teams (max. 5 gegen 5) im markierten Feld',
+                '10 aufeinanderfolgende Pässe ohne Ballverlust = 1 Punkt',
+                'Ball maximal 3 Sekunden halten — dann muss gepasst werden',
+                'Ballträger darf sich NICHT bewegen (steht fest)',
+                'Verteidiger müssen 1 Meter Abstand zum Ballträger halten',
+                'Abfangen oder Fallenlassen = Ballwechsel',
+                'Spieldauer: 2–3 Minuten pro Runde'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.05, y: 0.05 }, { x: 0.95, y: 0.05 },
+                    { x: 0.05, y: 0.95 }, { x: 0.95, y: 0.95 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Ballbesitz', color: '#2ecc71',
+                        players: [
+                            { x: 0.20, y: 0.30 }, { x: 0.45, y: 0.20 },
+                            { x: 0.70, y: 0.35 }, { x: 0.35, y: 0.55 },
+                            { x: 0.60, y: 0.65 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#e74c3c',
+                        players: [
+                            { x: 0.30, y: 0.40 }, { x: 0.55, y: 0.45 },
+                            { x: 0.75, y: 0.55 }, { x: 0.40, y: 0.70 },
+                            { x: 0.65, y: 0.80 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.20, y1: 0.30, x2: 0.45, y2: 0.20, dashed: true },
+                    { x1: 0.45, y1: 0.20, x2: 0.70, y2: 0.35, dashed: true },
+                    { x1: 0.70, y1: 0.35, x2: 0.60, y2: 0.65, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'One-Hand Possession',
+            category: 'warm-up',
+            description: 'Jeder Spieler hält seinen eigenen Ball in einer Hand. Der Live-Ball wird einhändig gepasst und gefangen. Extrem koordinativ — trainiert einhändiges Handling, Ballkontrolle und Teamwork unter Einschränkung.',
+            rules: [
+                'Jeder Spieler hält seinen eigenen Rugbyball in einer Hand',
+                'Der Live-Ball wird mit der freien Hand einhändig gepasst und gefangen',
+                'Team A hat den Live-Ball und passt untereinander',
+                'Team B versucht den Live-Ball abzufangen',
+                '10 aufeinanderfolgende Pässe = Ballwechsel',
+                'Eigenen Ball fallen lassen = sofortiger Ballwechsel (Turnover)',
+                'Kleine Strafen (z.B. 5 Liegestütze) wenn Gegner 10 Pässe schafft'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.05, y: 0.05 }, { x: 0.95, y: 0.05 },
+                    { x: 0.05, y: 0.95 }, { x: 0.95, y: 0.95 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Ballbesitz', color: '#9b59b6',
+                        players: [
+                            { x: 0.15, y: 0.25 }, { x: 0.40, y: 0.18 },
+                            { x: 0.65, y: 0.28 }, { x: 0.25, y: 0.50 },
+                            { x: 0.50, y: 0.45 }, { x: 0.75, y: 0.52 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#e67e22',
+                        players: [
+                            { x: 0.30, y: 0.35 }, { x: 0.55, y: 0.38 },
+                            { x: 0.80, y: 0.40 }, { x: 0.20, y: 0.68 },
+                            { x: 0.45, y: 0.65 }, { x: 0.70, y: 0.72 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.15, y1: 0.25, x2: 0.40, y2: 0.18, dashed: true },
+                    { x1: 0.40, y1: 0.18, x2: 0.65, y2: 0.28, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Double Touch',
+            category: 'warm-up',
+            description: 'Touch Rugby mit besonderer Regel: Der Ballträger muss von zwei verschiedenen Verteidigern berührt werden, bevor er gestoppt ist. Nach dem 1. Touch darf er weiterlaufen, kann aber nicht scoren. Fördert geraden Lauf, Support Play und Verteidigungskommunikation.',
+            rules: [
+                'Angriffsteam spielt Richtung gegnerische Endzone',
+                'Ballträger muss von 2 verschiedenen Verteidigern berührt werden (= Double Touch)',
+                '1. Touch = Spieler darf weiterlaufen, kann aber NICHT scoren',
+                '2. Touch durch anderen Verteidiger = gestoppt, Ball muss zurückgespielt werden',
+                'Pässe nur nach hinten oder seitlich (Rugby-Passregel)',
+                'Try = Ball in der Endzone ablegen',
+                'Nach 6 Double-Touches ohne Try: Ballwechsel',
+                'Verteidiger müssen kommunizieren — wer hat den 1. Touch gemacht?'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.10, y: 0.02 }, { x: 0.90, y: 0.02 },
+                    { x: 0.10, y: 0.98 }, { x: 0.90, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.10, y1: 0.02, x2: 0.90, y2: 0.15, color: '#2ecc71' },
+                    { x1: 0.10, y1: 0.85, x2: 0.90, y2: 0.98, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.20, y: 0.68 }, { x: 0.30, y: 0.62 },
+                            { x: 0.40, y: 0.58 }, { x: 0.50, y: 0.55 },
+                            { x: 0.60, y: 0.58 }, { x: 0.70, y: 0.62 },
+                            { x: 0.80, y: 0.68 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.20, y: 0.40 }, { x: 0.30, y: 0.35 },
+                            { x: 0.40, y: 0.32 }, { x: 0.50, y: 0.30 },
+                            { x: 0.60, y: 0.32 }, { x: 0.70, y: 0.35 },
+                            { x: 0.80, y: 0.40 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 3 },
+                passLines: [
+                    { x1: 0.50, y1: 0.55, x2: 0.60, y2: 0.58, dashed: true },
+                    { x1: 0.50, y1: 0.55, x2: 0.40, y2: 0.58, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Touch Rugby (2 Bälle)',
+            category: 'warm-up',
+            description: 'Touch Rugby mit 2 Bällen gleichzeitig! Jedes Team startet mit einem Ball und greift in entgegengesetzte Richtungen an. Erfordert blitzschnelles Umschalten zwischen Angriff und Verteidigung. Achtung: Blindside-Kontakt vermeiden — Kopf immer oben!',
+            rules: [
+                'Jedes Team startet mit einem Ball in der eigenen Hälfte',
+                'Beide Bälle sind gleichzeitig im Spiel',
+                'Standard Touch-Regeln: Bei Touch wird der Ball zurückgespielt',
+                'Try = Ball in der gegnerischen Endzone ablegen',
+                'Nach Try: Team startet wieder aus eigener Hälfte',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'Ein Team kann beide Bälle gleichzeitig besitzen!',
+                'Sicherheit: Nur Touch — kein Tackle. Kopf oben halten wegen 2. Ball'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.10, y: 0.02 }, { x: 0.90, y: 0.02 },
+                    { x: 0.10, y: 0.98 }, { x: 0.90, y: 0.98 },
+                    { x: 0.10, y: 0.50 }, { x: 0.90, y: 0.50 }
+                ],
+                zones: [
+                    { x1: 0.10, y1: 0.02, x2: 0.90, y2: 0.12, color: '#2ecc71' },
+                    { x1: 0.10, y1: 0.48, x2: 0.90, y2: 0.52, color: 'rgba(255,255,255,0.1)' },
+                    { x1: 0.10, y1: 0.88, x2: 0.90, y2: 0.98, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Team A', color: '#e67e22',
+                        players: [
+                            { x: 0.25, y: 0.22 }, { x: 0.40, y: 0.18 },
+                            { x: 0.55, y: 0.15 }, { x: 0.70, y: 0.18 },
+                            { x: 0.35, y: 0.30 }, { x: 0.55, y: 0.28 },
+                            { x: 0.75, y: 0.30 }
+                        ]
+                    },
+                    b: {
+                        label: 'Team B', color: '#3498db',
+                        players: [
+                            { x: 0.25, y: 0.78 }, { x: 0.40, y: 0.82 },
+                            { x: 0.55, y: 0.85 }, { x: 0.70, y: 0.82 },
+                            { x: 0.35, y: 0.70 }, { x: 0.55, y: 0.72 },
+                            { x: 0.75, y: 0.70 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 2 },
+                passLines: [
+                    { x1: 0.55, y1: 0.15, x2: 0.40, y2: 0.18, dashed: true },
+                    { x1: 0.55, y1: 0.85, x2: 0.40, y2: 0.82, dashed: true }
+                ]
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Breakout Circle',
+            category: 'warm-up',
+            description: 'Spieler bilden einen engen Kreis und binden sich zusammen. Ein Spieler steht mit Ball in der Mitte und versucht durch den Kreis auszubrechen. Trainiert Kontaktvorbereitung, Körperspannung und Durchsetzungsvermögen. Nur für kontakterfahrene Spieler!',
+            rules: [
+                'Kreisspieler stehen eng Schulter an Schulter und binden sich zusammen',
+                'Trainer tippt einen Spieler an — dieser geht mit Ball in die Mitte',
+                'Mitte-Spieler versucht durch eine Lücke im Kreis auszubrechen',
+                'Kreisspieler dürfen NUR mit dem Körper blocken — KEINE Arme oder Knie!',
+                'Mitte-Spieler darf NICHT den kleinsten Spieler angreifen',
+                'Kein Kopf-voran-Angriff! Tiefer Schwerpunkt, Schulter voran',
+                'Nach 30 Sekunden oder Ausbruch: Nächster Spieler in die Mitte',
+                'Spaß-Faktor bewahren — keine übertriebene Härte!'
+            ],
+            setup: {
+                cones: [],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Kreis', color: '#2ecc71',
+                        players: [
+                            { x: 0.50, y: 0.15 }, { x: 0.72, y: 0.21 },
+                            { x: 0.83, y: 0.42 }, { x: 0.83, y: 0.65 },
+                            { x: 0.67, y: 0.82 }, { x: 0.50, y: 0.85 },
+                            { x: 0.33, y: 0.82 }, { x: 0.17, y: 0.65 },
+                            { x: 0.17, y: 0.42 }, { x: 0.28, y: 0.21 }
+                        ]
+                    },
+                    b: {
+                        label: 'Ausbrecher', color: '#e74c3c',
+                        players: [
+                            { x: 0.50, y: 0.50 }
+                        ]
+                    }
+                },
+                ball: { team: 'b', playerIndex: 0 },
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Atom-Spiel',
+            category: 'warm-up',
+            description: 'Alle Spieler joggen frei durchs Feld. Auf Zuruf einer Zahl (z.B. "Atom 4!") müssen sich alle blitzschnell zu Gruppen dieser Größe zusammenfinden. Wer keine Gruppe findet: 5 Burpees! Perfekt als Aufwärmspiel und zur Gruppeneinteilung. Am besten mit Rugby-Bewegungsformen (Sidesteps, hohe Knie) zwischen den Rufen.',
+            rules: [
+                'Alle Spieler joggen frei durcheinander im Spielfeld',
+                'Trainer ruft eine Zahl (z.B. "Atom 3!")',
+                'Spieler müssen sich sofort zu Gruppen dieser Größe zusammenfinden',
+                'Gruppen fassen sich an und bilden einen kleinen Kreis',
+                'Überzählige Spieler (ohne passende Gruppe) machen 5 Burpees',
+                'Kein Rempeln beim Gruppenfinden — Gruppen durch Handkontakt bilden',
+                'Variante: Mit Ball laufen, Zusatzaufgaben in der Gruppe (z.B. Liegestütz-Position)',
+                'Kein Ball in der Grundversion — reines Lauf- und Reaktionsspiel'
+            ],
+            setup: {
+                cones: [],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Spieler', color: '#f1c40f',
+                        players: [
+                            { x: 0.12, y: 0.08 }, { x: 0.78, y: 0.14 },
+                            { x: 0.45, y: 0.11 }, { x: 0.88, y: 0.38 },
+                            { x: 0.22, y: 0.32 }, { x: 0.65, y: 0.28 },
+                            { x: 0.08, y: 0.55 }, { x: 0.52, y: 0.48 },
+                            { x: 0.35, y: 0.62 }, { x: 0.82, y: 0.58 },
+                            { x: 0.18, y: 0.78 }, { x: 0.58, y: 0.75 },
+                            { x: 0.72, y: 0.85 }, { x: 0.42, y: 0.88 },
+                            { x: 0.90, y: 0.72 }
+                        ]
+                    }
+                },
+                ball: null,
+                passLines: []
+            },
+            animated: false,
+            createdAt: Date.now()
         }
     ];
 
@@ -592,13 +920,26 @@
             const data = snap.val();
             if (data && Object.keys(data).length > 0) {
                 drills = data;
+                // Dedup: Duplikate aus Firebase entfernen (behalte jeweils den ersten Eintrag pro Name)
+                const seenNames = {};
+                const dupeKeys = [];
+                Object.entries(drills).forEach(([key, d]) => {
+                    if (seenNames[d.name]) { dupeKeys.push(key); }
+                    else { seenNames[d.name] = key; }
+                });
+                if (dupeKeys.length > 0) {
+                    dupeKeys.forEach(k => {
+                        db.ref('/uebungen/' + k).remove();
+                        delete drills[k];
+                    });
+                }
                 // Seed-Migration: fehlende Drills sofort lokal + Firebase pushen
-                const existingNames = Object.values(data).map(d => d.name);
+                const existingNames = Object.values(drills).map(d => d.name);
                 SEED_DRILLS.forEach(sd => {
                     if (!existingNames.includes(sd.name)) {
                         const ref = db.ref('/uebungen').push();
                         ref.set(sd);
-                        drills[ref.key] = sd; // Sofort lokal anzeigen
+                        drills[ref.key] = sd;
                     }
                 });
                 localStorage.setItem('uebungen_fallback', JSON.stringify(drills));

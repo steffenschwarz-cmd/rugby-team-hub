@@ -36,7 +36,8 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 | Formationen & Ball-Carrier-Auswahl | Fertig | 22.02.2026 |
 | Pass-Animation (Ball fliegt rückwärts, gerade Linie) | Fertig | 23.02.2026 |
 | Nahtlose Phasen-Übergänge (kein Stocker) | Fertig | 23.02.2026 |
-| Weitere Startformationen (Viererraute, 22er Ports) | Offen | — |
+| Viererraute "Salz" + "Pfeffer" aus Ruck | Fertig | 01.03.2026 |
+| Weitere Startformationen (22er Ports etc.) | Offen | — |
 | trainingsbeteiligung.html bauen | Fertig | 23.02.2026 |
 | Navigation in allen Seiten: Beteiligung-Link | Fertig | 23.02.2026 |
 | uebungen.html bauen (Drill-Bibliothek mit Canvas) | Fertig | 25.02.2026 |
@@ -44,6 +45,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 | Erster Drill: "Ball-Klau" (Warm-Up) als Seed | Fertig | 25.02.2026 |
 | 6 weitere Warm-Up Drills + Farb-Zonen + kontextabhängige Legende | Fertig | 26.02.2026 |
 | CSS-Refactoring: common.css für alle 9 Dark-Theme-Seiten | Fertig | 28.02.2026 |
+| 7 weitere Warm-Up Drills (Jailbreak, Schnappball, One-Hand, Double Touch, 2-Bälle Touch, Breakout Circle, Atom-Spiel) | Fertig | 03.03.2026 |
 | SpielerPlus-Integration (weitere Screenshots) | Offen | — |
 
 ### Changelog
@@ -58,6 +60,9 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 - **25.02.2026**: Übungsbibliothek (uebungen.html): Separate Drill-Seite mit Canvas-Visualisierung, Kategoriefilter, Trainer-Modus (CRUD, Drag&Drop), Firebase-Persistenz. Erster Drill: "Ball-Klau" (Warm-Up). Navigation in allen 8 bestehenden Seiten aktualisiert.
 - **26.02.2026**: 6 weitere Warm-Up Drills: Ball-Klau (2 Bälle), Endzone, Schwänzchen-Fangen, Rondo (Rugby), Sumo-Ring, King of the Hill. Farbige Zonen (grün für Endzone), kontextabhängige Legende (Ball/Kegel/Passweg/Sperrzone nur wenn vorhanden), automatische Seed-Migration in Firebase.
 - **28.02.2026**: CSS-Refactoring: Gemeinsame Styles aus 9 Dark-Theme-Seiten in `common.css` ausgelagert. 920 Zeilen Duplikation entfernt, 121 Zeilen zentral. Vorteil: Farben, Navigation, Login, Header, Footer etc. müssen nur noch an einer Stelle geändert werden statt in 9 Dateien.
+- **01.03.2026**: Viererraute-Formationen aus dem Ruck: "Salz" (9 direkt an Raute, ohne Verbinder) und "Pfeffer" (mit Verbindungsspieler 10 zwischen 9 und Raute). Raute-Positionen: 1=Spitze vorne, 2=links, 3=rechts, 4=hinten.
+- **01.03.2026**: Koordinaten Rugby-regelkonform korrigiert: Alle Raute-Positionen hinter der Ruck-Linie (größere y-Werte), kein Forward-Pass möglich. Ruck links auf dem Feld (x=0.28, y=0.45), Raute rechts daneben. Salz: 9 bei (0.28,0.52), Raute bei y=0.52–0.68. Pfeffer: zusätzlich Verbinder 10 bei (0.40,0.54), Raute bei y=0.54–0.70.
+- **03.03.2026**: 7 weitere Warm-Up Drills via Agententeam (Researcher + Planner + Builder + Kontrolleur): Jailbreak (Kreis-Ausbruch mit Two-Hand Touch), Possession Game/Schnappball (5v5, 10 Pässe), One-Hand Possession (einhändiges Handling), Double Touch (2 verschiedene Touches), Touch Rugby mit 2 Bällen (simultanes Angreifen), Breakout Circle (physischer Kreisdurchbruch), Atom-Spiel (Gruppen bilden auf Zuruf). Insgesamt jetzt 14 Warm-Up Drills.
 
 ## Offene Ideen / Backlog
 
