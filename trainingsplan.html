@@ -401,6 +401,10 @@
                 <select id="fb-play"><option value="">— Kein Spielzug —</option></select>
             </div>
             <div class="form-group">
+                <label>Übung verknüpfen (optional)</label>
+                <select id="fb-drill"><option value="">— Keine Übung —</option></select>
+            </div>
+            <div class="form-group">
                 <label>Video verknüpfen (optional)</label>
                 <select id="fb-video"><option value="">— Kein Video —</option></select>
             </div>
@@ -417,6 +421,7 @@
     let sessions = {};
     let refPlays = {};
     let refVideos = {};
+    let refDrills = {};
     let trainerMode = false;
     let editingSessionId = null;
     let editingBlockIdx = null;
@@ -480,7 +485,9 @@
                             </div>
                         </div>
                         ${b.description ? `<div class="block-desc">${esc(b.description)}</div>` : ''}
-                        ${b.playRef || b.videoRef ? `<div class="block-links">${
+                        ${b.playRef || b.videoRef || b.drillRef ? `<div class="block-links">${
+                            b.drillRef && refDrills[b.drillRef] ? `<a href="uebungen.html">&#127939; ${esc(refDrills[b.drillRef].name)}</a>` : ''
+                        }${b.drillRef && (b.playRef || b.videoRef) ? ' &middot; ' : ''}${
                             b.playRef && refPlays[b.playRef] ? `<a href="spielzuege.html">&#127944; ${esc(refPlays[b.playRef].name)}</a>` : ''
                         }${b.playRef && b.videoRef ? ' &middot; ' : ''}${
                             b.videoRef && refVideos[b.videoRef] ? `<a href="videos.html">&#127909; ${esc(refVideos[b.videoRef].title)}</a>` : ''
@@ -591,16 +598,21 @@
     }
 
     // --- BLOCK CRUD ---
-    function populateRefDropdowns(playId, videoId) {
+    function populateRefDropdowns(playId, videoId, drillId) {
         const playSel = document.getElementById('fb-play');
         const vidSel = document.getElementById('fb-video');
+        const drillSel = document.getElementById('fb-drill');
         playSel.innerHTML = '<option value="">— Kein Spielzug —</option>';
         vidSel.innerHTML = '<option value="">— Kein Video —</option>';
+        drillSel.innerHTML = '<option value="">— Keine Übung —</option>';
         for (const [id, p] of Object.entries(refPlays)) {
             playSel.innerHTML += `<option value="${id}" ${id === playId ? 'selected' : ''}>${esc(p.name)}</option>`;
         }
         for (const [id, v] of Object.entries(refVideos)) {
             vidSel.innerHTML += `<option value="${id}" ${id === videoId ? 'selected' : ''}>${esc(v.title)}</option>`;
+        }
+        for (const [id, d] of Object.entries(refDrills)) {
+            drillSel.innerHTML += `<option value="${id}" ${id === drillId ? 'selected' : ''}>${esc(d.name)}</option>`;
         }
     }
 
@@ -611,7 +623,7 @@
         document.getElementById('fb-type').value = 'warmup';
         document.getElementById('fb-duration').value = 15;
         document.getElementById('fb-desc').value = '';
-        populateRefDropdowns('', '');
+        populateRefDropdowns('', '', '');
         document.getElementById('block-form-title').textContent = 'Block hinzufügen';
         document.getElementById('block-modal').classList.add('open');
     }
@@ -625,7 +637,7 @@
         document.getElementById('fb-type').value = b.type || 'warmup';
         document.getElementById('fb-duration').value = b.duration || 15;
         document.getElementById('fb-desc').value = b.description || '';
-        populateRefDropdowns(b.playRef || '', b.videoRef || '');
+        populateRefDropdowns(b.playRef || '', b.videoRef || '', b.drillRef || '');
         document.getElementById('block-form-title').textContent = 'Block bearbeiten';
         document.getElementById('block-modal').classList.add('open');
     }
@@ -649,12 +661,14 @@
         const description = document.getElementById('fb-desc').value.trim();
         const playRef = document.getElementById('fb-play').value || '';
         const videoRef = document.getElementById('fb-video').value || '';
+        const drillRef = document.getElementById('fb-drill').value || '';
         if (!name) { alert('Name ist erforderlich.'); return; }
 
         const blocks = getBlocks(currentSessionId);
         const blockData = { name, type, duration, description };
         if (playRef) blockData.playRef = playRef;
         if (videoRef) blockData.videoRef = videoRef;
+        if (drillRef) blockData.drillRef = drillRef;
 
         if (editingBlockIdx !== null) {
             blocks[editingBlockIdx] = blockData;
@@ -733,6 +747,10 @@
         });
         db.ref('videos').on('value', snap => {
             refVideos = snap.val() || {};
+            render();
+        });
+        db.ref('uebungen').on('value', snap => {
+            refDrills = snap.val() || {};
             render();
         });
     }
