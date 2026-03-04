@@ -507,6 +507,17 @@
                 'Silas Rathke': true, 'Theo Schmidt': true, 'Tobias Ehrlich': true, 'Wolf-Dietrich Hildebrandt': true,
                 'Kai Friesicke': true
             }
+        },
+        '20260304_training': {
+            date: '2026-03-04',
+            type: 'training',
+            present: {
+                'Angelo Galster': true, 'Anton Hanetzok': true, 'Ben Johnston': true, 'Christopher Bunge': true,
+                'Daniel Kainer': true, 'Enrico Marco Stenzel': true, 'Gustav Palm': true, 'Jonas Hinz': true,
+                'Julius Laetsch': true, 'Kimi Döpke': true, 'Lukas Laetsch': true, 'Marcel Grabow': true,
+                'Maximilian Hildebrandt': true, 'Max Langer': true, 'Paul Chukwu': true, 'Paul Zyparth': true,
+                'Philip Simon': true, 'Rico Schomacker': true, 'Sarvan Aziz': true, 'Tobias Ehrlich': true
+            }
         }
     };
 
@@ -550,6 +561,13 @@
             sessions['20260218_training'].present['Steven Müller'] = true;
             localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
             db.ref('trainingsbeteiligung/20260218_training/present/Steven Müller').set(true).catch(() => {});
+        }
+
+        // 3c) Patch: Add 04.03.2026 training if missing
+        if (!sessions['20260304_training']) {
+            sessions['20260304_training'] = SEED_DATA['20260304_training'];
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260304_training').set(sessions['20260304_training']).catch(() => {});
         }
 
         // 3) Render immediately
