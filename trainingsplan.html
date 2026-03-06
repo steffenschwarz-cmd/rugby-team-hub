@@ -374,6 +374,7 @@
     <div class="modal-overlay" id="block-modal">
         <div class="form-modal">
             <h2 id="block-form-title">Block hinzufügen</h2>
+            <div id="fb-remaining" style="font-size:0.82rem;font-weight:700;margin-bottom:0.8rem;padding:0.4rem 0.8rem;border-radius:8px;background:rgba(46,204,113,0.1);color:var(--accent);"></div>
             <div class="form-group">
                 <label>Name</label>
                 <input type="text" id="fb-name" placeholder="z.B. Aufwärmen mit Ball">
@@ -623,6 +624,18 @@
         }
     }
 
+    function updateRemainingDisplay() {
+        const el = document.getElementById('fb-remaining');
+        if (!currentSessionId || !sessions[currentSessionId]) { el.textContent = ''; return; }
+        const s = sessions[currentSessionId];
+        const blocks = getBlocks(currentSessionId);
+        const used = blocks.reduce((sum, b, i) => sum + (i === editingBlockIdx ? 0 : (parseInt(b.duration) || 0)), 0);
+        const remaining = (s.duration || 0) - used;
+        el.textContent = `${remaining} von ${s.duration} min verfügbar`;
+        el.style.color = remaining < 0 ? 'var(--danger)' : 'var(--accent)';
+        el.style.background = remaining < 0 ? 'rgba(224,64,64,0.1)' : 'rgba(46,204,113,0.1)';
+    }
+
     function addBlock(sessionId) {
         currentSessionId = sessionId;
         editingBlockIdx = null;
@@ -632,6 +645,7 @@
         document.getElementById('fb-desc').value = '';
         populateRefDropdowns('', '', '');
         document.getElementById('block-form-title').textContent = 'Block hinzufügen';
+        updateRemainingDisplay();
         document.getElementById('block-modal').classList.add('open');
     }
 
@@ -646,6 +660,7 @@
         document.getElementById('fb-desc').value = b.description || '';
         populateRefDropdowns(b.playRef || '', b.videoRef || '', b.drillRef || '');
         document.getElementById('block-form-title').textContent = 'Block bearbeiten';
+        updateRemainingDisplay();
         document.getElementById('block-modal').classList.add('open');
     }
 
