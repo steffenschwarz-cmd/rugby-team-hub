@@ -90,6 +90,10 @@
         .color-cooldown { background: #7896b4; }
         .type-besprechung { background: rgba(255,255,255,0.08); color: var(--text-muted); }
         .color-besprechung { background: var(--text-muted); }
+        .type-teamrun { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .color-teamrun { background: #22c55e; }
+        .type-setpieces { background: rgba(251,146,60,0.15); color: #fb923c; }
+        .color-setpieces { background: #fb923c; }
 
         /* Visual Timeline Bar */
         .timeline-bar {
@@ -385,6 +389,8 @@
                         <option value="fitness">Fitness</option>
                         <option value="cooldown">Cool-down</option>
                         <option value="besprechung">Besprechung</option>
+                        <option value="teamrun">Team Run</option>
+                        <option value="setpieces">Set Pieces</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -429,7 +435,8 @@
 
     const typeLabels = {
         warmup: 'Warm-up', technik: 'Technik', kontakt: 'Kontakt',
-        spielform: 'Spielform', fitness: 'Fitness', cooldown: 'Cool-down', besprechung: 'Besprechung'
+        spielform: 'Spielform', fitness: 'Fitness', cooldown: 'Cool-down', besprechung: 'Besprechung',
+        teamrun: 'Team Run', setpieces: 'Set Pieces'
     };
 
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
