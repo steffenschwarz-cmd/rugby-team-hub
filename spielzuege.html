@@ -334,6 +334,8 @@
                     <option value="lineout">Gasse / Lineout</option>
                     <option value="backs">Nur Backs (9-15)</option>
                     <option value="forwards">Nur Forwards (1-8)</option>
+                    <option value="raute_salz">Viererraute "Salz" (ohne Verbinder)</option>
+                    <option value="raute_pfeffer">Viererraute "Pfeffer" (mit Verbinder)</option>
                 </select>
             </div>
             <div class="form-group" id="fp-ball-group">
@@ -363,7 +365,48 @@
     let animSpeed = 1;
     let editMode = false;
     let draggingPlayer = null;
+    let draggingRuck = false;
     let lastFrameTime = 0;
+
+    // --- MULTI-SELECT STATE ---
+    let selectedPlayers = new Set();  // set of player IDs currently selected
+    let selectionRect = null;         // {x1, y1, x2, y2} during area-select drag
+    let isDraggingSelected = false;   // dragging the selected group
+    let groupDragStart = null;        // {mx, my} start of group drag
+
+    // --- UNDO HISTORY ---
+    const undoStack = [];
+    const MAX_UNDO = 5;
+
+    function pushUndo() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        const phase = phases[currentPhase];
+        if (!phase) return;
+        const snapshot = JSON.parse(JSON.stringify(phase));
+        undoStack.push({ playId: selectedPlayId, phaseIdx: currentPhase, data: snapshot });
+        if (undoStack.length > MAX_UNDO) undoStack.shift();
+    }
+
+    function undo() {
+        if (undoStack.length === 0) return;
+        const entry = undoStack.pop();
+        if (!plays[entry.playId]) return;
+        const phases = getPhases(plays[entry.playId]);
+        phases[entry.phaseIdx] = entry.data;
+        plays[entry.playId].phases = phases;
+        persistPlay(entry.playId);
+        drawField();
+        updateBallDropdowns();
+        showSaved('Rückgängig');
+    }
+
+    document.addEventListener('keydown', e => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
+            e.preventDefault();
+            undo();
+        }
+    });
 
     const catLabels = { angriff: 'Angriff', verteidigung: 'Verteidigung', standard: 'Standard', gedraenge: 'Gedränge', gasse: 'Gasse' };
 
@@ -440,6 +483,40 @@
                 4:  {x:0.37, y:0.42}, 5:  {x:0.43, y:0.42},
                 6:  {x:0.33, y:0.44}, 7:  {x:0.47, y:0.44},
                 8:  {x:0.40, y:0.48}
+            }
+        },
+        raute_salz: {
+            label: 'Viererraute "Salz" (ohne Verbinder)',
+            ballCarrier: '9',
+            color: '#4a9eff',
+            ruck: { x: 0.15, y: 0.35 },
+            labels: { '9': '9', '21': '1', '22': '2', '23': '3', '24': '4' },
+            players: {
+                // 9 direkt unter dem Ruck (gleiche x-Achse)
+                9:  {x:0.16, y:0.43},
+                // Raute: rechts und hinter der 9, schöne Tiefe
+                21: {x:0.31, y:0.52},  // 1 Mitte (Spitze)
+                22: {x:0.23, y:0.59},  // 2 Links
+                23: {x:0.39, y:0.59},  // 3 Rechts
+                24: {x:0.31, y:0.66}   // 4 Hinten
+            }
+        },
+        raute_pfeffer: {
+            label: 'Viererraute "Pfeffer" (mit Verbinder)',
+            ballCarrier: '9',
+            color: '#4a9eff',
+            ruck: { x: 0.12, y: 0.28 },
+            labels: { '9': '9', '20': '10', '21': '1', '22': '2', '23': '3', '24': '4' },
+            players: {
+                // 9 direkt unter dem Ruck
+                9:  {x:0.13, y:0.38},
+                // 10 Verbinder — rechts hinter 9, knapp unter Halfway
+                20: {x:0.27, y:0.48},
+                // Raute: rechts und hinter dem Verbinder, breiter Aufbau
+                21: {x:0.44, y:0.58},  // 1 Mitte (Spitze)
+                22: {x:0.36, y:0.64},  // 2 Links
+                23: {x:0.54, y:0.64},  // 3 Rechts
+                24: {x:0.44, y:0.70}   // 4 Hinten
             }
         }
     };
@@ -723,6 +800,32 @@
             ctx.setLineDash([]);
         }
 
+        // Formation metadata (labels, color, ruck)
+        const formKey = plays[selectedPlayId]?.formation;
+        const formMeta = formKey ? FORMATIONS[formKey] : null;
+
+        // Draw ruck symbol — use phase data if available, fallback to formation default
+        const phaseRuck = phases[currentPhase]?.ruck;
+        const ruckPos = phaseRuck || formMeta?.ruck;
+        if (ruckPos) {
+            const rx = ruckPos.x * W;
+            const ry = ruckPos.y * H;
+            const rw = radius * 2.8;
+            const rh = radius * 1.8;
+            ctx.fillStyle = 'rgba(139,90,43,0.6)';
+            ctx.beginPath();
+            ctx.ellipse(rx, ry, rw, rh, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = `bold ${Math.round(radius * 0.6)}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('RUCK', rx, ry);
+        }
+
         // Draw player tokens
         for (const [num, pos] of Object.entries(players)) {
             const nextPos = nextPhaseData?.players?.[num];
@@ -738,23 +841,34 @@
             ctx.arc(px + 1, py + 1, radius, 0, Math.PI * 2);
             ctx.fill();
 
-            // Circle
-            ctx.fillStyle = hasBall ? '#e8a020' : (parseInt(num) <= 8 ? '#2ecc71' : '#4a9eff');
+            // Circle — use formation color if defined, otherwise forward/back split
+            const defaultColor = parseInt(num) <= 8 ? '#2ecc71' : '#4a9eff';
+            ctx.fillStyle = hasBall ? '#e8a020' : (formMeta?.color || defaultColor);
             ctx.beginPath();
             ctx.arc(px, py, radius, 0, Math.PI * 2);
             ctx.fill();
 
-            // Border
-            ctx.strokeStyle = hasBall ? '#fff' : 'rgba(255,255,255,0.4)';
-            ctx.lineWidth = hasBall ? 2.5 : 1.5;
+            // Border — highlight selected players
+            const isSelected = selectedPlayers.has(num);
+            ctx.strokeStyle = isSelected ? '#4a9eff' : (hasBall ? '#fff' : 'rgba(255,255,255,0.4)');
+            ctx.lineWidth = isSelected ? 3 : (hasBall ? 2.5 : 1.5);
             ctx.stroke();
+            // Selection glow
+            if (isSelected) {
+                ctx.beginPath();
+                ctx.arc(px, py, radius + 3, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(74,158,255,0.4)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
 
-            // Number
+            // Number — use formation label if defined
+            const displayLabel = formMeta?.labels?.[num] || num;
             ctx.fillStyle = hasBall ? '#000' : '#fff';
             ctx.font = `bold ${Math.round(radius * 0.85)}px sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(num, px, py + 1);
+            ctx.fillText(displayLabel, px, py + 1);
 
             // Ball icon (small rugby ball above carrier)
             if (hasBall) {
@@ -921,7 +1035,7 @@
         drawField();
     }
 
-    // Pointer events for drag
+    // Pointer events for drag (single player, ruck, area-select, group-move)
     canvas.addEventListener('pointerdown', e => {
         if (!editMode || !trainerMode || !selectedPlayId) return;
         const rect = canvas.getBoundingClientRect();
@@ -933,32 +1047,175 @@
         const players = phase.players || {};
         const radius = Math.max(14, Math.min(20, W / 40)) / W;
 
-        for (const [num, pos] of Object.entries(players)) {
-            const dx = pos.x - mx;
-            const dy = pos.y - my;
-            if (Math.sqrt(dx * dx + dy * dy) < radius * 1.5) {
-                draggingPlayer = num;
+        // 1. Check if clicking on a selected player → start group drag
+        if (selectedPlayers.size > 0) {
+            for (const num of selectedPlayers) {
+                const pos = players[num];
+                if (!pos) continue;
+                const dx = pos.x - mx;
+                const dy = pos.y - my;
+                if (Math.sqrt(dx * dx + dy * dy) < radius * 1.5) {
+                    pushUndo();
+                    isDraggingSelected = true;
+                    groupDragStart = { mx, my };
+                    canvas.setPointerCapture(e.pointerId);
+                    return;
+                }
+            }
+        }
+
+        // 2. Check if clicking on ruck → drag ruck
+        const ruckPos = phase.ruck;
+        if (ruckPos) {
+            const ruckRadius = radius * 2.8 / W * 1.2;
+            const dx = ruckPos.x - mx;
+            const dy = ruckPos.y - my;
+            if (Math.sqrt(dx * dx + (dy * dy) * 0.5) < radius * 3) {
+                pushUndo();
+                draggingRuck = true;
                 canvas.setPointerCapture(e.pointerId);
                 return;
             }
         }
+
+        // 3. Check if clicking on a single player → drag that player
+        for (const [num, pos] of Object.entries(players)) {
+            const dx = pos.x - mx;
+            const dy = pos.y - my;
+            if (Math.sqrt(dx * dx + dy * dy) < radius * 1.5) {
+                pushUndo();
+                draggingPlayer = num;
+                selectedPlayers.clear();
+                canvas.setPointerCapture(e.pointerId);
+                drawField();
+                return;
+            }
+        }
+
+        // 4. Click on empty space → start area selection
+        selectedPlayers.clear();
+        selectionRect = { x1: mx, y1: my, x2: mx, y2: my };
+        canvas.setPointerCapture(e.pointerId);
+        drawField();
     });
 
     canvas.addEventListener('pointermove', e => {
-        if (!draggingPlayer || !selectedPlayId) return;
+        if (!selectedPlayId) return;
         const rect = canvas.getBoundingClientRect();
         const mx = Math.max(0, Math.min(1, (e.clientX - rect.left) / W));
         const my = Math.max(0, Math.min(1, (e.clientY - rect.top) / H));
         const phases = getPhases(plays[selectedPlayId]);
-        phases[currentPhase].players[draggingPlayer] = { x: mx, y: my };
-        plays[selectedPlayId].phases = phases;
-        drawField();
+
+        // Group drag — move all selected players by delta
+        if (isDraggingSelected && groupDragStart) {
+            const dx = mx - groupDragStart.mx;
+            const dy = my - groupDragStart.my;
+            const players = phases[currentPhase].players;
+            for (const num of selectedPlayers) {
+                if (players[num]) {
+                    players[num].x = Math.max(0, Math.min(1, players[num].x + dx));
+                    players[num].y = Math.max(0, Math.min(1, players[num].y + dy));
+                }
+            }
+            // Also move ruck if it's within the selection
+            if (draggingRuck && phases[currentPhase].ruck) {
+                phases[currentPhase].ruck.x = Math.max(0, Math.min(1, phases[currentPhase].ruck.x + dx));
+                phases[currentPhase].ruck.y = Math.max(0, Math.min(1, phases[currentPhase].ruck.y + dy));
+            }
+            groupDragStart = { mx, my };
+            plays[selectedPlayId].phases = phases;
+            drawField();
+            return;
+        }
+
+        // Ruck drag
+        if (draggingRuck) {
+            if (!phases[currentPhase].ruck) phases[currentPhase].ruck = {};
+            phases[currentPhase].ruck = { x: mx, y: my };
+            plays[selectedPlayId].phases = phases;
+            drawField();
+            return;
+        }
+
+        // Single player drag
+        if (draggingPlayer) {
+            phases[currentPhase].players[draggingPlayer] = { x: mx, y: my };
+            plays[selectedPlayId].phases = phases;
+            drawField();
+            return;
+        }
+
+        // Area selection — draw rectangle
+        if (selectionRect) {
+            selectionRect.x2 = mx;
+            selectionRect.y2 = my;
+            drawField();
+            // Draw selection rectangle
+            const sx = Math.min(selectionRect.x1, selectionRect.x2) * W;
+            const sy = Math.min(selectionRect.y1, selectionRect.y2) * H;
+            const sw = Math.abs(selectionRect.x2 - selectionRect.x1) * W;
+            const sh = Math.abs(selectionRect.y2 - selectionRect.y1) * H;
+            ctx.strokeStyle = 'rgba(74,158,255,0.7)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.strokeRect(sx, sy, sw, sh);
+            ctx.setLineDash([]);
+            ctx.fillStyle = 'rgba(74,158,255,0.1)';
+            ctx.fillRect(sx, sy, sw, sh);
+        }
     });
 
     canvas.addEventListener('pointerup', e => {
-        if (draggingPlayer && selectedPlayId) {
+        if (!selectedPlayId) return;
+
+        // Finish group drag
+        if (isDraggingSelected) {
+            isDraggingSelected = false;
+            groupDragStart = null;
+            persistPlay(selectedPlayId);
+            return;
+        }
+
+        // Finish ruck drag
+        if (draggingRuck) {
+            draggingRuck = false;
+            persistPlay(selectedPlayId);
+            return;
+        }
+
+        // Finish single player drag
+        if (draggingPlayer) {
             persistPlay(selectedPlayId);
             draggingPlayer = null;
+            return;
+        }
+
+        // Finish area selection — select all players inside rect
+        if (selectionRect) {
+            const x1 = Math.min(selectionRect.x1, selectionRect.x2);
+            const x2 = Math.max(selectionRect.x1, selectionRect.x2);
+            const y1 = Math.min(selectionRect.y1, selectionRect.y2);
+            const y2 = Math.max(selectionRect.y1, selectionRect.y2);
+            // Only count as area select if rect is big enough
+            if (Math.abs(x2 - x1) > 0.02 && Math.abs(y2 - y1) > 0.02) {
+                const phases = getPhases(plays[selectedPlayId]);
+                const players = phases[currentPhase]?.players || {};
+                selectedPlayers.clear();
+                for (const [num, pos] of Object.entries(players)) {
+                    if (pos.x >= x1 && pos.x <= x2 && pos.y >= y1 && pos.y <= y2) {
+                        selectedPlayers.add(num);
+                    }
+                }
+                // Check if ruck is in selection too
+                const ruckPos = phases[currentPhase]?.ruck;
+                if (ruckPos && ruckPos.x >= x1 && ruckPos.x <= x2 && ruckPos.y >= y1 && ruckPos.y <= y2) {
+                    draggingRuck = true; // flag that ruck moves with group
+                } else {
+                    draggingRuck = false;
+                }
+            }
+            selectionRect = null;
+            drawField();
         }
     });
 
@@ -973,6 +1230,8 @@
             ball: { carrier: current?.ball?.passTo || current?.ball?.carrier || '', passTo: '' },
             notes: ''
         };
+        // Copy ruck position if present
+        if (current?.ruck) newPhase.ruck = { x: current.ruck.x, y: current.ruck.y };
         phases.splice(currentPhase + 1, 0, newPhase);
         plays[selectedPlayId].phases = phases;
         currentPhase++;
@@ -1010,23 +1269,32 @@
         const present = Object.keys(phase.players || {}).sort((a, b) => parseInt(a) - parseInt(b));
         const allNums = Array.from({length: 15}, (_, i) => String(i + 1));
         const missing = allNums.filter(n => !present.includes(n));
+        const fKey = plays[selectedPlayId]?.formation;
+        const fMeta = fKey ? FORMATIONS[fKey] : null;
 
         let carrierHtml = '<option value="">Ball: keiner</option>';
         let passHtml = '<option value="">Pass an: —</option>';
         for (const n of present) {
-            carrierHtml += `<option value="${n}" ${String(ball.carrier) === n ? 'selected' : ''}>${n}</option>`;
-            passHtml += `<option value="${n}" ${String(ball.passTo) === n ? 'selected' : ''}>${n}</option>`;
+            const lbl = fMeta?.labels?.[n] || n;
+            carrierHtml += `<option value="${n}" ${String(ball.carrier) === n ? 'selected' : ''}>${lbl}</option>`;
+            passHtml += `<option value="${n}" ${String(ball.passTo) === n ? 'selected' : ''}>${lbl}</option>`;
         }
         document.getElementById('ball-carrier').innerHTML = carrierHtml;
         document.getElementById('pass-to').innerHTML = passHtml;
 
         // Add/Remove player dropdowns
         let addHtml = '<option value="">+ Spieler</option>';
-        for (const n of missing) addHtml += `<option value="${n}">${n}</option>`;
+        for (const n of missing) {
+            const lbl = fMeta?.labels?.[n] || n;
+            addHtml += `<option value="${n}">${lbl}</option>`;
+        }
         document.getElementById('add-player').innerHTML = addHtml;
 
         let removeHtml = '<option value="">- Spieler</option>';
-        for (const n of present) removeHtml += `<option value="${n}">${n}</option>`;
+        for (const n of present) {
+            const lbl = fMeta?.labels?.[n] || n;
+            removeHtml += `<option value="${n}">${lbl}</option>`;
+        }
         document.getElementById('remove-player').innerHTML = removeHtml;
     }
 
@@ -1098,7 +1366,8 @@
         const def = f.ballCarrier || nums[0];
         let html = '';
         for (const n of nums) {
-            html += `<option value="${n}" ${n === def ? 'selected' : ''}>${n}</option>`;
+            const label = f.labels?.[n] || n;
+            html += `<option value="${n}" ${n === def ? 'selected' : ''}>${label}</option>`;
         }
         document.getElementById('fp-ball').innerHTML = html;
     }
@@ -1141,13 +1410,17 @@
             db.ref('spielzuege/' + editingPlayId).update({ name, category });
         } else {
             const formation = document.getElementById('fp-formation').value;
+            const f = FORMATIONS[formation];
+            const phaseData = {
+                players: defaultPositions(formation),
+                ball: { carrier: document.getElementById('fp-ball').value || defaultBallCarrier(formation), passTo: '' },
+                notes: ''
+            };
+            // Store ruck position in phase data if formation has one
+            if (f?.ruck) phaseData.ruck = { x: f.ruck.x, y: f.ruck.y };
             const data = {
-                name, category,
-                phases: [{
-                    players: defaultPositions(formation),
-                    ball: { carrier: document.getElementById('fp-ball').value || defaultBallCarrier(formation), passTo: '' },
-                    notes: ''
-                }]
+                name, category, formation,
+                phases: [phaseData]
             };
             const ref = db.ref('spielzuege').push();
             ref.set(data);

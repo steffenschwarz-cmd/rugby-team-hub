@@ -518,6 +518,24 @@
                 'Maximilian Hildebrandt': true, 'Max Langer': true, 'Paul Chukwu': true, 'Paul Zyparth': true,
                 'Philip Simon': true, 'Rico Schomacker': true, 'Sarvan Aziz': true, 'Tobias Ehrlich': true
             }
+        },
+        '20260306_training': {
+            date: '2026-03-06',
+            type: 'training',
+            present: {
+                'Anton Hanetzok': true, 'Ben Johnston': true, 'Daniel Kainer': true, 'Jonas Hinz': true,
+                'Julius Laetsch': true, 'Kevin Pilz': true, 'Kimi Döpke': true, 'Lukas Laetsch': true,
+                'Matti Erik Eschwe': true, 'Maximilian Hildebrandt': true, 'Paul Chukwu': true,
+                'Philip Simon': true, 'Rico Schomacker': true, 'Simon Reichelt': true
+            },
+            absent: {
+                'Angelo Galster': 'Arbeit', 'Sebastian Hildebrandt': 'Erkältung', 'Christopher Bunge': '',
+                'Connor Peise': 'Schont sich für Oberlausitz', 'Felix Berg': '', 'Fynn Lauer': 'Uni',
+                'Marcel Grabow': 'Arbeit', 'Maurice Peter Sankeralli': '', 'Max Langer': '',
+                'Moritz Janosch': 'Schulveranstaltung', 'Norman Guido Kranert': '', 'Paul Zyparth': '',
+                'Sarvan Aziz': 'Fahrschule', 'Shawn Ahrens': '', 'Tobias Ehrlich': 'Kinderfreier Abend',
+                'Gustav Palm': 'Unentschuldigt', 'Theo Schmidt': 'Urlaub'
+            }
         }
     };
 
@@ -568,6 +586,13 @@
             sessions['20260304_training'] = SEED_DATA['20260304_training'];
             localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
             db.ref('trainingsbeteiligung/20260304_training').set(sessions['20260304_training']).catch(() => {});
+        }
+
+        // 3d) Patch: Add 07.03.2026 training if missing
+        if (!sessions['20260306_training']) {
+            sessions['20260306_training'] = SEED_DATA['20260306_training'];
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260307_training').set(sessions['20260306_training']).catch(() => {});
         }
 
         // 3) Render immediately
