@@ -36,6 +36,13 @@
             padding: 0.2rem 0.6rem; border-radius: 12px;
             font-size: 0.75rem; font-weight: 700; white-space: nowrap;
         }
+        .session-edit-btn {
+            display: none; background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted); font-size: 0.85rem; padding: 0.2rem 0.4rem;
+            border-radius: 6px; cursor: pointer; line-height: 1;
+        }
+        .session-edit-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+        .trainer-active .session-edit-btn { display: inline-flex; }
         .session-chevron { color: var(--text-muted); font-size: 1.2rem; transition: transform 0.2s; }
         .session-card.open .session-chevron { transform: rotate(90deg); }
 
@@ -516,6 +523,7 @@
                             ${s.focus ? `<div class="session-focus">${esc(s.focus)}</div>` : ''}
                         </div>
                         <div style="display:flex;align-items:center;gap:0.5rem">
+                            <button class="session-edit-btn" onclick="event.stopPropagation();editSession('${id}')" title="Bearbeiten">&#9998;</button>
                             <span class="session-duration-chip">${s.duration} min</span>
                             <span class="session-chevron">&#9654;</span>
                         </div>
