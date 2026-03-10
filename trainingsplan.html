@@ -433,6 +433,7 @@
     let editingSessionId = null;
     let editingBlockIdx = null;
     let currentSessionId = null;
+    const openSessions = new Set();
 
     const typeLabels = {
         warmup: 'Warm-up', technik: 'Technik', kontakt: 'Kontakt',
@@ -505,7 +506,7 @@
             `).join('');
 
             return `
-                <div class="session-card" id="session-${id}">
+                <div class="session-card${openSessions.has(id) ? ' open' : ''}" id="session-${id}">
                     <div class="session-header" onclick="toggleSession('${id}')">
                         <div>
                             <div class="session-date">${formatDate(s.date)}</div>
@@ -538,6 +539,8 @@
     }
 
     function toggleSession(id) {
+        if (openSessions.has(id)) openSessions.delete(id);
+        else openSessions.add(id);
         document.getElementById('session-' + id).classList.toggle('open');
     }
 
@@ -698,14 +701,13 @@
             blocks.push(blockData);
         }
 
-        sessions[currentSessionId].blocks = blocks;
-        db.ref('trainingsplaene/' + currentSessionId + '/blocks').set(blocks);
+        const sid = currentSessionId;
+        sessions[sid].blocks = blocks;
+        db.ref('trainingsplaene/' + sid + '/blocks').set(blocks);
         persist();
+        openSessions.add(sid);
         closeBlockForm();
         render();
-        // Keep session open
-        const el = document.getElementById('session-' + currentSessionId);
-        if (el) el.classList.add('open');
         showSaved();
     }
 
@@ -716,8 +718,8 @@
         sessions[sessionId].blocks = blocks;
         db.ref('trainingsplaene/' + sessionId + '/blocks').set(blocks);
         persist();
+        openSessions.add(sessionId);
         render();
-        document.getElementById('session-' + sessionId)?.classList.add('open');
         showSaved('Gelöscht');
     }
 
@@ -729,8 +731,8 @@
         sessions[sessionId].blocks = blocks;
         db.ref('trainingsplaene/' + sessionId + '/blocks').set(blocks);
         persist();
+        openSessions.add(sessionId);
         render();
-        document.getElementById('session-' + sessionId)?.classList.add('open');
     }
 
     function persist() {
