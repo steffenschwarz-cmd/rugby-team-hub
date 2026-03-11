@@ -115,6 +115,15 @@
             color: var(--text-muted);
         }
 
+        /* Clear button */
+        .pos-clear {
+            display: none; position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 1rem; cursor: pointer; padding: 0 4px; line-height: 1; z-index: 1;
+        }
+        .pos-clear:hover { color: var(--danger); }
+        .trainer-active .pos-select-wrap.has-player .pos-clear { display: block; }
+
         /* Custom dropdown arrow */
         .pos-select-wrap::after {
             content: '';
@@ -357,11 +366,11 @@
 
     // --- GAMES ---
     const games1 = [
-        { date: '2026-03-07', time: '14:00', opponent: 'Rugby Club Leipzig', home: true },
         { date: '2026-03-14', time: '14:00', opponent: 'TSV Victoria Linden', home: true },
         { date: '2026-03-21', time: '14:00', opponent: 'Rugby Klub 03 Berlin', home: false },
         { date: '2026-03-28', time: '13:00', opponent: 'Hamburger Rugby-Club', home: false },
         { date: '2026-04-18', time: '15:00', opponent: 'BSV 1892 Rugby', home: false },
+        { date: '2026-04-25', time: '14:00', opponent: 'Rugby Club Leipzig', home: true },
         { date: '2026-05-02', time: '15:00', opponent: 'Hamburger Rugby-Club', home: true },
         { date: '2026-05-09', time: '15:00', opponent: 'FC St. Pauli Rugby', home: false },
     ];
@@ -611,6 +620,17 @@
             });
         });
 
+        // Attach clear button listeners
+        container.querySelectorAll('.pos-clear').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const posNum = parseInt(e.target.dataset.pos);
+                delete current[posNum];
+                saveLineup();
+                renderStatus();
+                renderTable();
+            });
+        });
+
         // Enforce read-only mode if trainer not authenticated
         const main = document.getElementById('aufstellung-main');
         if (main && main.classList.contains('readonly-mode')) {
@@ -645,13 +665,15 @@
             for (const p of players) options += buildOption(p, current, posNum, placed);
         }
 
+        const hasPl = current[posNum] ? ' has-player' : '';
         return `
             <div class="lineup-row" style="--pos-order: ${posNum}">
                 <div class="pos-num ${numClass}">${posNum}</div>
-                <div class="pos-select-wrap">
+                <div class="pos-select-wrap${hasPl}">
                     <select class="pos-select" data-pos="${posNum}">
                         ${options}
                     </select>
+                    ${current[posNum] ? `<button class="pos-clear" data-pos="${posNum}" title="Spieler entfernen">✕</button>` : ''}
                 </div>
             </div>
         `;
