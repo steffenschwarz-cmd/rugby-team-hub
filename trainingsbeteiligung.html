@@ -519,6 +519,25 @@
                 'Philip Simon': true, 'Rico Schomacker': true, 'Sarvan Aziz': true, 'Tobias Ehrlich': true
             }
         },
+        '20260310_training': {
+            date: '2026-03-10',
+            type: 'training',
+            present: {
+                'Angelo Galster': true, 'Anton Hanetzok': true, 'Sebastian Hildebrandt': true, 'Ben Johnston': true,
+                'Daniel Kainer': true, 'Gustav Palm': true, 'Jonas Hinz': true, 'Julius Laetsch': true,
+                'Kevin Pilz': true, 'Kimi Döpke': true, 'Lukas Laetsch': true, 'Matti Erik Eschwe': true,
+                'Maximilian Hildebrandt': true, 'Max Langer': true, 'Norman Guido Kranert': true,
+                'Paul Chukwu': true, 'Rico Schomacker': true, 'Ronny Sager': true, 'Sarvan Aziz': true,
+                'Simon Reichelt': true, 'Timo Schmidt': true, 'Tobias Ehrlich': true,
+                'Robert Woelki': true, 'Wolf-Dietrich Hildebrandt': true
+            },
+            absent: {
+                'Enrico Marco Stenzel': 'Tochter / Fuß', 'Felix Berg': 'Verletzt', 'Fynn Lauer': 'Uni',
+                'Maurice Peter Sankeralli': '', 'Moritz Janosch': 'Krank', 'Paul Zyparth': '',
+                'Philip Simon': '', 'Shawn Ahrens': 'Schulausflug', 'Silas Rathke': 'Arbeit',
+                'Theo Schmidt': 'Urlaub'
+            }
+        },
         '20260306_training': {
             date: '2026-03-06',
             type: 'training',
@@ -586,6 +605,13 @@
             sessions['20260304_training'] = SEED_DATA['20260304_training'];
             localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
             db.ref('trainingsbeteiligung/20260304_training').set(sessions['20260304_training']).catch(() => {});
+        }
+
+        // 3e) Patch: Add 10.03.2026 training if missing
+        if (!sessions['20260310_training']) {
+            sessions['20260310_training'] = SEED_DATA['20260310_training'];
+            localStorage.setItem('sgrhn_beteiligung', JSON.stringify(sessions));
+            db.ref('trainingsbeteiligung/20260310_training').set(sessions['20260310_training']).catch(() => {});
         }
 
         // 3d) Patch: Add 07.03.2026 training if missing
