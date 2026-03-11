@@ -100,11 +100,12 @@
             width: 100%; height: 100%; border: none; outline: none;
             background: transparent; color: var(--text);
             font-size: 0.82rem; font-weight: 600;
-            padding: 0 0.6rem;
+            padding: 0 0.6rem; padding-right: 24px;
             font-family: inherit;
             cursor: pointer;
             -webkit-appearance: none; -moz-appearance: none; appearance: none;
         }
+        .has-player .pos-select { padding-right: 52px; }
         .pos-select option {
             background: #1a2a40; color: var(--text);
         }
@@ -117,12 +118,13 @@
 
         /* Clear button */
         .pos-clear {
-            display: none; position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+            display: none; position: absolute; right: 22px; top: 0; bottom: 0;
             background: transparent; border: none; color: var(--text-muted);
-            font-size: 1rem; cursor: pointer; padding: 0 4px; line-height: 1; z-index: 1;
+            font-size: 1.1rem; cursor: pointer; padding: 0 6px; z-index: 2;
         }
         .pos-clear:hover { color: var(--danger); }
-        .trainer-active .pos-select-wrap.has-player .pos-clear { display: block; }
+        .pos-select-wrap.has-player .pos-clear { display: block; }
+        .readonly-mode .pos-clear { display: none !important; }
 
         /* Custom dropdown arrow */
         .pos-select-wrap::after {
