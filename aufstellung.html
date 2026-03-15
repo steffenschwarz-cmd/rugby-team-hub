@@ -900,17 +900,23 @@
             document.getElementById('btn-clear').style.display = '';
             // Populate save-for-game dropdown immediately
             const saveSelect = document.getElementById('history-save-select');
-            const allDates = new Set([...games1.map(g => g.date), ...games2.map(g => g.date)]);
-            [...allDates].sort().reverse().forEach(d => {
-                const parts = d.split('-');
+            saveSelect.innerHTML = '<option value="">F\u00fcr Spieltag speichern...</option>';
+            // 1. XV games
+            saveSelect.innerHTML += '<optgroup label="1. XV \u2014 2. Bundesliga">';
+            for (const g of [...games1].reverse()) {
+                const parts = g.date.split('-');
                 const label = parts[2] + '.' + parts[1] + '.' + parts[0];
-                const g1 = games1.find(g => g.date === d);
-                const g2 = games2.find(g => g.date === d);
-                const opponents = [];
-                if (g1) opponents.push((g1.home ? 'vs ' : 'bei ') + g1.opponent);
-                if (g2) opponents.push((g2.home ? 'vs ' : 'bei ') + g2.opponent);
-                saveSelect.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + opponents.join(' / ') + '</option>';
-            });
+                saveSelect.innerHTML += '<option value="' + g.date + '">' + label + ' \u2014 ' + (g.home ? 'vs ' : 'bei ') + g.opponent + '</option>';
+            }
+            saveSelect.innerHTML += '</optgroup>';
+            // 2. XV games
+            saveSelect.innerHTML += '<optgroup label="2. XV \u2014 Regionalliga">';
+            for (const g of [...games2].reverse()) {
+                const parts = g.date.split('-');
+                const label = parts[2] + '.' + parts[1] + '.' + parts[0];
+                saveSelect.innerHTML += '<option value="' + g.date + '">' + label + ' \u2014 ' + (g.home ? 'vs ' : 'bei ') + g.opponent + '</option>';
+            }
+            saveSelect.innerHTML += '</optgroup>';
         } else {
             // Read-only for team — hide history & save controls
             document.getElementById('history-bar').style.display = 'none';
