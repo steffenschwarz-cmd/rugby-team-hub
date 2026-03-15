@@ -271,12 +271,16 @@
         <button class="team-btn" id="btn-team-2">2. XV — Regionalliga</button>
     </div>
 
-    <!-- HISTORY DROPDOWN (Trainer only) -->
+    <!-- HISTORY (Trainer only) -->
     <div class="history-bar app-content" id="history-bar" style="display:none">
         <div class="history-select-wrap">
             <select class="history-select" id="history-select">
                 <option value="">Vergangene Aufstellungen...</option>
             </select>
+            <select class="history-select" id="history-save-select" style="display:none">
+                <option value="">F&uuml;r Spieltag speichern...</option>
+            </select>
+            <button class="action-btn" id="history-save-btn" style="display:none" onclick="saveForSelectedGame()">Speichern</button>
         </div>
     </div>
 
@@ -596,29 +600,26 @@
         return new Date().toISOString().slice(0, 10);
     }
 
-    function saveToHistory() {
-        const dateKey = getNextGameDate();
+    function saveToHistory(overrideDate) {
+        const dateKey = overrideDate || getNextGameDate();
         const game1 = games1.find(g => g.date === dateKey);
         const game2 = games2.find(g => g.date === dateKey);
-        db.ref('lineup_history/' + dateKey).set({
+        return db.ref('lineup_history/' + dateKey).set({
             lineup: JSON.parse(JSON.stringify(lineup)),
             games: { '1': game1 || null, '2': game2 || null },
             publishedAt: Date.now()
-        });
-        loadHistoryDropdown();
+        }).then(() => loadHistoryDropdown());
     }
 
     function loadHistoryDropdown() {
         db.ref('lineup_history').once('value').then(snap => {
             const data = snap.val();
             const select = document.getElementById('history-select');
-            if (!data) {
-                document.getElementById('history-bar').style.display = 'none';
-                return;
-            }
-            const dates = Object.keys(data).sort().reverse();
+            const savedDates = data ? Object.keys(data) : [];
+
+            // History view dropdown
             select.innerHTML = '<option value="">Vergangene Aufstellungen...</option>';
-            for (const d of dates) {
+            for (const d of savedDates.sort().reverse()) {
                 const entry = data[d];
                 const parts = d.split('-');
                 const label = parts[2] + '.' + parts[1] + '.' + parts[0];
@@ -627,8 +628,40 @@
                 if (entry.games && entry.games['2']) opponents.push((entry.games['2'].home ? 'vs ' : 'bei ') + entry.games['2'].opponent);
                 select.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + (opponents.join(' / ') || 'Spieltag') + '</option>';
             }
-            document.getElementById('history-bar').style.display = dates.length ? '' : 'none';
+
+            // Save-for-game dropdown (all games, unsaved ones marked)
+            if (isTrainer()) {
+                const saveSelect = document.getElementById('history-save-select');
+                const saveBtn = document.getElementById('history-save-btn');
+                const allDates = new Set([...games1.map(g => g.date), ...games2.map(g => g.date)]);
+                const sortedDates = [...allDates].sort().reverse();
+                saveSelect.innerHTML = '<option value="">F\u00fcr Spieltag speichern...</option>';
+                for (const d of sortedDates) {
+                    const parts = d.split('-');
+                    const label = parts[2] + '.' + parts[1] + '.' + parts[0];
+                    const g1 = games1.find(g => g.date === d);
+                    const g2 = games2.find(g => g.date === d);
+                    const opponents = [];
+                    if (g1) opponents.push((g1.home ? 'vs ' : 'bei ') + g1.opponent);
+                    if (g2) opponents.push((g2.home ? 'vs ' : 'bei ') + g2.opponent);
+                    const saved = savedDates.includes(d) ? ' \u2713' : '';
+                    saveSelect.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + opponents.join(' / ') + saved + '</option>';
+                }
+                saveSelect.style.display = '';
+                saveBtn.style.display = '';
+            }
+
+            document.getElementById('history-bar').style.display = '';
         });
+    }
+
+    function saveForSelectedGame() {
+        const dateKey = document.getElementById('history-save-select').value;
+        if (!dateKey) return;
+        const parts = dateKey.split('-');
+        const label = parts[2] + '.' + parts[1] + '.' + parts[0];
+        if (!confirm('Aktuelle Aufstellung f\u00fcr ' + label + ' speichern?')) return;
+        saveToHistory(dateKey).then(() => showSaved('Gespeichert f\u00fcr ' + label));
     }
 
     function viewHistory(dateKey) {
