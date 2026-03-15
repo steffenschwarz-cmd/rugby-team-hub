@@ -272,15 +272,15 @@
     </div>
 
     <!-- HISTORY (Trainer only) -->
-    <div class="history-bar app-content" id="history-bar" style="display:none">
+    <div class="history-bar app-content" id="history-bar">
         <div class="history-select-wrap">
             <select class="history-select" id="history-select">
                 <option value="">Vergangene Aufstellungen...</option>
             </select>
-            <select class="history-select" id="history-save-select" style="display:none">
+            <select class="history-select" id="history-save-select">
                 <option value="">F&uuml;r Spieltag speichern...</option>
             </select>
-            <button class="action-btn" id="history-save-btn" style="display:none" onclick="saveForSelectedGame()">Speichern</button>
+            <button class="action-btn" id="history-save-btn" onclick="saveForSelectedGame()">Speichern</button>
         </div>
     </div>
 
@@ -898,8 +898,22 @@
             document.getElementById('draft-banner').style.display = 'block';
             document.getElementById('aufstellung-main').classList.remove('readonly-mode');
             document.getElementById('btn-clear').style.display = '';
+            // Populate save-for-game dropdown immediately
+            const saveSelect = document.getElementById('history-save-select');
+            const allDates = new Set([...games1.map(g => g.date), ...games2.map(g => g.date)]);
+            [...allDates].sort().reverse().forEach(d => {
+                const parts = d.split('-');
+                const label = parts[2] + '.' + parts[1] + '.' + parts[0];
+                const g1 = games1.find(g => g.date === d);
+                const g2 = games2.find(g => g.date === d);
+                const opponents = [];
+                if (g1) opponents.push((g1.home ? 'vs ' : 'bei ') + g1.opponent);
+                if (g2) opponents.push((g2.home ? 'vs ' : 'bei ') + g2.opponent);
+                saveSelect.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + opponents.join(' / ') + '</option>';
+            });
         } else {
-            // Read-only for team
+            // Read-only for team — hide history & save controls
+            document.getElementById('history-bar').style.display = 'none';
             document.getElementById('aufstellung-main').classList.add('readonly-mode');
             document.getElementById('btn-clear').style.display = 'none';
         }
