@@ -50,6 +50,8 @@ const NAME_MAP = {
     'Luca': 'Luca Karim Borgwardt',
     'Lucas': 'Lucas Eichler',
     'Lukas Laetsch': 'Lukas Laetsch',
+    'Lukas R.': 'Lukas Rathke',
+    'Lukas Rathke': 'Lukas Rathke',
     'Marcel': 'Marcel Grabow',
     'Marcel G.': 'Marcel Grabow',
     'Mateusz G.': 'Mateusz Grzelak', // New player
