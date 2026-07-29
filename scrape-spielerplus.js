@@ -90,6 +90,8 @@ const NAME_MAP = {
     'Rooney': 'Ronny Sager',
     'Sarvan': 'Sarvan Aziz',
     'Sascha': 'Sascha Kosanke',
+    'Schmarni (JFK)': 'Julius Kayser', // Neu seit Juli 2026, Flanker/8 (3. Reihe), Jg. 2009
+    'Schmarni': 'Julius Kayser',
     'Sebastian': 'Sebastian Hildebrandt',
     'Shawn': 'Shawn Ahrens',
     'Silas': 'Silas Rathke',

@@ -436,7 +436,7 @@ const KADER = [
     'Angelo Galster','Anton Hanetzok','Ben Johnston','Christopher Bunge','Connor Peise',
     'Daniel Kainer','Enrico Marco Stenzel','Fabian Wendt','Felix Berg','Florian Neumann',
     'Fynn Lauer','Gustav Palm','Hannes Bartelt','Jonas Hinz','Joshua Walker',
-    'Julius Laetsch','Kai Friesicke','Keno Filietz','Kevin Pilz','Kimi D\u00f6pke',
+    'Julius Kayser','Julius Laetsch','Kai Friesicke','Keno Filietz','Kevin Pilz','Kimi D\u00f6pke',
     'Luca Karim Borgwardt','Lucas Eichler','Lukas Laetsch','Lukas Rathke','Marcel Grabow',
     'Matti Erik Eschwe','Maurice Peter Sankeralli','Max Langer','Maximilian Hildebrandt',
     'Michael Galster','Moritz Gollnick','Moritz Janosch','Norman Guido Kranert',
