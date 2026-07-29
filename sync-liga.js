@@ -396,6 +396,16 @@ async function fetchRegionalliga(seasonFull) {
         console.log(JSON.stringify(out, null, 2));
         return;
     }
+    // Nur schreiben, wenn sich außer updatedAt etwas geändert hat —
+    // sonst committet der Actions-Job täglich einen reinen Zeitstempel-Diff.
+    try {
+        const prev = JSON.parse(fs.readFileSync(OUT_FILE, 'utf8'));
+        const strip = o => JSON.stringify({ ...o, updatedAt: null });
+        if (strip(prev) === strip(out)) {
+            console.log('Keine inhaltlichen Änderungen — data/liga.json bleibt unverändert.');
+            return;
+        }
+    } catch {}
     fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
     fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 2) + '\n');
     console.log(`✓ Geschrieben: ${OUT_FILE}`);
