@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainingsbeteiligung — SG Rugby Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=7">
+    <link rel="stylesheet" href="common.css?v=8">
     <script src="common.js?v=7"></script>
     <style>
         /* LOGIN GATE overrides */
         .login-gate {
             z-index: 9999;
-            background: linear-gradient(135deg, #0a1018 0%, #0c1420 50%, #0a1220 100%);
+            background: linear-gradient(135deg, #dff0e5 0%, #f7fafc 45%, #dfeafa 100%);
         }
         .login-box { background: none; border: none; width: auto; padding: 2rem; }
         .login-box h2 { font-size: 1.8rem; }
@@ -18,20 +18,20 @@
         .club-x { margin: 0 0.4rem; }
         .login-input {
             display: block; width: 260px; margin: 0 auto 1rem;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(0,0,0,0.15);
             background: var(--primary-light);
         }
         .login-input:focus { outline: none; }
         .login-btn {
             display: block; width: 260px; margin: 0 auto;
-            background: var(--accent); color: #000;
+            background: var(--accent); color: #fff;
         }
-        .login-btn:hover { background: #27ae60; opacity: 1; }
+        .login-btn:hover { background: var(--green-dark); opacity: 1; }
         .login-error { margin-top: 0.8rem; font-size: 0.85rem; }
 
         /* HERO */
         .hero {
-            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            background: linear-gradient(135deg, #dff0e5 0%, #f7fafc 45%, #dfeafa 100%);
             padding: 1.5rem; text-align: center;
             border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
         }
@@ -48,7 +48,7 @@
         }
         .stat-card {
             background: var(--bg-card); border-radius: 10px; padding: 1rem;
-            text-align: center; border: 1px solid rgba(255,255,255,0.06);
+            text-align: center; border: 1px solid rgba(0,0,0,0.08);
         }
         .stat-value {
             font-size: 2rem; font-weight: 800;
@@ -60,12 +60,12 @@
         /* TABS */
         .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
         .tab-btn {
-            padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12);
             background: transparent; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
             cursor: pointer; transition: all 0.2s;
         }
-        .tab-btn:hover { background: rgba(255,255,255,0.05); }
-        .tab-btn.active { background: rgba(46,204,113,0.12); color: var(--accent); border-color: rgba(46,204,113,0.3); }
+        .tab-btn:hover { background: rgba(0,0,0,0.04); }
+        .tab-btn.active { background: rgba(27,138,62,0.12); color: var(--accent); border-color: rgba(27,138,62,0.35); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -74,13 +74,13 @@
         .player-table th {
             text-align: left; padding: 0.7rem 0.8rem; font-size: 0.7rem; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent);
-            border-bottom: 2px solid rgba(46,204,113,0.2); white-space: nowrap;
+            border-bottom: 2px solid rgba(27,138,62,0.25); white-space: nowrap;
         }
         .player-table th.right, .player-table td.right { text-align: right; }
         .player-table td {
-            padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.04);
+            padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(0,0,0,0.08);
         }
-        .player-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .player-table tr:hover td { background: rgba(0,0,0,0.03); }
         .player-name { font-weight: 600; }
         .pct-bar {
             display: inline-block; height: 6px; border-radius: 3px; min-width: 2px;
@@ -93,15 +93,15 @@
             display: inline-block; width: 22px; height: 22px; line-height: 22px;
             text-align: center; border-radius: 50%; font-size: 0.7rem; font-weight: 700;
         }
-        .rank-1 { background: rgba(232,160,32,0.2); color: #e8a020; }
-        .rank-2 { background: rgba(192,192,192,0.15); color: #c0c0c0; }
-        .rank-3 { background: rgba(180,120,60,0.15); color: #b4783c; }
+        .rank-1 { background: rgba(181,119,8,0.18); color: var(--warning); }
+        .rank-2 { background: rgba(120,135,150,0.20); color: #5f6c7a; }
+        .rank-3 { background: rgba(180,120,60,0.20); color: #96602c; }
 
         /* SESSION CARDS */
         .session-grid { display: flex; flex-direction: column; gap: 1rem; }
         .session-card {
             background: var(--bg-card); border-radius: 10px; padding: 1rem 1.2rem;
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
         }
         .session-header {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;
@@ -111,58 +111,58 @@
             font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
             padding: 0.2rem 0.6rem; border-radius: 10px;
         }
-        .type-training { background: rgba(46,204,113,0.12); color: var(--accent); }
-        .type-spiel { background: rgba(74,158,255,0.12); color: var(--accent-blue); }
+        .type-training { background: rgba(27,138,62,0.12); color: var(--accent); }
+        .type-spiel { background: rgba(26,95,180,0.12); color: var(--accent-blue); }
         .session-count { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem; }
         .session-players {
             display: flex; flex-wrap: wrap; gap: 0.4rem;
         }
         .sp-tag {
             font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px;
-            background: rgba(255,255,255,0.05); color: var(--text-muted);
+            background: rgba(0,0,0,0.05); color: var(--text-muted);
         }
         .sp-tag a { color: var(--text-muted); text-decoration: none; }
         .sp-tag a:hover { color: var(--accent); }
-        .sp-absent { background: rgba(224,64,64,0.08); border: 1px solid rgba(224,64,64,0.15); }
+        .sp-absent { background: rgba(208,48,48,0.08); border: 1px solid rgba(208,48,48,0.20); }
         .sp-absent a { color: var(--text-muted); }
         .sp-absent a:hover { color: var(--danger); }
 
         /* Player links in ranking */
         .player-link {
             color: var(--text); text-decoration: none;
-            border-bottom: 1px solid rgba(46,204,113,0.3); transition: all 0.2s;
+            border-bottom: 1px solid rgba(27,138,62,0.35); transition: all 0.2s;
         }
         .player-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
         .session-actions { margin-top: 0.8rem; display: none; }
         .trainer-active .session-actions { display: flex; gap: 0.5rem; }
         .btn-sm {
             padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.1); background: transparent;
+            border: 1px solid rgba(0,0,0,0.12); background: transparent;
             color: var(--text-muted); cursor: pointer;
         }
-        .btn-sm:hover { background: rgba(255,255,255,0.05); }
-        .btn-sm.danger { border-color: rgba(224,64,64,0.3); color: var(--danger); }
-        .btn-sm.danger:hover { background: rgba(224,64,64,0.1); }
+        .btn-sm:hover { background: rgba(0,0,0,0.04); }
+        .btn-sm.danger { border-color: rgba(208,48,48,0.35); color: var(--danger); }
+        .btn-sm.danger:hover { background: rgba(208,48,48,0.10); }
 
         /* ADD SESSION FORM */
         .add-form {
             background: var(--bg-card); border-radius: 12px; padding: 1.2rem;
-            border: 1px solid rgba(46,204,113,0.2); margin-bottom: 1.5rem; display: none;
+            border: 1px solid rgba(27,138,62,0.25); margin-bottom: 1.5rem; display: none;
         }
         .trainer-active .add-form-show { display: block; }
         .form-row { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; flex-wrap: wrap; align-items: end; }
         .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
         .form-group label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
         .form-group input, .form-group select {
-            padding: 0.5rem 0.8rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12);
+            padding: 0.5rem 0.8rem; border-radius: 6px; border: 1px solid rgba(0,0,0,0.15);
             background: var(--primary-light); color: var(--text); font-size: 0.9rem;
         }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
         .btn-primary {
             padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
-            border: none; background: var(--accent); color: #000; cursor: pointer;
+            border: none; background: var(--accent); color: #fff; cursor: pointer;
         }
-        .btn-primary:hover { background: #27ae60; }
+        .btn-primary:hover { background: var(--green-dark); }
 
         /* PLAYER CHECKLIST */
         .player-checklist {
@@ -172,16 +172,16 @@
         .pc-item {
             display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem;
             border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--text-muted);
-            border: 1px solid rgba(255,255,255,0.06); transition: all 0.15s;
+            border: 1px solid rgba(0,0,0,0.10); transition: all 0.15s;
         }
-        .pc-item:hover { background: rgba(255,255,255,0.04); }
-        .pc-item.checked { background: rgba(46,204,113,0.08); border-color: rgba(46,204,113,0.25); color: var(--accent); }
+        .pc-item:hover { background: rgba(0,0,0,0.04); }
+        .pc-item.checked { background: rgba(27,138,62,0.10); border-color: rgba(27,138,62,0.35); color: var(--accent); }
         .pc-check {
-            width: 18px; height: 18px; border-radius: 4px; border: 2px solid rgba(255,255,255,0.2);
+            width: 18px; height: 18px; border-radius: 4px; border: 2px solid rgba(0,0,0,0.25);
             display: flex; align-items: center; justify-content: center; flex-shrink: 0;
             font-size: 0.7rem; transition: all 0.15s;
         }
-        .pc-item.checked .pc-check { background: var(--accent); border-color: var(--accent); color: #000; }
+        .pc-item.checked .pc-check { background: var(--accent); border-color: var(--accent); color: #fff; }
 
         /* ADD PLAYER ROW */
         .add-player-row {
@@ -190,7 +190,7 @@
         .trainer-active .add-player-row { display: flex; }
         .add-player-row input {
             flex: 1; padding: 0.4rem 0.8rem; border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.12); background: var(--primary-light);
+            border: 1px solid rgba(0,0,0,0.15); background: var(--primary-light);
             color: var(--text); font-size: 0.85rem;
         }
 
@@ -200,7 +200,7 @@
         /* SAVE INDICATOR */
         .save-indicator {
             position: fixed; bottom: 1rem; right: 1rem;
-            background: rgba(46,204,113,0.9); color: #000; padding: 0.5rem 1rem;
+            background: rgba(27,138,62,0.95); color: #fff; padding: 0.5rem 1rem;
             border-radius: 8px; font-size: 0.8rem; font-weight: 600;
             opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
         }
@@ -823,7 +823,7 @@
         panel.className = 'edit-panel';
         panel.style.marginTop = '1rem';
         panel.style.paddingTop = '1rem';
-        panel.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+        panel.style.borderTop = '1px solid rgba(0,0,0,0.10)';
 
         panel.innerHTML = `
             <div class="toggle-btns">

@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SG Rugbyunion Hohen Neuendorf — Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=7">
+    <link rel="stylesheet" href="common.css?v=8">
     <script src="common.js?v=7"></script>
     <style>
         /* Hero */
         .hero {
-            background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+            background: linear-gradient(135deg, #dff0e5 0%, #f7fafc 45%, #dfeafa 100%);
             padding: 2rem 1.5rem;
             text-align: center;
             border-bottom: 3px solid;
@@ -30,8 +30,8 @@
 
         .hero-badge {
             display: inline-block;
-            background: rgba(46,204,113,0.12);
-            border: 1px solid rgba(46,204,113,0.4);
+            background: rgba(27,138,62,0.10);
+            border: 1px solid rgba(27,138,62,0.40);
             color: var(--accent);
             padding: 0.3rem 1rem;
             border-radius: 20px;
@@ -72,8 +72,8 @@
 
 
         .countdown-section {
-            background: linear-gradient(135deg, rgba(224,64,64,0.12), rgba(46,204,113,0.08));
-            border: 1px solid rgba(224,64,64,0.3);
+            background: linear-gradient(135deg, rgba(208,48,48,0.10), rgba(208,48,48,0.03));
+            border: 1px solid rgba(208,48,48,0.30);
             border-radius: 12px;
             padding: 1.2rem;
             flex: 1;
@@ -81,8 +81,8 @@
         }
 
         .countdown-section.rl {
-            background: linear-gradient(135deg, rgba(74,158,255,0.12), rgba(46,204,113,0.08));
-            border: 1px solid rgba(74,158,255,0.3);
+            background: linear-gradient(135deg, rgba(26,95,180,0.10), rgba(26,95,180,0.03));
+            border: 1px solid rgba(26,95,180,0.30);
         }
 
         .countdown-section.rl .countdown-label {
@@ -168,7 +168,7 @@
             letter-spacing: 0.05em;
             padding: 0.5rem 0.4rem;
             text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(0,0,0,0.10);
             font-weight: 600;
         }
 
@@ -176,13 +176,13 @@
 
         .liga-table td {
             padding: 0.5rem 0.4rem;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .liga-table td.num { text-align: center; color: var(--text-muted); }
 
         .liga-table tr.highlight-row td {
-            background: rgba(46,204,113,0.08);
+            background: rgba(27,138,62,0.08);
             font-weight: 600;
         }
 
@@ -202,11 +202,11 @@
 
         .game-result { font-weight: 800; font-size: 0.95rem; letter-spacing: 0.03em; }
         .result-win { color: var(--accent); }
-        .result-loss { color: #e74c3c; }
-        .badge-result-win { background: rgba(46,204,113,0.15); color: var(--accent); }
-        .badge-result-loss { background: rgba(231,76,60,0.12); color: #e74c3c; }
+        .result-loss { color: var(--danger); }
+        .badge-result-win { background: rgba(27,138,62,0.12); color: var(--accent); }
+        .badge-result-loss { background: rgba(208,48,48,0.12); color: var(--danger); }
         .hinrunde-label { font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; margin-bottom: 0.5rem; margin-top: 0.2rem; }
-        .rueckrunde-label { font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; margin-bottom: 0.5rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 2px solid rgba(255,255,255,0.6); }
+        .rueckrunde-label { font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; margin-bottom: 0.5rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 2px solid rgba(0,0,0,0.2); }
         .game-card-played { opacity: 0.85; }
 
         /* Section */
@@ -238,7 +238,7 @@
         /* Cards */
         .card {
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
             border-radius: 12px;
             padding: 1.2rem;
             margin-bottom: 0.8rem;
@@ -257,7 +257,7 @@
 
         .stat-card {
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
@@ -283,7 +283,7 @@
 
         /* Motivation */
         .motivation {
-            background: linear-gradient(135deg, var(--green-dark), var(--primary), var(--blue-dark));
+            background: linear-gradient(135deg, #dff0e5 0%, #f7fafc 45%, #dfeafa 100%);
             border: 1px solid;
             border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
             border-radius: 12px;
@@ -310,7 +310,7 @@
             align-items: center;
             gap: 0.8rem;
             padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .game-card:last-child { border-bottom: none; }
@@ -364,43 +364,43 @@
         }
 
         .badge-home {
-            background: rgba(46,204,113,0.15);
+            background: rgba(27,138,62,0.12);
             color: var(--home);
         }
 
         .badge-away {
-            background: rgba(74,158,255,0.15);
+            background: rgba(26,95,180,0.12);
             color: var(--away);
         }
 
         .badge-training {
-            background: rgba(255,255,255,0.06);
+            background: rgba(0,0,0,0.07);
             color: var(--text-muted);
         }
 
         .badge-gameday {
-            background: rgba(224,64,64,0.15);
+            background: rgba(208,48,48,0.12);
             color: var(--danger);
             animation: pulse 2s infinite;
         }
 
         .badge-postponed {
-            background: rgba(232,160,32,0.15);
+            background: rgba(181,119,8,0.12);
             color: var(--warning);
         }
 
         .badge-social {
-            background: rgba(255,180,50,0.15);
-            color: #f0b030;
+            background: rgba(181,119,8,0.18);
+            color: var(--warning);
         }
 
         .badge-bl {
-            background: rgba(46,204,113,0.15);
+            background: rgba(27,138,62,0.12);
             color: var(--accent);
         }
 
         .badge-rl {
-            background: rgba(74,158,255,0.15);
+            background: rgba(26,95,180,0.12);
             color: var(--accent-blue);
         }
 
@@ -419,8 +419,8 @@
             vertical-align: middle;
         }
 
-        .liga-bl { background: rgba(46,204,113,0.12); color: var(--accent); }
-        .liga-rl { background: rgba(74,158,255,0.12); color: var(--accent-blue); }
+        .liga-bl { background: rgba(27,138,62,0.12); color: var(--accent); }
+        .liga-rl { background: rgba(26,95,180,0.12); color: var(--accent-blue); }
 
         /* Goals */
         .goal-row {
@@ -428,7 +428,7 @@
             align-items: center;
             gap: 0.8rem;
             padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .goal-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -470,9 +470,9 @@
             white-space: nowrap;
         }
 
-        .tag-team1 { background: rgba(46,204,113,0.15); color: var(--accent); }
-        .tag-team2 { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
-        .tag-all { background: rgba(255,255,255,0.08); color: var(--text); }
+        .tag-team1 { background: rgba(27,138,62,0.12); color: var(--accent); }
+        .tag-team2 { background: rgba(26,95,180,0.12); color: var(--accent-blue); }
+        .tag-all { background: rgba(0,0,0,0.07); color: var(--text); }
 
         /* Progress */
         .progress-container { margin-top: 0.6rem; }
@@ -489,7 +489,7 @@
 
         .progress-bar {
             height: 8px;
-            background: rgba(255,255,255,0.06);
+            background: rgba(0,0,0,0.08);
             border-radius: 4px;
             overflow: hidden;
         }
@@ -518,7 +518,7 @@
             cursor: pointer;
             white-space: nowrap;
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
             color: var(--text-muted);
             transition: all 0.2s;
         }
@@ -542,7 +542,7 @@
 
         .teamrat-member {
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
             border-radius: 12px;
             padding: 1rem;
             text-align: center;
@@ -558,6 +558,7 @@
             width: 48px; height: 48px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--green), var(--blue));
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -574,7 +575,7 @@
             display: flex;
             gap: 0.8rem;
             padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
         }
 
         .massnahme:last-child { border-bottom: none; }
@@ -609,7 +610,7 @@
             padding: 2rem 1.5rem;
             color: var(--text-muted);
             font-size: 0.75rem;
-            border-top: 1px solid rgba(255,255,255,0.04);
+            border-top: 1px solid rgba(0,0,0,0.06);
         }
 
         .footer a { color: var(--accent); text-decoration: none; }
@@ -649,10 +650,10 @@
             position: sticky;
             top: 42px;
             z-index: 99;
-            background: rgba(18,28,42,0.94);
+            background: rgba(255,255,255,0.94);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
             padding: 0.4rem 1rem;
             display: none;
             overflow-x: auto;
@@ -678,14 +679,14 @@
             border-radius: 12px;
             white-space: nowrap;
             transition: all 0.2s;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.08);
         }
 
         .section-nav a:hover, .section-nav a.active {
             color: var(--text);
-            background: rgba(46,204,113,0.12);
-            border-color: rgba(46,204,113,0.3);
+            background: rgba(27,138,62,0.12);
+            border-color: rgba(27,138,62,0.35);
         }
 
         html { scroll-behavior: smooth; }
@@ -1306,7 +1307,7 @@
 
             <div class="card" style="border-left: 3px solid var(--accent); margin-bottom: 0.8rem;">
                 <div style="font-weight: 700; margin-bottom: 0.5rem;">Regelmäßige Treffen</div>
-                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <div class="game-card" style="border-bottom: 1px solid rgba(0,0,0,0.06);">
                     <div class="game-date">
                         <div class="game-weekday">Jeden</div>
                         <div class="game-daynum home" style="font-size: 1.1rem;">Di</div>
@@ -1331,7 +1332,7 @@
 
             <div class="card">
                 <div style="font-weight: 700; margin-bottom: 0.5rem;">Saison-Highlights</div>
-                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <div class="game-card" style="border-bottom: 1px solid rgba(0,0,0,0.06);">
                     <div class="game-date">
                         <div class="game-weekday">Sa</div>
                         <div class="game-daynum away">9</div>
@@ -1343,7 +1344,7 @@
                     </div>
                     <span class="game-badge badge-away">BUS?</span>
                 </div>
-                <div class="game-card" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                <div class="game-card" style="border-bottom: 1px solid rgba(0,0,0,0.06);">
                     <div class="game-date">
                         <div class="game-weekday">Fr-Sa</div>
                         <div class="game-daynum home">26</div>
@@ -1365,7 +1366,7 @@
                         <div class="game-title">Beach-Turnier Warnemünde</div>
                         <div class="game-detail">Mind. 7–10 Teilnehmer nötig — wer ist dabei?</div>
                     </div>
-                    <span class="game-badge" style="background: rgba(232,160,32,0.15); color: var(--warning);">TURNIER</span>
+                    <span class="game-badge" style="background: rgba(181,119,8,0.12); color: var(--warning);">TURNIER</span>
                 </div>
             </div>
         </section>
@@ -1779,7 +1780,7 @@
                 for (const s of week.sessions) {
                     const hit = s.count >= goal;
                     const col = hit ? 'var(--success)' : 'var(--danger)';
-                    const bg = hit ? 'rgba(64,192,96,0.08)' : 'rgba(224,64,64,0.08)';
+                    const bg = hit ? 'rgba(46,158,79,0.10)' : 'rgba(208,48,48,0.08)';
                     w += `<div style="background: ${bg}; padding: 0.8rem; border-radius: 8px; text-align: center;">
                         <div style="font-size: 0.75rem; color: ${col}; font-weight: 600; text-transform: uppercase;">${s.day} ${s.dateLabel}</div>
                         <div style="font-size: 1.5rem; font-weight: 800; color: ${col};">${s.count}</div>
@@ -1794,7 +1795,7 @@
 
             if (weeks.length > 1) {
                 html += `
-                    <div style="margin-top: 1.2rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.8rem;">
+                    <div style="margin-top: 1.2rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 0.8rem;">
                         <div id="history-toggle" style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;" onclick="toggleHistory()">
                             <span id="history-arrow" style="transition: transform 0.2s;">&#9654;</span>
                             Vergangene Wochen (${weeks.length - 1})

@@ -17,8 +17,8 @@
 
     body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: #0f1923;
-        color: #e0e6ed;
+        background: #eef2f6;
+        color: #1a2733;
         line-height: 1.6;
         padding: 0;
     }
@@ -34,22 +34,22 @@
         text-align: center;
         margin-bottom: 48px;
         padding-bottom: 32px;
-        border-bottom: 2px solid #2ecc71;
+        border-bottom: 2px solid #1b8a3e;
     }
     .header h1 {
         font-size: 2.2em;
-        color: #fff;
+        color: #1a2733;
         margin-bottom: 8px;
         letter-spacing: -0.5px;
     }
     .header .subtitle {
         font-size: 1.1em;
-        color: #8899aa;
+        color: #5c7186;
     }
     .header .date {
         margin-top: 12px;
         font-size: 0.9em;
-        color: #5a7a8a;
+        color: #5c7186;
     }
 
     /* Sections */
@@ -58,10 +58,10 @@
     }
     h2 {
         font-size: 1.4em;
-        color: #2ecc71;
+        color: #1b8a3e;
         margin-bottom: 16px;
         padding-bottom: 8px;
-        border-bottom: 1px solid rgba(46,204,113,0.2);
+        border-bottom: 1px solid rgba(27,138,62,0.25);
         display: flex;
         align-items: center;
         gap: 10px;
@@ -69,7 +69,7 @@
     h2 .icon { font-size: 1.2em; }
     h3 {
         font-size: 1.1em;
-        color: #4a9eff;
+        color: #1a5fb4;
         margin: 20px 0 10px;
     }
 
@@ -81,8 +81,8 @@
         font-size: 0.95em;
     }
     th {
-        background: rgba(46,204,113,0.12);
-        color: #2ecc71;
+        background: rgba(27,138,62,0.10);
+        color: #1b8a3e;
         padding: 10px 14px;
         text-align: left;
         font-weight: 600;
@@ -92,10 +92,10 @@
     }
     td {
         padding: 10px 14px;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(0,0,0,0.08);
     }
     tr:hover td {
-        background: rgba(255,255,255,0.03);
+        background: rgba(0,0,0,0.03);
     }
 
     /* Status badges */
@@ -107,16 +107,16 @@
         font-weight: 600;
     }
     .badge-done {
-        background: rgba(46,204,113,0.15);
-        color: #2ecc71;
+        background: rgba(27,138,62,0.12);
+        color: #1b8a3e;
     }
     .badge-open {
-        background: rgba(232,160,32,0.15);
-        color: #e8a020;
+        background: rgba(181,119,8,0.12);
+        color: #b57708;
     }
     .badge-idea {
-        background: rgba(74,158,255,0.15);
-        color: #4a9eff;
+        background: rgba(26,95,180,0.12);
+        color: #1a5fb4;
     }
 
     /* Cards */
@@ -127,25 +127,25 @@
         margin: 12px 0;
     }
     .card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: #ffffff;
+        border: 1px solid rgba(0,0,0,0.08);
         border-radius: 10px;
         padding: 18px;
     }
     .card h4 {
-        color: #fff;
+        color: #1a2733;
         font-size: 1em;
         margin-bottom: 6px;
     }
     .card p {
-        color: #8899aa;
+        color: #5c7186;
         font-size: 0.88em;
         line-height: 1.5;
     }
     .card .file {
         font-family: 'SF Mono', Monaco, monospace;
         font-size: 0.78em;
-        color: #5a7a8a;
+        color: #5c7186;
         margin-top: 8px;
     }
 
@@ -154,30 +154,30 @@
         display: flex;
         gap: 14px;
         padding: 10px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
+        border-bottom: 1px solid rgba(0,0,0,0.07);
     }
     .changelog-date {
         flex-shrink: 0;
         font-family: 'SF Mono', Monaco, monospace;
         font-size: 0.85em;
-        color: #2ecc71;
+        color: #1b8a3e;
         width: 90px;
     }
     .changelog-text {
-        color: #c0cad6;
+        color: #1a2733;
         font-size: 0.92em;
     }
 
     /* Backlog items */
     .backlog-item {
-        background: rgba(255,255,255,0.03);
-        border-left: 3px solid #4a9eff;
+        background: #ffffff;
+        border-left: 3px solid #1a5fb4;
         padding: 14px 18px;
         margin: 10px 0;
         border-radius: 0 8px 8px 0;
     }
     .backlog-item h4 {
-        color: #fff;
+        color: #1a2733;
         font-size: 0.95em;
         margin-bottom: 6px;
     }
@@ -186,25 +186,25 @@
         padding: 0;
     }
     .backlog-item li {
-        color: #8899aa;
+        color: #5c7186;
         font-size: 0.88em;
         padding: 2px 0;
     }
     .backlog-item li::before {
         content: '→ ';
-        color: #4a9eff;
+        color: #1a5fb4;
     }
 
     /* Tech section */
     .tech-box {
-        background: rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.08);
+        background: #f3f7fb;
+        border: 1px solid rgba(0,0,0,0.08);
         border-radius: 8px;
         padding: 16px 20px;
         margin: 10px 0;
         font-family: 'SF Mono', Monaco, monospace;
         font-size: 0.85em;
-        color: #8899aa;
+        color: #5c7186;
         white-space: pre-wrap;
         line-height: 1.7;
     }
@@ -214,18 +214,18 @@
         position: fixed;
         bottom: 24px;
         right: 24px;
-        background: #2ecc71;
-        color: #000;
+        background: #1b8a3e;
+        color: #fff;
         border: none;
         padding: 12px 24px;
         border-radius: 8px;
         font-size: 1em;
         font-weight: 600;
         cursor: pointer;
-        box-shadow: 0 4px 16px rgba(46,204,113,0.3);
+        box-shadow: 0 4px 16px rgba(15,40,70,0.18);
         z-index: 100;
     }
-    .print-btn:hover { background: #27ae60; }
+    .print-btn:hover { background: #145a2a; }
 
     /* Zugang box */
     .zugang-grid {
@@ -235,21 +235,21 @@
         margin: 12px 0;
     }
     .zugang-item {
-        background: rgba(255,255,255,0.04);
+        background: #ffffff;
         border-radius: 8px;
         padding: 14px;
         text-align: center;
     }
     .zugang-item .label {
         font-size: 0.78em;
-        color: #5a7a8a;
+        color: #5c7186;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     .zugang-item .value {
         font-family: 'SF Mono', Monaco, monospace;
         font-size: 1.1em;
-        color: #fff;
+        color: #1a2733;
         margin-top: 4px;
     }
 </style>
@@ -310,17 +310,17 @@
                 <p>Abstimmungen im Team</p>
                 <div class="file">mannschaftsrat.html</div>
             </div>
-            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+            <div class="card" style="border-color: rgba(27,138,62,0.35);">
                 <h4>Spielzüge</h4>
                 <p>Animierte Spielzug-Visualisierung auf Canvas mit Phasen, Pass-Animation und Drag & Drop Editor</p>
                 <div class="file">spielzuege.html</div>
             </div>
-            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+            <div class="card" style="border-color: rgba(27,138,62,0.35);">
                 <h4>Trainingsplan</h4>
                 <p>Trainingsplanung mit Zeitblöcken, Timeline und Druckansicht. Nur für den Trainer sichtbar.</p>
                 <div class="file">trainingsplan.html</div>
             </div>
-            <div class="card" style="border-color: rgba(46,204,113,0.3);">
+            <div class="card" style="border-color: rgba(27,138,62,0.35);">
                 <h4>Videos</h4>
                 <p>Video-Bibliothek mit YouTube, Vimeo & Loom Einbettung</p>
                 <div class="file">videos.html</div>
@@ -393,7 +393,7 @@
             </ul>
         </div>
 
-        <div class="backlog-item" style="border-left-color: #e8a020;">
+        <div class="backlog-item" style="border-left-color: #b57708;">
             <h4>SpielerPlus-Integration — Trainingsbeteiligung</h4>
             <ul>
                 <li>Screenshots von SpielerPlus auswerten</li>
@@ -404,7 +404,7 @@
             </ul>
         </div>
 
-        <div class="backlog-item" style="border-left-color: #2ecc71;">
+        <div class="backlog-item" style="border-left-color: #1b8a3e;">
             <h4>Playbook-Erweiterungen</h4>
             <ul>
                 <li>Gegnerische Spieler (andere Farbe) für Verteidigungsszenarien</li>
@@ -424,7 +424,7 @@
 Firebase Compat SDK v10.14.1 (Realtime Database)
 Anonymous Auth nach Team-Login
 LocalStorage als Offline-Fallback
-Dark Theme mit CSS Custom Properties
+Helles Design (Light Theme) mit CSS Custom Properties
 Responsive (Mobile + Desktop)</div>
 
         <h3>Firebase Datenbank-Struktur</h3>

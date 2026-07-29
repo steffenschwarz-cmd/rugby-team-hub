@@ -1,18 +1,19 @@
 /* ============================
    common.css — SG Rugbyunion Hohen Neuendorf
-   Shared Dark-Theme base styles for all Team Hub pages
+   Shared Light-Theme base styles for all Team Hub pages
+   (Light-Umstellung 29.07.2026 — vorher Dark Theme)
    ============================ */
 
 /* Variables (Superset) */
 :root {
     --green: #1b8a3e; --green-dark: #145a2a;
     --blue: #1a5fb4; --blue-dark: #0f3d7a;
-    --primary: #152030; --primary-light: #1c3048;
-    --accent: #2ecc71; --accent-blue: #4a9eff;
-    --bg: #0c1420; --bg-card: #131f30; --bg-card-hover: #1a2a40;
-    --text: #e8ecf0; --text-muted: #7a90a8;
-    --danger: #e04040; --warning: #e8a020; --success: #40c060;
-    --home: #2ecc71; --away: #4a9eff;
+    --primary: #ffffff; --primary-light: #e8eef5;
+    --accent: #1b8a3e; --accent-blue: #1a5fb4;
+    --bg: #eef2f6; --bg-card: #ffffff; --bg-card-hover: #f3f7fb;
+    --text: #1a2733; --text-muted: #5c7186;
+    --danger: #d03030; --warning: #b57708; --success: #2e9e4f;
+    --home: #1b8a3e; --away: #1a5fb4;
 }
 
 /* Reset */
@@ -29,14 +30,15 @@ body {
 }
 .login-gate.hidden { display: none; }
 .login-box {
-    background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card); border: 1px solid rgba(0,0,0,0.10);
     border-radius: 16px; padding: 2rem; width: min(90vw, 360px); text-align: center;
+    box-shadow: 0 8px 30px rgba(15,40,70,0.10);
 }
 .login-box h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
 .login-clubs { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; }
 .club-green { color: var(--accent); } .club-x { margin: 0 0.3rem; } .club-blue { color: var(--accent-blue); }
 .login-input {
-    width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+    width: 100%; padding: 0.8rem 1rem; border: 1px solid rgba(0,0,0,0.15);
     border-radius: 8px; background: var(--primary); color: var(--text);
     font-size: 1rem; margin-bottom: 0.8rem; outline: none; text-align: center;
 }
@@ -58,8 +60,8 @@ body {
 /* ===== TOPNAV ===== */
 .topnav {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(12,20,32,0.92); backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
     display: none;
 }
 .topnav.visible {
@@ -86,13 +88,13 @@ body {
     white-space: nowrap;
     transition: all 0.2s;
 }
-.nav-home:hover { background: rgba(255,255,255,0.08); }
-.nav-home.active { background: rgba(255,255,255,0.08); }
+.nav-home:hover { background: rgba(0,0,0,0.06); }
+.nav-home.active { background: rgba(0,0,0,0.06); }
 
 .hamburger {
     display: none;
     background: none;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(0,0,0,0.2);
     border-radius: 6px;
     color: var(--text);
     font-size: 1.2rem;
@@ -127,7 +129,7 @@ body {
 .topnav a:hover, .topnav-inner a:hover,
 .topnav a.active, .topnav-inner a.active {
     color: var(--text);
-    background: rgba(255,255,255,0.08);
+    background: rgba(0,0,0,0.06);
 }
 
 /* Nav groups (dropdown containers) */
@@ -151,28 +153,28 @@ body {
     align-items: center;
     gap: 0.3rem;
     color: var(--accent);
-    background: rgba(46,204,113,0.12);
-    border: 1px solid rgba(46,204,113,0.25);
+    background: rgba(27,138,62,0.10);
+    border: 1px solid rgba(27,138,62,0.30);
     transition: all 0.2s;
 }
 .nav-group-label:hover {
-    background: rgba(46,204,113,0.22);
+    background: rgba(27,138,62,0.18);
 }
 .nav-group-label[data-group="rat"] {
     color: var(--accent-blue);
-    background: rgba(74,158,255,0.12);
-    border-color: rgba(74,158,255,0.25);
+    background: rgba(26,95,180,0.10);
+    border-color: rgba(26,95,180,0.30);
 }
 .nav-group-label[data-group="rat"]:hover {
-    background: rgba(74,158,255,0.22);
+    background: rgba(26,95,180,0.18);
 }
 .nav-group-label[data-group="trainer"] {
     color: var(--warning);
-    background: rgba(232,160,32,0.12);
-    border-color: rgba(232,160,32,0.25);
+    background: rgba(181,119,8,0.10);
+    border-color: rgba(181,119,8,0.30);
 }
 .nav-group-label[data-group="trainer"]:hover {
-    background: rgba(232,160,32,0.22);
+    background: rgba(181,119,8,0.18);
 }
 .nav-group-label .nav-arrow {
     font-size: 0.55rem;
@@ -194,12 +196,12 @@ body {
     top: calc(100% + 4px);
     left: 0;
     background: var(--primary);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(0,0,0,0.12);
     border-radius: 8px;
     padding: 0.3rem 0;
     min-width: 160px;
     z-index: 300;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 24px rgba(15,40,70,0.15);
 }
 .nav-group.open .nav-group-dropdown {
     display: block;
@@ -212,7 +214,7 @@ body {
 }
 .nav-group-dropdown a:hover,
 .nav-group-dropdown a.active {
-    background: rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.05);
 }
 
 /* User section (name + logout) */
@@ -253,7 +255,7 @@ body {
         top: 0; right: -280px;
         width: 280px; height: 100vh;
         background: var(--primary);
-        border-left: 1px solid rgba(255,255,255,0.08);
+        border-left: 1px solid rgba(0,0,0,0.10);
         flex-direction: column;
         align-items: stretch;
         gap: 0;
@@ -262,6 +264,7 @@ body {
         z-index: 200;
         overflow-y: auto;
         overflow-x: hidden;
+        box-shadow: -6px 0 24px rgba(15,40,70,0.12);
     }
     .topnav-inner.open { right: 0; }
 
@@ -285,7 +288,7 @@ body {
     }
     .nav-group-dropdown a:hover,
     .nav-group-dropdown a.active {
-        background: rgba(255,255,255,0.05);
+        background: rgba(0,0,0,0.04);
     }
 
     .nav-group-label {
@@ -295,7 +298,7 @@ body {
         font-weight: 700;
         border-radius: 0;
         border: none;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
+        border-bottom: 1px solid rgba(0,0,0,0.06);
         margin-top: 0.5rem;
         cursor: default;
     }
@@ -306,7 +309,7 @@ body {
         display: block;
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.35);
         z-index: 150;
     }
 
@@ -314,7 +317,7 @@ body {
         margin-left: 0;
         margin-top: auto;
         padding: 1rem 1.5rem;
-        border-top: 1px solid rgba(255,255,255,0.06);
+        border-top: 1px solid rgba(0,0,0,0.08);
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
@@ -323,28 +326,28 @@ body {
 
 /* Page Header */
 .page-header {
-    background: linear-gradient(135deg, var(--green-dark) 0%, var(--primary) 40%, var(--blue-dark) 100%);
+    background: linear-gradient(135deg, #dff0e5 0%, #f7fafc 45%, #dfeafa 100%);
     padding: 1.2rem 1rem; text-align: center;
-    border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--accent-blue)) 1;
+    border-bottom: 3px solid; border-image: linear-gradient(90deg, var(--green), var(--blue)) 1;
 }
 .page-header h1 { font-size: 1.5rem; font-weight: 800; }
 .page-header .subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.3rem; }
 
 /* Trainer Bar (legacy, kept for edit-mode indicator) */
 .trainer-bar {
-    background: linear-gradient(135deg, rgba(27,138,62,0.15), rgba(26,95,180,0.15));
-    border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;
+    background: linear-gradient(135deg, rgba(27,138,62,0.08), rgba(26,95,180,0.08));
+    border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
     padding: 0.7rem 1rem; margin-bottom: 0.8rem;
     display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
 }
 .trainer-bar .trainer-info, .trainer-info { font-size: 0.82rem; color: var(--text-muted); }
 .trainer-bar .trainer-info.unlocked, .trainer-info.unlocked { color: var(--accent); }
 .trainer-bar .trainer-btn, .trainer-btn {
-    padding: 0.45rem 1rem; border: 1px solid rgba(255,255,255,0.15);
+    padding: 0.45rem 1rem; border: 1px solid rgba(0,0,0,0.15);
     border-radius: 8px; background: var(--primary-light); color: var(--text);
     font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
 }
-.trainer-bar .trainer-btn:hover, .trainer-btn:hover { background: var(--green-dark); border-color: var(--accent); }
+.trainer-bar .trainer-btn:hover, .trainer-btn:hover { background: rgba(27,138,62,0.12); border-color: var(--accent); }
 .trainer-bar .trainer-btn.locked, .trainer-btn.locked {
     background: linear-gradient(135deg, var(--green), var(--blue));
     border: none; color: white;
@@ -352,8 +355,8 @@ body {
 
 /* Draft Banner (Aufstellung) */
 .draft-banner {
-    background: linear-gradient(135deg, rgba(232,160,32,0.15), rgba(232,160,32,0.05));
-    border: 1px solid rgba(232,160,32,0.3);
+    background: linear-gradient(135deg, rgba(181,119,8,0.12), rgba(181,119,8,0.04));
+    border: 1px solid rgba(181,119,8,0.35);
     color: var(--warning);
     text-align: center;
     padding: 0.6rem 1rem;
@@ -376,15 +379,15 @@ body {
 }
 .draft-btn.publish:hover { opacity: 0.9; }
 .draft-btn.hide {
-    background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3);
+    background: rgba(181,119,8,0.10); border: 1px solid rgba(181,119,8,0.35);
     color: var(--warning);
 }
-.draft-btn.hide:hover { background: rgba(232,160,32,0.25); }
+.draft-btn.hide:hover { background: rgba(181,119,8,0.20); }
 .draft-btn.discard {
-    background: rgba(224,64,64,0.1); border: 1px solid rgba(224,64,64,0.2);
+    background: rgba(208,48,48,0.08); border: 1px solid rgba(208,48,48,0.25);
     color: var(--danger);
 }
-.draft-btn.discard:hover { background: rgba(224,64,64,0.2); }
+.draft-btn.discard:hover { background: rgba(208,48,48,0.16); }
 
 /* Lineup Placeholder (Team view when not published) */
 .lineup-placeholder {
@@ -411,7 +414,7 @@ body {
 
 /* Admin Section */
 .admin-section {
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(0,0,0,0.10);
     margin-top: 1.5rem;
     padding-top: 1.5rem;
 }
@@ -427,7 +430,7 @@ body {
 }
 .admin-btn {
     padding: 0.4rem 0.8rem; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(0,0,0,0.15);
     background: var(--primary-light); color: var(--text);
     font-size: 0.78rem; font-weight: 600; cursor: pointer;
     transition: all 0.2s;
@@ -447,24 +450,24 @@ body {
     text-align: left; font-size: 0.7rem; color: var(--text-muted);
     text-transform: uppercase; letter-spacing: 0.04em;
     padding: 0.5rem 0.6rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.10);
 }
 .admin-table td {
     padding: 0.4rem 0.6rem;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
     vertical-align: middle;
 }
-.admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+.admin-table tr:hover td { background: rgba(0,0,0,0.03); }
 .admin-table .inactive { opacity: 0.4; }
 
 .admin-role-select {
-    background: var(--bg-card); color: var(--text); border: 1px solid rgba(255,255,255,0.1);
+    background: var(--bg-card); color: var(--text); border: 1px solid rgba(0,0,0,0.15);
     border-radius: 4px; padding: 0.2rem 0.4rem; font-size: 0.78rem; font-family: inherit;
     cursor: pointer;
 }
 
 .code-display {
-    background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card); border: 1px solid rgba(0,0,0,0.10);
     border-radius: 10px; padding: 1rem; margin-top: 1rem;
     max-height: 400px; overflow-y: auto;
 }
@@ -477,7 +480,7 @@ body {
 }
 .code-list .code-item {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0.2rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    padding: 0.2rem 0; border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 .code-list .code-value {
     color: var(--accent); font-weight: 700; letter-spacing: 0.1em;
@@ -486,6 +489,6 @@ body {
 /* Footer */
 footer {
     text-align: center; padding: 1.5rem; font-size: 0.7rem; color: var(--text-muted);
-    border-top: 1px solid rgba(255,255,255,0.06); margin-top: 1rem;
+    border-top: 1px solid rgba(0,0,0,0.08); margin-top: 1rem;
 }
 footer a { color: var(--accent); text-decoration: none; }

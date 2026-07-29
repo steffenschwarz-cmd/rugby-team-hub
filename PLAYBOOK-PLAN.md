@@ -47,6 +47,7 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 | CSS-Refactoring: common.css für alle 9 Dark-Theme-Seiten | Fertig | 28.02.2026 |
 | 7 weitere Warm-Up Drills (Jailbreak, Schnappball, One-Hand, Double Touch, 2-Bälle Touch, Breakout Circle, Atom-Spiel) | Fertig | 03.03.2026 |
 | SpielerPlus-Integration (weitere Screenshots) | Offen | — |
+| 6 Entscheidungs-Drills (neue Kategorie "Entscheidung") + Quellen-Links pro Drill | Fertig | 29.07.2026 |
 
 ### Changelog
 - **22.02.2026**: Alle 3 Seiten erstellt, Navigation in allen bestehenden Seiten ergänzt
@@ -63,6 +64,8 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 - **01.03.2026**: Viererraute-Formationen aus dem Ruck: "Salz" (9 direkt an Raute, ohne Verbinder) und "Pfeffer" (mit Verbindungsspieler 10 zwischen 9 und Raute). Raute-Positionen: 1=Spitze vorne, 2=links, 3=rechts, 4=hinten.
 - **01.03.2026**: Koordinaten Rugby-regelkonform korrigiert: Alle Raute-Positionen hinter der Ruck-Linie (größere y-Werte), kein Forward-Pass möglich. Ruck links auf dem Feld (x=0.28, y=0.45), Raute rechts daneben. Salz: 9 bei (0.28,0.52), Raute bei y=0.52–0.68. Pfeffer: zusätzlich Verbinder 10 bei (0.40,0.54), Raute bei y=0.54–0.70.
 - **03.03.2026**: 7 weitere Warm-Up Drills via Agententeam (Researcher + Planner + Builder + Kontrolleur): Jailbreak (Kreis-Ausbruch mit Two-Hand Touch), Possession Game/Schnappball (5v5, 10 Pässe), One-Hand Possession (einhändiges Handling), Double Touch (2 verschiedene Touches), Touch Rugby mit 2 Bällen (simultanes Angreifen), Breakout Circle (physischer Kreisdurchbruch), Atom-Spiel (Gruppen bilden auf Zuruf). Insgesamt jetzt 14 Warm-Up Drills.
+- **29.07.2026**: LIGHT-THEME-UMSTELLUNG der gesamten Website (13 Seiten + common.css) via Agententeam (3 Developer parallel). Neue Palette in common.css (:root): heller Grund #eef2f6, weiße Karten, dunkler Text #1a2733, Akzente auf Vereinsfarben abgedunkelt (--accent #1b8a3e, --accent-blue #1a5fb4, --warning #b57708, --danger #d03030, --success #2e9e4f). Alle rgba(255,255,255,x)-Ränder/Hover auf rgba(0,0,0,y) gedreht, Modal-Overlays aufgehellt, Schatten auf blaustichige Light-Schatten. Canvas: Umgebung hell (#dce5ed), Spielfeld-Grün frischer (#3e8e57), Feldlinien-Alphas angehoben. Cache-Bust common.css?v=8 in allen Seiten. Nicht angefasst: meeting-agenda.html + rugby-warmup-guide.html (Standalone-Einzeldokumente ohne common.css). Verifiziert per Headless-Chrome-Screenshots aller Seiten nach Login.
+- **29.07.2026**: Neue Kategorie "Entscheidung" (#1abc9c) mit 6 spielbasierten Entscheidungs-Drills: Entscheidungs-Wellen (3v2/3v1 mit Trainer-Call), Farb-Scan-Touch (Farbe rufen vor dem Pass), Türchen-Spiel/Gate Game (Tore mit Punktwerten), Offload-Touch (2-Sekunden-Entscheidung), Unterzahl-Touch (6v4 gegen Drift), Breakout mit Zahlen-Call (Chaos-Start). Neu: `sources`-Feld pro Drill — Quell-Links (Rugby Coach Weekly, Sportplan, Rugby Toolbox) werden im Drill-Info-Panel als "Quellen"-Liste angezeigt. Insgesamt jetzt 20 Drills.
 
 ## Offene Ideen / Backlog
 
@@ -92,11 +95,11 @@ Digitaler Team Hub für Steffens Rugby-Mannschaft. Enthält Kader, Aufstellung, 
 
 ### Stack
 - Standalone HTML mit Inline JS (kein Build-Tool)
-- Gemeinsame CSS-Styles in `common.css` (9 Dark-Theme-Seiten), seitenspezifische Overrides inline
+- Gemeinsame CSS-Styles in `common.css`, seitenspezifische Overrides inline
 - Firebase Compat SDK v10.14.1 (app + auth + database)
 - Anonymous Auth nach Team-Login
 - LocalStorage als Offline-Fallback
-- Dark Theme mit CSS Custom Properties
+- Helles Design (Light Theme) mit CSS Custom Properties — Umstellung 29.07.2026, vorher Dark
 - Responsive (Mobile + Desktop)
 
 ### Firebase-Config

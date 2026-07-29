@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kader — SG Rugbyunion Hohen Neuendorf</title>
-    <link rel="stylesheet" href="common.css?v=7">
+    <link rel="stylesheet" href="common.css?v=8">
     <script src="common.js?v=7"></script>
     <style>
         /* Header override */
@@ -16,7 +16,7 @@
             padding: 1rem; max-width: 1100px; margin: 0 auto;
         }
         .stat-chip {
-            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.06);
+            background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08);
             border-radius: 20px; padding: 0.3rem 0.8rem;
             font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
         }
@@ -29,7 +29,7 @@
         .controls { margin-bottom: 1.2rem; }
         .search-box {
             width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,0,0,0.12);
             border-radius: 10px; background: var(--bg-card);
             color: var(--text); font-size: 0.9rem; outline: none;
             margin-bottom: 0.8rem;
@@ -46,17 +46,17 @@
         }
         .filter-btn {
             padding: 0.35rem 0.75rem; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(0,0,0,0.12);
             background: transparent; color: var(--text-muted);
             font-size: 0.75rem; font-weight: 600; cursor: pointer;
             transition: all 0.2s;
         }
-        .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+        .filter-btn:hover { border-color: rgba(0,0,0,0.2); color: var(--text); }
         .filter-btn.active {
-            background: rgba(46,204,113,0.15); border-color: var(--accent);
+            background: rgba(27,138,62,0.12); border-color: var(--accent);
             color: var(--accent);
         }
-        .filter-btn.active-pos { background: rgba(232,160,32,0.15); border-color: var(--warning); color: var(--warning); }
+        .filter-btn.active-pos { background: rgba(181,119,8,0.12); border-color: var(--warning); color: var(--warning); }
 
         .result-count {
             font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem;
@@ -71,7 +71,7 @@
 
         .player-card {
             background: var(--bg-card);
-            border: 1px solid rgba(255,255,255,0.06);
+            border: 1px solid rgba(0,0,0,0.08);
             border-radius: 10px;
             padding: 0.8rem 1rem;
             display: flex;
@@ -81,12 +81,12 @@
         }
         .player-card:hover {
             background: var(--bg-card-hover);
-            border-color: rgba(255,255,255,0.12);
+            border-color: rgba(0,0,0,0.14);
         }
         .player-card.highlighted {
             border-color: var(--accent);
-            background: rgba(46,204,113,0.06);
-            box-shadow: 0 0 0 2px rgba(46,204,113,0.2);
+            background: rgba(27,138,62,0.06);
+            box-shadow: 0 0 0 2px rgba(27,138,62,0.25);
         }
 
         .player-avatar {
@@ -94,7 +94,7 @@
             display: flex; align-items: center; justify-content: center;
             font-weight: 700; font-size: 0.7rem;
             flex-shrink: 0; color: white;
-            background: linear-gradient(135deg, var(--primary-light), #2a4060);
+            background: linear-gradient(135deg, var(--green), var(--blue));
         }
 
         .player-info { flex: 1; min-width: 0; }
@@ -112,17 +112,17 @@
             border-radius: 4px; font-size: 0.65rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.02em;
         }
-        .badge-er { background: rgba(232,160,32,0.15); color: #e8a020; }
-        .badge-zr { background: rgba(224,100,64,0.15); color: #e06840; }
-        .badge-dr { background: rgba(208,64,128,0.15); color: #d04880; }
-        .badge-sh { background: rgba(160,80,208,0.15); color: #a850d0; }
-        .badge-fh { background: rgba(48,192,192,0.15); color: #30c0c0; }
-        .badge-ct { background: rgba(74,158,255,0.15); color: #4a9eff; }
-        .badge-wg { background: rgba(46,204,113,0.15); color: #2ecc71; }
-        .badge-fb { background: rgba(128,208,64,0.15); color: #80d040; }
-        .badge-u18 { background: rgba(224,64,64,0.15); color: var(--danger); }
-        .badge-c { background: rgba(255,255,255,0.15); color: white; }
-        .badge-vc { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+        .badge-er { background: rgba(181,119,8,0.14); color: var(--warning); }
+        .badge-zr { background: rgba(192,74,24,0.14); color: #c04a18; }
+        .badge-dr { background: rgba(176,42,99,0.14); color: #b02a63; }
+        .badge-sh { background: rgba(128,48,176,0.14); color: #8030b0; }
+        .badge-fh { background: rgba(13,128,128,0.14); color: #0d8080; }
+        .badge-ct { background: rgba(26,95,180,0.14); color: var(--accent-blue); }
+        .badge-wg { background: rgba(27,138,62,0.14); color: var(--accent); }
+        .badge-fb { background: rgba(107,143,15,0.16); color: #6b8f0f; }
+        .badge-u18 { background: rgba(208,48,48,0.14); color: var(--danger); }
+        .badge-c { background: var(--text); color: white; }
+        .badge-vc { background: rgba(0,0,0,0.10); color: var(--text); }
 
         .player-badges { display: flex; gap: 0.3rem; flex-shrink: 0; }
 

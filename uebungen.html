@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Übungen — SG Rugbyunion Hohen Neuendorf</title>
-    <link rel="stylesheet" href="common.css?v=7">
+    <link rel="stylesheet" href="common.css?v=8">
     <script src="common.js?v=7"></script>
     <style>
         /* Container override */
@@ -15,14 +15,14 @@
 
         /* CATEGORY FILTER */
         .cat-filter { display: flex; gap: 0.4rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.3rem; }
-        .cat-pill { padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
-        .cat-pill:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+        .cat-pill { padding: 0.35rem 0.8rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(0,0,0,0.12); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
+        .cat-pill:hover { border-color: rgba(0,0,0,0.2); color: var(--text); }
         .cat-pill.active { color: #fff; border-color: transparent; }
 
         /* DRILL LIST */
         .drill-list { display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.3rem; }
-        .drill-pill { padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
-        .drill-pill:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+        .drill-pill { padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(0,0,0,0.12); background: var(--bg-card); color: var(--text-muted); white-space: nowrap; transition: all 0.2s; }
+        .drill-pill:hover { border-color: rgba(0,0,0,0.2); color: var(--text); }
         .drill-pill.active { background: var(--primary-light); color: var(--text); border-color: var(--accent); }
         .drill-cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.4rem; vertical-align: middle; }
 
@@ -35,19 +35,19 @@
         .legend { display: flex; gap: 1rem; flex-wrap: wrap; padding: 0.5rem 0.8rem; background: var(--bg-card); border-radius: 8px; margin-bottom: 1rem; font-size: 0.75rem; color: var(--text-muted); }
         .legend-item { display: flex; align-items: center; gap: 0.3rem; }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        .legend-dash { width: 18px; height: 0; border-top: 2px dashed rgba(232,160,32,0.7); flex-shrink: 0; }
-        .legend-zone { width: 14px; height: 3px; background: rgba(255,160,160,0.6); border-radius: 2px; flex-shrink: 0; }
+        .legend-dash { width: 18px; height: 0; border-top: 2px dashed rgba(232,160,32,1); flex-shrink: 0; }
+        .legend-zone { width: 14px; height: 3px; background: rgba(255,140,140,1); border-radius: 2px; flex-shrink: 0; }
 
         /* EDIT BAR */
-        .edit-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; padding: 0.6rem; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; }
-        .edit-bar button { padding: 0.4rem 0.8rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; background: var(--primary-light); color: var(--text); font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+        .edit-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; padding: 0.6rem; background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; }
+        .edit-bar button { padding: 0.4rem 0.8rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 6px; background: var(--primary-light); color: var(--text); font-size: 0.78rem; font-weight: 600; cursor: pointer; }
         .edit-bar button:hover { background: var(--bg-card-hover); }
         .edit-bar button.primary { background: linear-gradient(135deg, var(--green), var(--blue)); border: none; color: white; }
         .edit-bar button.danger { color: var(--danger); border-color: var(--danger); }
         .edit-bar .spacer { flex: 1; }
 
         /* DRILL INFO */
-        .drill-info { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1.2rem; }
+        .drill-info { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 1.2rem; }
         .drill-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.3rem; }
         .drill-cat-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem; font-weight: 700; color: #fff; margin-bottom: 0.8rem; }
         .drill-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5; }
@@ -57,10 +57,15 @@
         .drill-rules li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
         .drill-rules li.warning { color: var(--danger); }
         .drill-rules li.warning::before { background: var(--danger); }
-        .trainer-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); }
-        .trainer-actions button { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.12); background: var(--primary-light); color: var(--text); }
+        .drill-sources { list-style: none; margin-top: 0.3rem; }
+        .drill-sources li { position: relative; padding-left: 1.2rem; margin-bottom: 0.35rem; font-size: 0.82rem; line-height: 1.4; }
+        .drill-sources li::before { content: '\1F517'; position: absolute; left: 0; top: 0; font-size: 0.7rem; }
+        .drill-sources a { color: var(--accent); text-decoration: none; }
+        .drill-sources a:hover { text-decoration: underline; }
+        .trainer-actions { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.08); }
+        .trainer-actions button { padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(0,0,0,0.15); background: var(--primary-light); color: var(--text); }
         .trainer-actions button:hover { background: var(--bg-card-hover); }
-        .trainer-actions button.danger { color: var(--danger); border-color: rgba(224,64,64,0.3); }
+        .trainer-actions button.danger { color: var(--danger); border-color: rgba(208,48,48,0.35); }
 
         /* EMPTY STATE */
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
@@ -68,11 +73,11 @@
         .empty-state p { font-size: 0.95rem; }
 
         /* MODAL */
-        .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; }
-        .modal { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; width: min(92vw, 440px); max-height: 85vh; overflow-y: auto; }
+        .modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; }
+        .modal { background: var(--bg-card); border: 1px solid rgba(0,0,0,0.12); border-radius: 16px; padding: 1.5rem; width: min(92vw, 440px); max-height: 85vh; overflow-y: auto; }
         .modal h3 { font-size: 1.1rem; margin-bottom: 1rem; }
         .modal label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; margin-top: 0.8rem; }
-        .modal input, .modal select, .modal textarea { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; background: var(--primary); color: var(--text); font-size: 0.9rem; outline: none; font-family: inherit; }
+        .modal input, .modal select, .modal textarea { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; background: var(--primary); color: var(--text); font-size: 0.9rem; outline: none; font-family: inherit; }
         .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--accent); }
         .modal textarea { min-height: 80px; resize: vertical; }
         .modal-btns { display: flex; gap: 0.5rem; margin-top: 1.2rem; justify-content: flex-end; }
@@ -185,6 +190,7 @@
                 <option value="fitness">Fitness</option>
                 <option value="taktik">Taktik</option>
                 <option value="kondition">Kondition</option>
+                <option value="entscheidung">Entscheidung</option>
             </select>
             <label>Beschreibung</label>
             <textarea id="m-desc" placeholder="Kurze Beschreibung der Übung"></textarea>
@@ -212,12 +218,13 @@
     let modalMode = null; // 'add' | 'edit'
 
     const CATS = {
-        'warm-up':   { label: 'Warm-Up',   color: '#e8a020' },
-        'handling':  { label: 'Handling',   color: '#2ecc71' },
-        'kontakt':   { label: 'Kontakt',    color: '#e04040' },
-        'fitness':   { label: 'Fitness',    color: '#9b59b6' },
-        'taktik':    { label: 'Taktik',     color: '#4a9eff' },
-        'kondition': { label: 'Kondition',  color: '#e67e22' }
+        'warm-up':      { label: 'Warm-Up',       color: '#e8a020' },
+        'handling':     { label: 'Handling',       color: '#2ecc71' },
+        'kontakt':      { label: 'Kontakt',        color: '#e04040' },
+        'fitness':      { label: 'Fitness',        color: '#9b59b6' },
+        'taktik':       { label: 'Taktik',         color: '#4a9eff' },
+        'kondition':    { label: 'Kondition',      color: '#e67e22' },
+        'entscheidung': { label: 'Entscheidung',   color: '#1abc9c' }
     };
 
     // ===== CANVAS =====
@@ -894,6 +901,322 @@
             },
             animated: false,
             createdAt: Date.now()
+        },
+        {
+            name: 'Entscheidungs-Wellen (3v2/3v1)',
+            category: 'entscheidung',
+            description: 'Kanal ca. 15×25m. Drei Angreifer starten von der Grundlinie — erst beim Startsignal ruft der Trainer, wie viele Verteidiger einlaufen ("2!" oder "1!"). Die Angreifer müssen die Überzahl im Lauf erkennen und ausspielen: Verteidiger fixieren, dann Pass oder selbst durch.',
+            rules: [
+                '3 Angreifer starten auf Signal von der Grundlinie',
+                'Trainer ruft beim Start "1!" oder "2!" — so viele Verteidiger laufen von der Seite ein',
+                'Ballträger fixiert den ersten Verteidiger, dann entscheiden: Pass oder selbst durch',
+                'Try = Ball hinter der Ziellinie ablegen',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'Steigerung: Verteidiger starten zeitversetzt (einer sofort, einer nach 2 Sekunden)',
+                'NICHT vorher absprechen wer den Ball bekommt — die Verteidigung entscheidet den Weg'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.20, y: 0.02 }, { x: 0.80, y: 0.02 },
+                    { x: 0.20, y: 0.98 }, { x: 0.80, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.20, y1: 0.02, x2: 0.80, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.35, y: 0.90 }, { x: 0.50, y: 0.85 },
+                            { x: 0.65, y: 0.90 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.90, y: 0.30 }, { x: 0.90, y: 0.45 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 1 },
+                passLines: [
+                    { x1: 0.50, y1: 0.85, x2: 0.35, y2: 0.90, dashed: true }
+                ]
+            },
+            sources: [
+                { label: '2v1 into 3v2 — Sportplan', url: 'https://www.sportplan.net/drills/Rugby/Decision-making/2-v-1-into-3-v-2-TBR0026.jsp' },
+                { label: '3v2 Continuous — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/3-v-2-continuous' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Farb-Scan-Touch',
+            category: 'entscheidung',
+            description: 'Normales Touch auf kleinem Feld (ca. 20×30m, 5v5). Der Trainer steht hinter der Verteidigung und hält farbige Leibchen/Hütchen hoch. Der Ballträger muss die Farbe laut rufen, BEVOR er passt — sonst Ballverlust. Zwingt den Kopf hoch und trainiert Scannen unter Druck.',
+            rules: [
+                'Normales Touch 5v5, Pässe nur nach hinten',
+                'Trainer hält während des Angriffs eine Farbe hoch',
+                'Ballträger muss die Farbe laut rufen, bevor er passt — sonst Ballwechsel',
+                'Try = Ball in der Endzone ablegen',
+                'Nach Touch: Ball zurückspielen und weiter',
+                'Steigerung: Farbe = Anweisung (Rot = Pass links, Blau = Pass rechts, Gelb = frei)',
+                'NICHT auf den Ball starren — wer nur den Ball sieht, verliert ihn'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.05, y: 0.05 }, { x: 0.95, y: 0.05 },
+                    { x: 0.05, y: 0.95 }, { x: 0.95, y: 0.95 }
+                ],
+                zones: [
+                    { x1: 0.05, y1: 0.05, x2: 0.95, y2: 0.05, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.20, y: 0.70 }, { x: 0.35, y: 0.65 },
+                            { x: 0.50, y: 0.62 }, { x: 0.65, y: 0.65 },
+                            { x: 0.80, y: 0.70 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.20, y: 0.40 }, { x: 0.35, y: 0.36 },
+                            { x: 0.50, y: 0.34 }, { x: 0.65, y: 0.36 },
+                            { x: 0.80, y: 0.40 }
+                        ]
+                    },
+                    c: {
+                        label: 'Trainer (Farbe)', color: '#f1c40f',
+                        players: [
+                            { x: 0.50, y: 0.10 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 2 },
+                passLines: [
+                    { x1: 0.50, y1: 0.62, x2: 0.35, y2: 0.65, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Colour call: Heads up decision making — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/skills-to-help-speed-up-decision-making' },
+                { label: 'Scan when you can — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/scan-when-you-can' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Türchen-Spiel (Gate Game)',
+            category: 'entscheidung',
+            description: 'Touch-Spiel auf ca. 40×30m. Auf der Trylinie stehen drei 5m-Tore aus Hütchen. Try über die Linie = 1 Punkt, Try DURCH ein Tor = 3 Punkte (Mitteltor 6). Die Verteidigung darf sich nicht in die Tore stellen — beide Seiten müssen ständig entscheiden: Tore priorisieren oder Raum spielen?',
+            rules: [
+                'Zweihand-Touch, Angriff hat 6 Touches, dann Ballwechsel',
+                'Try irgendwo über die Linie = 1 Punkt',
+                'Try durch ein Außentor = 3 Punkte, durch das Mitteltor = 6 Punkte',
+                'Angriff: ständig scannen — welches Tor ist gerade schlecht abgedeckt?',
+                'Punktwerte ändern, um das Angriffsverhalten zu steuern (z.B. Mitte 10, außen 2)',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'NICHT als Verteidiger dauerhaft im Tor stehen — aktiv verteidigen!'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.05, y: 0.02 }, { x: 0.95, y: 0.02 },
+                    { x: 0.15, y: 0.02 }, { x: 0.30, y: 0.02 },
+                    { x: 0.43, y: 0.02 }, { x: 0.57, y: 0.02 },
+                    { x: 0.70, y: 0.02 }, { x: 0.85, y: 0.02 },
+                    { x: 0.05, y: 0.98 }, { x: 0.95, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.05, y1: 0.02, x2: 0.95, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.20, y: 0.72 }, { x: 0.35, y: 0.66 },
+                            { x: 0.50, y: 0.62 }, { x: 0.65, y: 0.66 },
+                            { x: 0.80, y: 0.72 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.25, y: 0.38 }, { x: 0.45, y: 0.34 },
+                            { x: 0.60, y: 0.34 }, { x: 0.78, y: 0.38 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 2 },
+                passLines: [
+                    { x1: 0.50, y1: 0.62, x2: 0.65, y2: 0.66, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Guard the gate touch — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/defence/guard-the-gate-touch' },
+                { label: 'Run the gates — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/small-sided-games/run-the-gates' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Offload-Touch (2 Sekunden)',
+            category: 'entscheidung',
+            description: 'Touch 5v5 oder 6v6 auf eher schmalem Feld. Nach dem Touch hat der Ballträger 2 Sekunden: Offload an einen Supporter ODER Ball ablegen (normaler Neustart). Angekommener Offload = Angriff läuft ohne Stopp weiter. Fehl-Offload = Ballverlust. Trainiert die Risiko-Entscheidung aus dem Kontakt: Ist der Support wirklich da?',
+            rules: [
+                'Zweihand-Touch, schmales Feld für Kontaktnähe',
+                'Nach dem Touch: 2 Sekunden Zeit für die Entscheidung',
+                'Option 1: Offload an einen Supporter — Spiel läuft ohne Stopp weiter',
+                'Option 2: Ball ablegen — normaler Neustart über den Halbspieler',
+                'Offload in den Boden oder zum Gegner = sofortiger Ballwechsel',
+                'Support in Rautenform: links, rechts und hinter dem Ballträger anbieten',
+                'Variante: Bonuspunkt für jeden Try nach erfolgreichem Offload',
+                'Pässe nur nach hinten (Rugby-Passregel)'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.20, y: 0.02 }, { x: 0.80, y: 0.02 },
+                    { x: 0.20, y: 0.98 }, { x: 0.80, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.20, y1: 0.02, x2: 0.80, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.50, y: 0.52 }, { x: 0.36, y: 0.62 },
+                            { x: 0.64, y: 0.62 }, { x: 0.50, y: 0.72 },
+                            { x: 0.28, y: 0.78 }, { x: 0.72, y: 0.78 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.42, y: 0.42 }, { x: 0.58, y: 0.42 },
+                            { x: 0.30, y: 0.30 }, { x: 0.50, y: 0.26 },
+                            { x: 0.70, y: 0.30 }, { x: 0.50, y: 0.14 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.50, y1: 0.52, x2: 0.36, y2: 0.62, dashed: true },
+                    { x1: 0.50, y1: 0.52, x2: 0.64, y2: 0.62, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Rule of twos (Offload-Spiel) — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/passing-handling/rule-of-twos-rugby-coaching-game-for-offload-in-contact' },
+                { label: 'Offload Touch — Sportplan', url: 'https://www.sportplan.net/s/Rugby/offload-touch.jsp' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Unterzahl-Touch (6v4)',
+            category: 'entscheidung',
+            description: 'Touch auf voller Feldbreite: 6 Angreifer gegen 4 Verteidiger. Die Verteidigung muss driften, der Angriff muss lesen, WO die Überzahl gerade ist — außen ausspielen oder das Loch innen nehmen, wenn die Verteidigung zu früh schiebt. Wer nur den einstudierten Weg spielt, läuft in die Drift.',
+            rules: [
+                'Zweihand-Touch, volle Feldbreite, 6 Angreifer gegen 4 Verteidiger',
+                'Angriff: volle Breite nutzen, schnell umverteilen, Verteidigung lesen',
+                'Verteidigung driftet nach außen — Loch innen erkennen, wenn sie zu früh schiebt',
+                'Try = Ball in der Endzone ablegen',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'Steigerung: Nach jedem Touch laufen die Verteidiger erst um das Hütchen hinter ihnen — Angriff lernt das Tempo-Fenster zu lesen',
+                'NICHT blind nach außen spielen — erst schauen, wo die Überzahl wirklich ist'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.02, y: 0.02 }, { x: 0.98, y: 0.02 },
+                    { x: 0.02, y: 0.98 }, { x: 0.98, y: 0.98 },
+                    { x: 0.50, y: 0.12 }
+                ],
+                zones: [
+                    { x1: 0.02, y1: 0.02, x2: 0.98, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Angriff', color: '#e67e22',
+                        players: [
+                            { x: 0.10, y: 0.70 }, { x: 0.26, y: 0.64 },
+                            { x: 0.42, y: 0.60 }, { x: 0.58, y: 0.60 },
+                            { x: 0.74, y: 0.64 }, { x: 0.90, y: 0.70 }
+                        ]
+                    },
+                    b: {
+                        label: 'Verteidigung', color: '#3498db',
+                        players: [
+                            { x: 0.20, y: 0.36 }, { x: 0.40, y: 0.32 },
+                            { x: 0.60, y: 0.32 }, { x: 0.80, y: 0.36 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 2 },
+                passLines: [
+                    { x1: 0.42, y1: 0.60, x2: 0.26, y2: 0.64, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Overload attack game — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/overload-attack-game/' },
+                { label: 'Up fast, drift square — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/defence/up-fast-drift-square' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Breakout mit Zahlen-Call',
+            category: 'entscheidung',
+            description: 'Alle Spieler joggen mit Nummern durcheinander in der Feldmitte. Trainer ruft z.B. "3 gegen 2!" — die ersten 3 gerufenen Nummern greifen sofort in eine Richtung an, die nächsten 2 verteidigen. Chaos-Start ohne Formation: sofortige Rollenfindung wie nach einem Turnover.',
+            rules: [
+                'Alle Spieler joggen durcheinander in der Feldmitte, jeder hat eine Nummer',
+                'Trainer ruft Nummern und Verhältnis, z.B. "3 gegen 2!"',
+                'Erste Gruppe greift sofort Richtung Endzone an, zweite Gruppe verteidigt',
+                'Trainer wirft oder rollt den Ball ein — kein geordneter Start',
+                'Sofort klären: Wer ist Ballträger, wer läuft Support, wo ist Platz?',
+                'Zweihand-Touch, Pässe nur nach hinten',
+                'Variante: Trainer ruft mitten im Spielzug neue Nummern — fliegender Wechsel',
+                'Alle Verhältnisse möglich: von 1v1 bis 5v5 oder 5v3'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.05, y: 0.02 }, { x: 0.95, y: 0.02 },
+                    { x: 0.05, y: 0.98 }, { x: 0.95, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.05, y1: 0.02, x2: 0.95, y2: 0.02, color: '#2ecc71' },
+                    { x1: 0.05, y1: 0.98, x2: 0.95, y2: 0.98, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Spieler', color: '#f39c12',
+                        players: [
+                            { x: 0.38, y: 0.42 }, { x: 0.52, y: 0.38 },
+                            { x: 0.64, y: 0.46 }, { x: 0.44, y: 0.54 },
+                            { x: 0.58, y: 0.58 }, { x: 0.34, y: 0.60 },
+                            { x: 0.48, y: 0.46 }, { x: 0.66, y: 0.60 },
+                            { x: 0.40, y: 0.66 }, { x: 0.56, y: 0.68 }
+                        ]
+                    },
+                    b: {
+                        label: 'Trainer', color: '#f1c40f',
+                        players: [
+                            { x: 0.12, y: 0.50 }
+                        ]
+                    }
+                },
+                ball: { team: 'b', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.12, y1: 0.50, x2: 0.44, y2: 0.54, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Reaction Drills / Numbers Game — Sportplan', url: 'https://www.sportplan.net/s/Rugby/reaction.jsp' },
+                { label: 'Chaos and empowerment — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/passing-handling/chaos-and-empowerment-rugby-coaching-game' },
+                { label: 'Chaos Theory in Coaching — Rugby Toolbox (NZ)', url: 'https://www.rugbytoolbox.co.nz/resources-education/learn-more/articles/article-archive/lee-smith/chaos-theory-in-coaching' }
+            ],
+            animated: false,
+            createdAt: Date.now()
         }
     ];
 
@@ -1005,15 +1328,15 @@
         const s = drill.setup;
 
         // Background
-        ctx.fillStyle = '#0d1a12';
+        ctx.fillStyle = '#dce5ed';
         ctx.fillRect(0, 0, W, H);
 
         // Field
-        ctx.fillStyle = '#1a3825';
+        ctx.fillStyle = '#3e8e57';
         ctx.fillRect(fX, fY, fW, fH);
 
         // Field grass texture
-        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.10)';
         ctx.lineWidth = 1;
         for (let i = 0; i < fH; i += 12) {
             ctx.beginPath(); ctx.moveTo(fX, fY + i); ctx.lineTo(fX + fW, fY + i); ctx.stroke();
@@ -1306,7 +1629,7 @@
         const usedCats = [...new Set(Object.values(drills).map(d => d.category))];
         let html = `<span class="cat-pill ${activeCat === 'alle' ? 'active' : ''}" style="${activeCat === 'alle' ? 'background:var(--primary-light);color:var(--text)' : ''}" onclick="filterCat('alle')">Alle</span>`;
         usedCats.forEach(c => {
-            const cat = CATS[c] || { label: c, color: '#888' };
+            const cat = CATS[c] || { label: c, color: '#5c7186' };
             const isActive = activeCat === c;
             html += `<span class="cat-pill ${isActive ? 'active' : ''}" style="${isActive ? 'background:' + cat.color : ''}" onclick="filterCat('${c}')">${cat.label}</span>`;
         });
@@ -1323,7 +1646,7 @@
         const ids = getFilteredIds();
         el.innerHTML = ids.map(id => {
             const d = drills[id];
-            const cat = CATS[d.category] || { color: '#888' };
+            const cat = CATS[d.category] || { color: '#5c7186' };
             const active = id === selectedId;
             return `<span class="drill-pill ${active ? 'active' : ''}" onclick="selectDrill('${id}')"><span class="drill-cat-dot" style="background:${cat.color}"></span>${d.name || 'Unbenannt'}</span>`;
         }).join('');
@@ -1360,7 +1683,7 @@
     }
 
     function renderInfo(d) {
-        const cat = CATS[d.category] || { label: d.category, color: '#888' };
+        const cat = CATS[d.category] || { label: d.category, color: '#5c7186' };
         const rules = toArr(d.rules).map(r => {
             const warn = r.toUpperCase().startsWith('NICHT') ? ' warning' : '';
             return `<li class="${warn}">${r}</li>`;
@@ -1373,11 +1696,15 @@
                 <button class="danger" onclick="deleteDrill()">Löschen</button>
             </div>`;
         }
+        const sources = toArr(d.sources).map(s =>
+            `<li><a href="${s.url}" target="_blank" rel="noopener">${s.label}</a></li>`
+        ).join('');
         document.getElementById('drill-info').innerHTML = `
             <div class="drill-title">${d.name || 'Unbenannt'}</div>
             <span class="drill-cat-badge" style="background:${cat.color}">${cat.label}</span>
             <p class="drill-desc">${d.description || ''}</p>
             ${rules ? `<div class="drill-rules-title">Regeln</div><ul class="drill-rules">${rules}</ul>` : ''}
+            ${sources ? `<div class="drill-rules-title" style="margin-top:1rem">Quellen</div><ul class="drill-sources">${sources}</ul>` : ''}
             ${actions}
         `;
     }
