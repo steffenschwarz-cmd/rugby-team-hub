@@ -223,7 +223,13 @@ async function main() {
     // Lokal läuft Chrome (channel), im CI Playwright-Chromium (SP_BROWSER_CHANNEL=chromium)
     const channel = process.env.SP_BROWSER_CHANNEL || 'chrome';
     const browser = await chromium.launch(channel === 'chromium' ? { headless } : { channel, headless });
-    const context = await browser.newContext({ viewport: { width: 1400, height: 900 } });
+    const context = await browser.newContext({
+        viewport: { width: 1400, height: 900 },
+        locale: 'de-DE',
+        timezoneId: 'Europe/Berlin',
+        // CI-Chromium meldet sich sonst als HeadlessChrome → SpielerPlus liefert u.U. andere Seite
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+    });
     const page = await context.newPage();
 
     try {
@@ -251,9 +257,20 @@ async function main() {
         } catch {}
 
         // Fill login form — target visible inputs (skip hidden CSRF)
-        await page.locator('input[type="text"]:visible, input[type="email"]:visible, input:visible').first().fill(creds.email);
+        const emailInput = page.locator('input[type="text"]:visible, input[type="email"]:visible, input:visible').first();
+        if (!await emailInput.isVisible({ timeout: 10000 }).catch(() => false)) {
+            // Diagnose: welche Seite wurde ausgeliefert? (CI-IPs bekommen u.U. Bot-Checks)
+            console.error('  Login-Formular nicht gefunden. URL:', page.url());
+            console.error('  Titel:', await page.title().catch(() => '?'));
+            throw new Error('Login page did not render a form');
+        }
+        await emailInput.fill(creds.email);
         await page.locator('input[type="password"]:visible').first().fill(creds.password);
-        await page.click('button:has-text("Einloggen")');
+        const loginBtn = page.locator('button:has-text("Einloggen"), button:has-text("Login"), button[type="submit"], input[type="submit"]').first();
+        await loginBtn.click({ timeout: 15000 }).catch(async e => {
+            console.error('  Login-Button nicht klickbar. URL:', page.url(), '| Titel:', await page.title().catch(() => '?'));
+            throw e;
+        });
         await page.waitForTimeout(3000);
 
         // Handle team selection page
