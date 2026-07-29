@@ -1,0 +1,52 @@
+name: Saison-Sync (Liga + SpielerPlus)
+
+on:
+  schedule:
+    # Täglich 05:30 UTC (07:30 DE) — Liga-Ergebnisse vom Wochenende + Beteiligung vom Vorabend
+    - cron: '30 5 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  liga:
+    name: Liga-Ergebnisse & Tabellen
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Liga-Daten holen (data/liga.json)
+        run: node sync-liga.js
+      - name: Änderungen committen (nur wenn neue Daten)
+        run: |
+          git config user.name "liga-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet data/liga.json; then
+            git add data/liga.json
+            git commit -m "Liga-Daten aktualisiert ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "Keine Änderungen."
+          fi
+
+  spielerplus:
+    name: SpielerPlus Trainingsbeteiligung
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Playwright installieren
+        run: |
+          npm install playwright
+          npx playwright install --with-deps chromium
+      - name: Beteiligung scrapen und nach Firebase schreiben
+        env:
+          SPIELERPLUS_EMAIL: ${{ secrets.SPIELERPLUS_EMAIL }}
+          SPIELERPLUS_PASSWORD: ${{ secrets.SPIELERPLUS_PASSWORD }}
+          SP_BROWSER_CHANNEL: chromium
+          SEASON_START: '2026-07-22'
+        run: node scrape-spielerplus.js --participation-only

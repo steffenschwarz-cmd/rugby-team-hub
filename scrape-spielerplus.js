@@ -3,7 +3,19 @@
 // Scrapes participation data & events from SpielerPlus, pushes to Firebase.
 // Usage: node scrape-spielerplus.js [--dry-run] [--events-only] [--participation-only]
 
-const { chromium } = require(process.env.HOME + '/.claude/skills/daily-video-checklist/node_modules/playwright');
+// Playwright-Auflösung: lokal (node_modules im Repo/Parent oder Skill-Ordner), CI (npm install playwright)
+function requirePlaywright() {
+    const candidates = [
+        'playwright',
+        process.env.HOME + '/Claude-Projekte-Steffen/node_modules/playwright',
+        process.env.HOME + '/.claude/skills/daily-video-checklist/node_modules/playwright',
+    ];
+    for (const c of candidates) {
+        try { return require(c); } catch {}
+    }
+    throw new Error('playwright nicht gefunden — npm install playwright');
+}
+const { chromium } = requirePlaywright();
 const fs = require('fs');
 const https = require('https');
 const http = require('http');
@@ -11,7 +23,8 @@ const http = require('http');
 // --- Config ---
 const CREDS_FILE = process.env.HOME + '/.spielerplus-credentials';
 const FIREBASE_DB = 'https://rugby-team-hub-default-rtdb.europe-west1.firebasedatabase.app';
-const YEAR = 2026; // Current season year for date parsing
+// Saison-Stichtag: Sessions vor diesem Datum werden ignoriert (Statistik startet bei null)
+const SEASON_START = process.env.SEASON_START || '2026-07-22';
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
@@ -25,6 +38,7 @@ const NAME_MAP = {
     'Basti': 'Sebastian Hildebrandt',
     'Ben Johnston': 'Ben Johnston',
     'Bernhard': null, // Admin/Trainer, skip
+    'Berni': null, // Admin/Trainer (Bernhard), skip
     'Chris': 'Christopher Bunge',
     'Connor': 'Connor Peise',
     'Connor P.': 'Connor Peise',
@@ -51,6 +65,7 @@ const NAME_MAP = {
     'Lucas': 'Lucas Eichler',
     'Lukas Laetsch': 'Lukas Laetsch',
     'Lukas R.': 'Lukas Rathke',
+    'Lukas R': 'Lukas Rathke',
     'Lukas Rathke': 'Lukas Rathke',
     'Marcel': 'Marcel Grabow',
     'Marcel G.': 'Marcel Grabow',
@@ -170,9 +185,17 @@ async function firebaseRequest(method, path, data) {
 
 // --- Date Helpers ---
 function parseDate(ddmm) {
-    // "12.03" → "2026-03-12"
+    // "12.03" → ISO-Datum. Jahr wird hergeleitet: das Jahr, das den Termin
+    // am nächsten an heute platziert (SpielerPlus zeigt nur Tag+Monat).
     const [day, month] = ddmm.split('.');
-    return `${YEAR}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const now = new Date();
+    let best = null, bestDist = Infinity;
+    for (const y of [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1]) {
+        const iso = `${y}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        const dist = Math.abs(new Date(iso) - now);
+        if (dist < bestDist) { bestDist = dist; best = iso; }
+    }
+    return best;
 }
 
 function dateToKey(isoDate, type) {
@@ -182,18 +205,24 @@ function dateToKey(isoDate, type) {
 
 // --- Main ---
 async function main() {
-    // 1. Read credentials
+    // 1. Read credentials — env (GitHub Actions Secrets) hat Vorrang vor Datei
     let creds;
-    try {
-        creds = JSON.parse(fs.readFileSync(CREDS_FILE, 'utf8'));
-    } catch (e) {
-        console.error('Cannot read credentials from', CREDS_FILE);
-        process.exit(1);
+    if (process.env.SPIELERPLUS_EMAIL && process.env.SPIELERPLUS_PASSWORD) {
+        creds = { email: process.env.SPIELERPLUS_EMAIL, password: process.env.SPIELERPLUS_PASSWORD };
+    } else {
+        try {
+            creds = JSON.parse(fs.readFileSync(CREDS_FILE, 'utf8'));
+        } catch (e) {
+            console.error('Cannot read credentials from', CREDS_FILE);
+            process.exit(1);
+        }
     }
 
     console.log('[1/6] Launching browser...');
     const headless = !args.includes('--visible');
-    const browser = await chromium.launch({ channel: 'chrome', headless });
+    // Lokal läuft Chrome (channel), im CI Playwright-Chromium (SP_BROWSER_CHANNEL=chromium)
+    const channel = process.env.SP_BROWSER_CHANNEL || 'chrome';
+    const browser = await chromium.launch(channel === 'chromium' ? { headless } : { channel, headless });
     const context = await browser.newContext({ viewport: { width: 1400, height: 900 } });
     const page = await context.newPage();
 
@@ -423,9 +452,11 @@ async function main() {
             const sessions = {};
             const unmapped = new Set();
 
+            let skippedOld = 0;
             for (let i = 0; i < participationData.dates.length; i++) {
                 const dateInfo = participationData.dates[i];
                 const isoDate = parseDate(dateInfo.text);
+                if (isoDate < SEASON_START) { skippedOld++; continue; } // Vor-Saison-Termine ignorieren
                 const type = dateInfo.isGame ? 'spiel' : 'training';
                 const key = dateToKey(isoDate, type);
 
@@ -450,6 +481,7 @@ async function main() {
                     sessions[key].absent = absent;
                 }
             }
+            if (skippedOld > 0) console.log(`  (${skippedOld} Sessions vor Saison-Stichtag ${SEASON_START} übersprungen)`);
 
             // 6. Push to Firebase
             if (DRY_RUN) {
@@ -484,6 +516,7 @@ async function main() {
                     for (const ev of eventsData) {
                         if (ev.type !== 'spiel') continue;
                         const isoDate = parseDate(ev.dateText);
+                        if (isoDate < SEASON_START) continue;
                         const key = isoDate.replace(/-/g, '');
                         eventsFormatted[key] = {
                             date: isoDate,

@@ -208,6 +208,7 @@
         .hinrunde-label { font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; margin-bottom: 0.5rem; margin-top: 0.2rem; }
         .rueckrunde-label { font-size: 0.75rem; color: var(--text); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; margin-bottom: 0.5rem; margin-top: 1rem; padding-top: 0.8rem; border-top: 2px solid rgba(0,0,0,0.2); }
         .game-card-played { opacity: 0.85; }
+        .liga-placeholder { padding: 1rem 0.4rem; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
 
         /* Section */
         .section { margin-bottom: 2rem; }
@@ -762,7 +763,7 @@
 
     <!-- HERO -->
     <header class="hero">
-        <div class="hero-badge">Saison 2025/26 — Rückrunde</div>
+        <div class="hero-badge" id="season-badge">Saison 2026/27</div>
         <h1>SG Rugbyunion Hohen Neuendorf</h1>
         <div class="hero-clubs">
             <span class="club-green">Rugby Union Hohen Neuendorf</span>
@@ -773,8 +774,8 @@
         <div class="countdown-wrapper">
             <div class="countdown-section">
                 <div class="countdown-label">1. XV — Nächstes Spiel</div>
-                <div class="countdown-opponent" id="next-game-title">Sa. 14. März — vs TSV Victoria Linden</div>
-                <div class="countdown-location" id="next-game-location">HEIMSPIEL — 14:00 Uhr</div>
+                <div class="countdown-opponent" id="next-game-title">Spielplan wird geladen…</div>
+                <div class="countdown-location" id="next-game-location">&nbsp;</div>
                 <div class="countdown-grid">
                     <div class="countdown-item">
                         <span class="countdown-number" id="cd-days">--</span>
@@ -792,8 +793,8 @@
             </div>
             <div class="countdown-section rl">
                 <div class="countdown-label">2. XV — Nächstes Spiel</div>
-                <div class="countdown-opponent" id="next-game-title-rl">So. 29. März — bei Oranien Raptors</div>
-                <div class="countdown-location" id="next-game-location-rl" style="color: var(--away);">AUSWÄRTS — 15:00 Uhr</div>
+                <div class="countdown-opponent" id="next-game-title-rl">Spielplan wird geladen…</div>
+                <div class="countdown-location" id="next-game-location-rl">&nbsp;</div>
                 <div class="countdown-grid">
                     <div class="countdown-item">
                         <span class="countdown-number" id="cd-days-rl">--</span>
@@ -821,8 +822,8 @@
                 <div class="stat-label">Spieler Kader</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">12</div>
-                <div class="stat-label">Spiele Rückrunde</div>
+                <div class="stat-number" id="stat-games">&mdash;</div>
+                <div class="stat-label">Spiele Saison</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="stat-trainings">0</div>
@@ -841,120 +842,17 @@
 
         <div class="section-header" style="margin-bottom: 0.5rem;">
             <div class="section-icon">&#127944;</div>
-            <div class="section-title">2. Bundesliga Nord</div>
+            <div class="section-title" id="liga-name-bl">2. Bundesliga Nord/Ost</div>
         </div>
         <div class="liga-row">
             <div class="section">
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan</div>
-                <div class="card">
-                    <div class="hinrunde-label">Hinrunde</div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">6</div><div class="game-month">Sep</div></div>
-                        <div class="game-info"><div class="game-title">bei TSV Victoria Linden</div><div class="game-detail">06.09.2025</div></div>
-                        <span class="game-result result-loss">20:24</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">13</div><div class="game-month">Sep</div></div>
-                        <div class="game-info"><div class="game-title">vs RK 03 Berlin</div><div class="game-detail">13.09.2025</div></div>
-                        <span class="game-result result-loss">16:24</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">18</div><div class="game-month">Okt</div></div>
-                        <div class="game-info"><div class="game-title">vs BSV 1892 Rugby</div><div class="game-detail">18.10.2025</div></div>
-                        <span class="game-result result-loss">28:41</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">8</div><div class="game-month">Nov</div></div>
-                        <div class="game-info"><div class="game-title">bei RC Leipzig</div><div class="game-detail">08.11.2025</div></div>
-                        <span class="game-result result-loss">24:48</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">15</div><div class="game-month">Nov</div></div>
-                        <div class="game-info"><div class="game-title">vs FC St. Pauli</div><div class="game-detail">15.11.2025</div></div>
-                        <span class="game-result result-loss">7:8</span>
-                    </div>
-                    <div class="rueckrunde-label">Rückrunde</div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">14</div><div class="game-month">Mär</div></div>
-                        <div class="game-info"><div class="game-title">vs TSV Victoria Linden</div><div class="game-detail">14.03.2026</div></div>
-                        <span class="game-result result-loss">23:34</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum away">21</div>
-                            <div class="game-month">Mär</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei Rugby Klub 03 Berlin</div>
-                            <div class="game-detail">14:00 Uhr — Berlin</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum away">28</div>
-                            <div class="game-month">Mär</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei Hamburger Rugby-Club</div>
-                            <div class="game-detail">13:00 Uhr — Hamburg</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum away">18</div>
-                            <div class="game-month">Apr</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei BSV 1892 Rugby</div>
-                            <div class="game-detail">15:00 Uhr — Berlin</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum home">25</div>
-                            <div class="game-month">Apr</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">vs Rugby Club Leipzig</div>
-                            <div class="game-detail">14:00 Uhr — Rudolf-Harbig-Sportplatz</div>
-                        </div>
-                        <span class="game-badge badge-home">HEIM</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum home">2</div>
-                            <div class="game-month">Mai</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">vs Hamburger Rugby-Club</div>
-                            <div class="game-detail">15:00 Uhr — Rudolf-Harbig-Sportplatz</div>
-                        </div>
-                        <span class="game-badge badge-home">HEIM</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">Sa</div>
-                            <div class="game-daynum away">9</div>
-                            <div class="game-month">Mai</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei FC St. Pauli Rugby</div>
-                            <div class="game-detail">15:00 Uhr — Hamburg</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
+                <div class="card" id="spielplan-bl">
+                    <div class="liga-placeholder">Spielplan wird geladen&hellip;</div>
                 </div>
             </div>
             <div class="section">
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle (Stand 8. Spieltag)</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle</div>
                 <div class="card">
                     <table class="liga-table" id="tabelle-bl">
                         <thead>
@@ -969,17 +867,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td class="num">1</td><td class="team-name">RC Leipzig</td><td class="num">6</td><td class="num">5</td><td class="num">0</td><td class="num">1</td><td class="pts">24</td></tr>
-                            <tr><td class="num">2</td><td class="team-name">Hamburger RC</td><td class="num">6</td><td class="num">5</td><td class="num">0</td><td class="num">1</td><td class="pts">24</td></tr>
-                            <tr><td class="num">3</td><td class="team-name">RK 03 Berlin</td><td class="num">7</td><td class="num">4</td><td class="num">0</td><td class="num">3</td><td class="pts">21</td></tr>
-                            <tr><td class="num">4</td><td class="team-name">FC St. Pauli</td><td class="num">7</td><td class="num">4</td><td class="num">0</td><td class="num">3</td><td class="pts">19</td></tr>
-                            <tr><td class="num">5</td><td class="team-name">TSV Vic. Linden</td><td class="num">7</td><td class="num">3</td><td class="num">0</td><td class="num">4</td><td class="pts">18</td></tr>
-                            <tr><td class="num">6</td><td class="team-name">BSV 1892</td><td class="num">7</td><td class="num">2</td><td class="num">0</td><td class="num">5</td><td class="pts">12</td></tr>
-                            <tr class="highlight-row"><td class="num">7</td><td class="team-name">SG RU HN</td><td class="num">6</td><td class="num">0</td><td class="num">0</td><td class="num">6</td><td class="pts">4</td></tr>
+                            <tr><td colspan="7" class="liga-placeholder">Tabelle wird geladen&hellip;</td></tr>
                         </tbody>
                     </table>
                     <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-                        Quelle: <a href="https://www.rugbydeutschland.org/tabellen-81792v4/leagues/2162/seasons/218" target="_blank" style="color: var(--accent); text-decoration: none;">rugbydeutschland.org</a>
+                        Stand: <span id="stand-bl">&mdash;</span> &middot;
+                        Quelle: <a href="https://www.rugbydeutschland.org/tabellen-81792v4/leagues/2162" target="_blank" style="color: var(--accent); text-decoration: none;">rugbydeutschland.org</a>
                     </div>
                 </div>
             </div>
@@ -988,104 +881,17 @@
         <!-- REGIONALLIGA OST: Spielplan links, Tabelle rechts -->
         <div class="section-header" style="margin-bottom: 0.5rem;">
             <div class="section-icon">&#127941;</div>
-            <div class="section-title">Regionalliga Ost</div>
+            <div class="section-title" id="liga-name-rl">Regionalliga Ost</div>
         </div>
         <div class="liga-row">
             <div class="section">
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan SG Oberhavel</div>
-                <div class="card">
-                    <div class="hinrunde-label">Hinrunde</div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">14</div><div class="game-month">Sep</div></div>
-                        <div class="game-info"><div class="game-title">vs RK 03 Berlin II</div><div class="game-detail">14.09.2025</div></div>
-                        <span class="game-result result-loss">22:24</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum away">21</div><div class="game-month">Sep</div></div>
-                        <div class="game-info"><div class="game-title">bei Berlin Irish</div><div class="game-detail">21.09.2025</div></div>
-                        <span class="game-result result-win">26:12</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">19</div><div class="game-month">Okt</div></div>
-                        <div class="game-info"><div class="game-title">vs SG Halle/Leipzig II</div><div class="game-detail">19.10.2025</div></div>
-                        <span class="game-result result-loss">24:34</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">25</div><div class="game-month">Okt</div></div>
-                        <div class="game-info"><div class="game-title">bei SG Jena/Erfurt</div><div class="game-detail">25.10.2025</div></div>
-                        <span class="game-result result-win">73:19</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum away">1</div><div class="game-month">Nov</div></div>
-                        <div class="game-info"><div class="game-title">bei Berliner SC</div><div class="game-detail">01.11.2025</div></div>
-                        <span class="game-result result-loss">24:34</span>
-                    </div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">So</div><div class="game-daynum home">16</div><div class="game-month">Nov</div></div>
-                        <div class="game-info"><div class="game-title">vs Berliner SV II</div><div class="game-detail">16.11.2025</div></div>
-                        <span class="game-result result-loss">7:36</span>
-                    </div>
-                    <div class="rueckrunde-label">Rückrunde</div>
-                    <div class="game-card game-card-played">
-                        <div class="game-date"><div class="game-weekday">Sa</div><div class="game-daynum home">14</div><div class="game-month">Mär</div></div>
-                        <div class="game-info"><div class="game-title">vs RC Dresden</div><div class="game-detail">14.03.2026</div></div>
-                        <span class="game-result result-win">13:12</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">So</div>
-                            <div class="game-daynum away">29</div>
-                            <div class="game-month">Mär</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei Oranien Raptors</div>
-                            <div class="game-detail">15:00 Uhr</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">So</div>
-                            <div class="game-daynum home">12</div>
-                            <div class="game-month">Apr</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">vs SC Siemensstadt</div>
-                            <div class="game-detail">15:00 Uhr — Hohen Neuendorf</div>
-                        </div>
-                        <span class="game-badge badge-home">HEIM</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">So</div>
-                            <div class="game-daynum away">19</div>
-                            <div class="game-month">Apr</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">bei USV Potsdam</div>
-                            <div class="game-detail">15:00 Uhr — Potsdam</div>
-                        </div>
-                        <span class="game-badge badge-away">AUSWÄRTS</span>
-                    </div>
-                    <div class="game-card">
-                        <div class="game-date">
-                            <div class="game-weekday">So</div>
-                            <div class="game-daynum home">26</div>
-                            <div class="game-month">Apr</div>
-                        </div>
-                        <div class="game-info">
-                            <div class="game-title">vs Berliner RC II</div>
-                            <div class="game-detail">15:00 Uhr — Hohen Neuendorf</div>
-                        </div>
-                        <span class="game-badge badge-home">HEIM</span>
-                    </div>
-                </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem;">
-                    Spielplan via <a href="https://www.rl-no.de" target="_blank" style="color: var(--accent-blue); text-decoration: none;">rl-no.de</a> &middot; RC Dresden: Nachholspiel vom Herbst (14.03.)
+                <div class="card" id="spielplan-rl">
+                    <div class="liga-placeholder">Spielplan wird geladen&hellip;</div>
                 </div>
             </div>
             <div class="section">
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle (Stand 14.03.2026)</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle</div>
                 <div class="card">
                     <table class="liga-table" id="tabelle-rl">
                         <thead>
@@ -1098,22 +904,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td class="num">1</td><td class="team-name">RK 03 Berlin II</td><td class="num">7</td><td class="num">+137</td><td class="pts">30</td></tr>
-                            <tr><td class="num">2</td><td class="team-name">SG Halle/Lpz. II</td><td class="num">5</td><td class="num">+119</td><td class="pts">25</td></tr>
-                            <tr><td class="num">3</td><td class="team-name">Berliner SV II</td><td class="num">6</td><td class="num">+109</td><td class="pts">22</td></tr>
-                            <tr><td class="num">4</td><td class="team-name">USV Potsdam</td><td class="num">6</td><td class="num">+126</td><td class="pts">21</td></tr>
-                            <tr><td class="num">5</td><td class="team-name">Berliner RC II</td><td class="num">6</td><td class="num">+40</td><td class="pts">19</td></tr>
-                            <tr><td class="num">6</td><td class="team-name">Oranien Raptors</td><td class="num">7</td><td class="num">-27</td><td class="pts">18</td></tr>
-                            <tr><td class="num">7</td><td class="team-name">RC Dresden</td><td class="num">5</td><td class="num">+39</td><td class="pts">16</td></tr>
-                            <tr class="highlight-row"><td class="num">8</td><td class="team-name">SG Oberhavel</td><td class="num">7</td><td class="num">+18</td><td class="pts">15</td></tr>
-                            <tr><td class="num">9</td><td class="team-name">Berlin Irish</td><td class="num">6</td><td class="num">+1</td><td class="pts">15</td></tr>
-                            <tr><td class="num">10</td><td class="team-name">Berliner SC</td><td class="num">6</td><td class="num">-150</td><td class="pts">7</td></tr>
-                            <tr><td class="num">11</td><td class="team-name">SG Jena/Erfurt</td><td class="num">7</td><td class="num">-140</td><td class="pts">4</td></tr>
-                            <tr><td class="num">12</td><td class="team-name">SC Siemensstadt</td><td class="num">6</td><td class="num">-189</td><td class="pts">0</td></tr>
+                            <tr><td colspan="5" class="liga-placeholder">Tabelle wird geladen&hellip;</td></tr>
                         </tbody>
                     </table>
                     <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-                        Quelle: <a href="https://www.rl-no.de" target="_blank" style="color: var(--accent-blue); text-decoration: none;">rl-no.de</a>
+                        Stand: <span id="stand-rl">&mdash;</span> &middot;
+                        Quelle: <a href="https://bits-rugby-ls.de/rugby-regionalliga-nord-ost/" target="_blank" style="color: var(--accent-blue); text-decoration: none;">bits-rugby-ls.de</a>
                     </div>
                 </div>
             </div>
@@ -1448,7 +1244,7 @@
         <span class="club-green">Rugby Union Hohen Neuendorf</span>
         <span class="club-x">&times;</span>
         <span class="club-blue">SV Stahl Hennigsdorf</span>
-        <br>Saison 2025/26 &mdash; Letztes Update: <span id="last-update"></span>
+        <br>Saison <span id="footer-season">2026/27</span> &mdash; Letztes Update: <span id="last-update"></span>
         <br><br>
         <a href="https://www.rugbyunion.de" target="_blank">rugbyunion.de</a> &middot;
         <a href="https://www.rugby-hennigsdorf.de" target="_blank">rugby-hennigsdorf.de</a> &middot;
@@ -1464,27 +1260,12 @@
     <script>
         const db = initFirebase();
 
-        // All Rückrunde games — 1. XV (2. Bundesliga Nord)
-        const games = [
-            { date: '2026-03-14', time: '14:00', opponent: 'TSV Victoria Linden', home: true, team: '1. XV' },
-            { date: '2026-03-21', time: '14:00', opponent: 'Rugby Klub 03 Berlin', home: false, team: '1. XV' },
-            { date: '2026-03-28', time: '13:00', opponent: 'Hamburger Rugby-Club', home: false, team: '1. XV' },
-            { date: '2026-04-18', time: '15:00', opponent: 'BSV 1892 Rugby', home: false, team: '1. XV' },
-            { date: '2026-04-25', time: '14:00', opponent: 'Rugby Club Leipzig', home: true, team: '1. XV' },
-            { date: '2026-05-02', time: '15:00', opponent: 'Hamburger Rugby-Club', home: true, team: '1. XV' },
-            { date: '2026-05-09', time: '15:00', opponent: 'FC St. Pauli Rugby', home: false, team: '1. XV' },
-        ];
-
-        // SG Oberhavel — 2. XV (Regionalliga Ost)
-        const gamesRL = [
-            { date: '2026-03-14', time: '12:00', opponent: 'RC Dresden', home: true, team: '2. XV' },
-            { date: '2026-03-29', time: '15:00', opponent: 'Oranien Raptors', home: false, team: '2. XV' },
-            { date: '2026-04-12', time: '15:00', opponent: 'SC Siemensstadt', home: true, team: '2. XV' },
-            { date: '2026-04-19', time: '15:00', opponent: 'USV Potsdam', home: false, team: '2. XV' },
-            { date: '2026-04-26', time: '15:00', opponent: 'Berliner RC II', home: true, team: '2. XV' },
-        ];
-
-        const allGames = [...games, ...gamesRL];
+        // Spielpläne kommen aus data/liga.json (täglich von sync-liga.js aktualisiert).
+        // Bis das geladen ist, bleiben die Listen leer und die Karten zeigen ihren Platzhalter.
+        let games = [];   // 1. XV (2. Bundesliga Nord/Ost)
+        let gamesRL = []; // 2. XV (Regionalliga Ost, SG Oberhavel)
+        let allGames = [];
+        let ligaLoaded = false;
 
         function getNextGame() {
             const now = new Date();
@@ -1545,6 +1326,10 @@
                     next.home ? `HEIMSPIEL — ${next.time} Uhr` : `AUSWÄRTS — ${next.time} Uhr`;
                 document.getElementById('next-game-location').style.color =
                     next.home ? 'var(--home)' : 'var(--away)';
+            } else if (ligaLoaded) {
+                document.getElementById('next-game-title').textContent =
+                    games.length ? 'Saison beendet' : 'Spielplan noch nicht veröffentlicht';
+                document.getElementById('next-game-location').innerHTML = '&nbsp;';
             }
 
             // 2. XV
@@ -1566,6 +1351,10 @@
                     nextRL.home ? `HEIMSPIEL — ${nextRL.time} Uhr` : `AUSWÄRTS — ${nextRL.time} Uhr`;
                 document.getElementById('next-game-location-rl').style.color =
                     nextRL.home ? 'var(--home)' : 'var(--away)';
+            } else if (ligaLoaded) {
+                document.getElementById('next-game-title-rl').textContent =
+                    gamesRL.length ? 'Saison beendet' : 'Spielplan noch nicht veröffentlicht';
+                document.getElementById('next-game-location-rl').innerHTML = '&nbsp;';
             }
         }
 
@@ -1685,6 +1474,163 @@
                     <span class="game-badge ${badgeClass}">${badgeText}</span>
                 </div>`;
             }).join('');
+        }
+
+        // ---------------- Liga-Daten aus data/liga.json ----------------
+
+        // Kurznamen für die schmalen Spielplan- und Tabellenspalten
+        const TEAM_SHORT = {
+            'SG Rugbyunion Hohen Neuendorf e.V.': 'SG RU HN',
+            'SG Rugbyunion Hohen Neuendorf': 'SG RU HN',
+            'SG Oberhavel Männer Regionalliga Ost': 'SG Oberhavel',
+            'TSV Victoria Linden': 'TSV Vic. Linden',
+            'Hamburger Rugby-Club': 'Hamburger RC',
+            'BSV 1892 Rugby': 'BSV 1892',
+            'RC Oranien Raptors II': 'Oranien Raptors',
+            'SG Halle/Leipzig': 'SG Halle/Lpz.',
+        };
+        function shortTeam(name) { return TEAM_SHORT[name] || name || ''; }
+
+        function esc(s) {
+            return String(s).replace(/[&<>"]/g, c =>
+                ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        }
+
+        const WEEKDAYS_DE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+        const MONTHS_DE = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+
+        // Datum/Uhrzeit stehen in der JSON bereits als Ortszeit → direkt lokal parsen.
+        function ligaDate(g) { return new Date(g.date + 'T' + (g.time || '00:00') + ':00'); }
+        function isPlayed(g) { return g.scoreHome !== null && g.scoreHome !== undefined; }
+
+        function renderSpielplan(containerId, spiele, hinweis) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const ours = (spiele || []).filter(g => g.ourGame)
+                .sort((a, b) => ligaDate(a) - ligaDate(b));
+            if (!ours.length) {
+                el.innerHTML = `<div class="liga-placeholder">${esc(hinweis || 'Noch keine Spiele angesetzt')}</div>`;
+                return;
+            }
+            el.innerHTML = ours.map(g => {
+                const d = ligaDate(g);
+                const opponent = shortTeam(g.homeGame ? g.away : g.home);
+                const played = isPlayed(g);
+                let detail, trailing;
+                if (played) {
+                    const us = g.homeGame ? g.scoreHome : g.scoreAway;
+                    const them = g.homeGame ? g.scoreAway : g.scoreHome;
+                    const cls = us > them ? ' result-win' : (us < them ? ' result-loss' : '');
+                    detail = d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    trailing = `<span class="game-result${cls}">${us}:${them}</span>`;
+                } else {
+                    detail = `${esc(g.time)} Uhr`;
+                    trailing = g.homeGame
+                        ? '<span class="game-badge badge-home">HEIM</span>'
+                        : '<span class="game-badge badge-away">AUSWÄRTS</span>';
+                }
+                return `
+                <div class="game-card${played ? ' game-card-played' : ''}">
+                    <div class="game-date">
+                        <div class="game-weekday">${WEEKDAYS_DE[d.getDay()]}</div>
+                        <div class="game-daynum ${g.homeGame ? 'home' : 'away'}">${d.getDate()}</div>
+                        <div class="game-month">${MONTHS_DE[d.getMonth()]}</div>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-title">${g.homeGame ? 'vs' : 'bei'} ${esc(opponent)}</div>
+                        <div class="game-detail">${detail}</div>
+                    </div>
+                    ${trailing}
+                </div>`;
+            }).join('');
+        }
+
+        // mode 'bl' = Spalten Sp/S/U/N/Pkt, mode 'rl' = Spalten Sp/+-/Pkt
+        function renderTabelle(tableId, rows, mode, hinweis) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const tbody = table.querySelector('tbody');
+            const colspan = mode === 'bl' ? 7 : 5;
+            if (!rows || !rows.length) {
+                tbody.innerHTML = `<tr><td colspan="${colspan}" class="liga-placeholder">` +
+                    `${esc(hinweis || 'Tabelle noch nicht verfügbar')}</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = rows.map(r => {
+                const cells = mode === 'bl'
+                    ? `<td class="num">${r.played}</td><td class="num">${r.won}</td>` +
+                      `<td class="num">${r.drawn}</td><td class="num">${r.lost}</td>`
+                    : `<td class="num">${r.played}</td>` +
+                      `<td class="num">${r.diff > 0 ? '+' : ''}${r.diff}</td>`;
+                return `<tr${r.our ? ' class="highlight-row"' : ''}>` +
+                    `<td class="num">${r.pos}</td>` +
+                    `<td class="team-name">${esc(shortTeam(r.team))}</td>` +
+                    `${cells}<td class="pts">${r.points}</td></tr>`;
+            }).join('');
+        }
+
+        // Liga-Spiel → Eintrag im Format von Countdown und "Nächste Termine"
+        function toGameEntry(g, team) {
+            return {
+                date: g.date,
+                time: g.time || '00:00',
+                opponent: shortTeam(g.homeGame ? g.away : g.home),
+                home: g.homeGame,
+                team: team,
+            };
+        }
+
+        function setText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        }
+
+        function renderLiga(data) {
+            const saison = (data.bl && data.bl.saison) || (data.rl && data.rl.saison);
+            if (saison) {
+                setText('season-badge', 'Saison ' + saison);
+                setText('footer-season', saison);
+            }
+            const stand = data.updatedAt
+                ? new Date(data.updatedAt).toLocaleDateString('de-DE',
+                    { day: '2-digit', month: '2-digit', year: 'numeric' })
+                : '—';
+
+            const bl = data.bl || {};
+            if (bl.liga) setText('liga-name-bl', bl.liga);
+            renderSpielplan('spielplan-bl', bl.spiele, bl.hinweis);
+            renderTabelle('tabelle-bl', bl.tabelle, 'bl', bl.hinweis);
+            setText('stand-bl', stand);
+            games = (bl.spiele || []).filter(g => g.ourGame)
+                .sort((a, b) => ligaDate(a) - ligaDate(b))
+                .map(g => toGameEntry(g, '1. XV'));
+
+            const rl = data.rl || {};
+            if (rl.liga) setText('liga-name-rl', rl.liga);
+            renderSpielplan('spielplan-rl', rl.spiele, rl.hinweis);
+            renderTabelle('tabelle-rl', rl.tabelle, 'rl', rl.hinweis);
+            setText('stand-rl', stand);
+            gamesRL = (rl.spiele || []).filter(g => g.ourGame)
+                .sort((a, b) => ligaDate(a) - ligaDate(b))
+                .map(g => toGameEntry(g, '2. XV'));
+
+            allGames = [...games, ...gamesRL];
+            setText('stat-games', allGames.length || '—');
+            ligaLoaded = true;
+
+            updateCountdown();
+            generateSchedule();
+        }
+
+        // Schlägt fehl bei file:// oder fehlender Datei → Platzhalter bleiben stehen.
+        async function loadLiga() {
+            try {
+                const res = await fetch('data/liga.json', { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                renderLiga(await res.json());
+            } catch (e) {
+                console.warn('Liga-Daten nicht geladen:', e.message);
+            }
         }
 
         // Tabs
@@ -1831,6 +1777,7 @@
             // Init app
             updateCountdown();
             generateSchedule();
+            loadLiga(); // rendert Spielpläne/Tabellen und ruft beides danach erneut auf
             setInterval(updateCountdown, 60000);
             // Load Trainingsbeteiligung live from Firebase
             db.ref('trainingsbeteiligung').on('value', snap => {
