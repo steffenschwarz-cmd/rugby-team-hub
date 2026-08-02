@@ -1180,13 +1180,13 @@
         }
 
         function countTrainings(from, to) {
-            // Saison 2026/27: Training Mittwoch + Freitag (lt. SpielerPlus seit 22.07.2026)
+            // Saison 2026/27: Training Dienstag + Freitag (seit 04.08.2026, davor kurz Mi+Fr)
             let count = 0;
             let d = new Date(from);
             d.setHours(0,0,0,0);
             while (d < to) {
                 const day = d.getDay();
-                if (day === 3 || day === 5) count++;
+                if (day === 2 || day === 5) count++;
                 d.setDate(d.getDate() + 1);
             }
             return count;
@@ -1254,9 +1254,32 @@
             const now = new Date();
             const events = [];
 
-            // Saison 2026/27: Termine = Spiele aus data/liga.json (allGames).
-            // Trainings kommen wieder rein, sobald der neue Wochenrhythmus feststeht.
             const endDate = new Date('2027-05-31');
+
+            // Saison 2026/27: Training Di 19:00 Hohen Neuendorf (+ Stammtisch),
+            // Fr 18:30 Hennigsdorf (+ Teamabend am 1. Freitag im Monat) — seit 04.08.2026
+            const d = new Date(now);
+            d.setHours(0,0,0,0);
+            while (d <= endDate) {
+                const day = d.getDay();
+                if (day === 2) {
+                    events.push({
+                        date: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 19, 0),
+                        title: 'Training + Stammtisch',
+                        detail: 'Di 19:00 Hohen Neuendorf — danach Stammtisch',
+                        type: 'training'
+                    });
+                } else if (day === 5) {
+                    const isFirstFri = d.getDate() <= 7;
+                    events.push({
+                        date: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 18, 30),
+                        title: isFirstFri ? 'Training + Teamabend' : 'Training',
+                        detail: isFirstFri ? 'Fr 18:30 Hennigsdorf — danach Teamabend' : 'Fr 18:30 Hennigsdorf',
+                        type: isFirstFri ? 'training-social' : 'training'
+                    });
+                }
+                d.setDate(d.getDate() + 1);
+            }
 
             // Add all games (both teams)
             allGames.forEach(g => {
