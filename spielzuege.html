@@ -301,6 +301,14 @@
                     <select id="pass-to" onchange="setPassTo()">
                         <option value="">Pass an: —</option>
                     </select>
+                    <select id="kick-to" onchange="setKickTo()">
+                        <option value="">Kick an: —</option>
+                    </select>
+                    <select id="kick-type" onchange="setKickType()" style="display:none">
+                        <option value="hoch">Hoher Ball</option>
+                        <option value="grubber">Grubber</option>
+                        <option value="lang">Langer Kick</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -810,7 +818,9 @@
         const nextPhaseData = (currentPhase < phases.length - 1 && isPlaying) ? phases[currentPhase + 1] : null;
         const players = phase.players || {};
         const ball = phase.ball || {};
-        const hasPass = ball.carrier && ball.passTo && players[ball.carrier] && players[ball.passTo];
+        const hasKick = ball.carrier && ball.kickTo && players[ball.carrier] && players[ball.kickTo];
+        const hasPass = !hasKick && ball.carrier && ball.passTo && players[ball.carrier] && players[ball.passTo];
+        const kickType = ball.kickType || 'hoch';
 
         // Player token radius (needed for pass animation ball too)
         const radius = Math.max(14, Math.min(20, W / 40));
@@ -825,9 +835,128 @@
             ? Math.max(0, Math.min(1, (animProgress - PASS_START) / (PASS_END - PASS_START)))
             : 0;
 
+        // Kick: Abschlag bei 15%, Landung je nach Kick-Art (längere Flugzeit als Pass)
+        const KICK_START = 0.15;
+        const KICK_END = kickType === 'grubber' ? 0.65 : (kickType === 'lang' ? 0.75 : 0.85);
+        const kickProgress = hasKick && isPlaying
+            ? Math.max(0, Math.min(1, (animProgress - KICK_START) / (KICK_END - KICK_START)))
+            : 0;
+
         // Determine who currently has the ball during animation
-        const ballPassedOver = hasPass && passProgress >= 1;
-        const currentBallHolder = ballPassedOver ? ball.passTo : ball.carrier;
+        const ballPassedOver = (hasPass && passProgress >= 1) || (hasKick && kickProgress >= 1);
+        const currentBallHolder = ballPassedOver ? (hasKick ? ball.kickTo : ball.passTo) : ball.carrier;
+
+        // --- KICK-VISUALISIERUNG ---
+        if (hasKick) {
+            const kickerCur = players[ball.carrier];
+            const kickerNext = nextPhaseData?.players?.[ball.carrier];
+            const receiverCur = players[ball.kickTo];
+            const receiverNext = nextPhaseData?.players?.[ball.kickTo];
+
+            // Abschlagpunkt: Kicker-Position beim Kick-Start; Ziel: Empfänger bei Landung
+            const releasePos = getPlayerPos(kickerCur, kickerNext, KICK_START);
+            const landPos = getPlayerPos(receiverCur, receiverNext, KICK_END);
+            const fx = releasePos.x * W, fy = releasePos.y * H;
+            const tx = landPos.x * W, ty = landPos.y * H;
+            const dist = Math.hypot(tx - fx, ty - fy);
+            // Bogenhöhe je Kick-Art (Grubber bleibt am Boden)
+            const arcH = kickType === 'grubber' ? 0 : dist * (kickType === 'lang' ? 0.16 : 0.30);
+
+            // Statische Ansicht: gestrichelte Kick-Linie (blau) mit Pfeil + Bogen-Andeutung
+            if (!isPlaying) {
+                const sx = kickerCur.x * W, sy = kickerCur.y * H;
+                const ex = receiverCur.x * W, ey = receiverCur.y * H;
+                const mx = (sx + ex) / 2, my = (sy + ey) / 2;
+                const sDist = Math.hypot(ex - sx, ey - sy);
+                const bow = kickType === 'grubber' ? 0 : sDist * (kickType === 'lang' ? 0.10 : 0.18);
+
+                ctx.strokeStyle = 'rgba(74,195,255,0.55)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash(kickType === 'grubber' ? [2, 5] : [8, 5]);
+                ctx.beginPath();
+                ctx.moveTo(sx, sy);
+                // Bogen quer zur Kick-Richtung andeuten (hoher Ball/langer Kick)
+                const nx = -(ey - sy) / (sDist || 1), ny = (ex - sx) / (sDist || 1);
+                ctx.quadraticCurveTo(mx + nx * bow, my + ny * bow, ex, ey);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Pfeil am Empfänger
+                const angle = Math.atan2(ey - (my + ny * bow), ex - (mx + nx * bow));
+                ctx.fillStyle = 'rgba(74,195,255,0.85)';
+                ctx.beginPath();
+                ctx.moveTo(ex, ey);
+                ctx.lineTo(ex - Math.cos(angle) * 14 - Math.sin(angle) * 5, ey - Math.sin(angle) * 14 + Math.cos(angle) * 5);
+                ctx.lineTo(ex - Math.cos(angle) * 14 + Math.sin(angle) * 5, ey - Math.sin(angle) * 14 - Math.cos(angle) * 5);
+                ctx.fill();
+
+                // Kick-Art als Label an der Linienmitte
+                const kickLabel = kickType === 'grubber' ? 'Grubber' : (kickType === 'lang' ? 'Langer Kick' : 'Hoher Ball');
+                ctx.font = `bold ${Math.round(radius * 0.6)}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                const tw = ctx.measureText(kickLabel).width;
+                ctx.fillStyle = 'rgba(0,0,0,0.45)';
+                ctx.fillRect(mx + nx * bow - tw / 2 - 4, my + ny * bow - radius * 0.85, tw + 8, radius * 0.85);
+                ctx.fillStyle = '#4ac3ff';
+                ctx.fillText(kickLabel, mx + nx * bow, my + ny * bow - 2);
+            }
+
+            // Animierter Kick-Ball
+            if (isPlaying && kickProgress > 0 && kickProgress < 1) {
+                const t = easeInOut(kickProgress);
+                const bx = fx + (tx - fx) * t;
+                const by = fy + (ty - fy) * t;
+                const br = Math.max(6, radius * 0.45);
+
+                // Spur hinter dem Ball
+                ctx.strokeStyle = 'rgba(74,195,255,0.3)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.moveTo(fx, fy);
+                ctx.lineTo(bx, by);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                if (kickType === 'grubber') {
+                    // Grubber: taumelt am Boden mit kleinen Hüpfern
+                    const hop = Math.abs(Math.sin(t * Math.PI * 3)) * radius * 0.5 * (1 - t);
+                    ctx.save();
+                    ctx.translate(bx, by - hop);
+                    ctx.rotate(t * 14);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, br * 1.4, br * 0.95, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = '#4ac3ff';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.restore();
+                } else {
+                    // Hoher Ball / langer Kick: Parabel — Schatten am Boden, Ball „steigt"
+                    const lift = Math.sin(Math.PI * t) * arcH;
+                    const scale = 1 + Math.sin(Math.PI * t) * (kickType === 'lang' ? 0.35 : 0.8);
+                    // Schatten
+                    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                    ctx.beginPath();
+                    ctx.ellipse(bx, by, br * 1.1, br * 0.55, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Ball (steigend/fallend, dreht sich langsam)
+                    ctx.save();
+                    ctx.translate(bx, by - lift);
+                    ctx.rotate(-0.4 + t * 2.5);
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, br * 1.5 * scale, br * scale, 0, 0, Math.PI * 2);
+                    ctx.fillStyle = '#4ac3ff';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }
 
         // Draw pass visualization
         if (hasPass) {
@@ -1344,7 +1473,7 @@
         const current = phases[currentPhase];
         const newPhase = {
             players: JSON.parse(JSON.stringify(current?.players || defaultPositions())),
-            ball: { carrier: current?.ball?.passTo || current?.ball?.carrier || '', passTo: '' },
+            ball: { carrier: current?.ball?.kickTo || current?.ball?.passTo || current?.ball?.carrier || '', passTo: '' },
             notes: ''
         };
         // Copy ruck position if present
@@ -1391,13 +1520,20 @@
 
         let carrierHtml = '<option value="">Ball: keiner</option>';
         let passHtml = '<option value="">Pass an: —</option>';
+        let kickHtml = '<option value="">Kick an: —</option>';
         for (const n of present) {
             const lbl = fMeta?.labels?.[n] || n;
             carrierHtml += `<option value="${n}" ${String(ball.carrier) === n ? 'selected' : ''}>${lbl}</option>`;
             passHtml += `<option value="${n}" ${String(ball.passTo) === n ? 'selected' : ''}>${lbl}</option>`;
+            kickHtml += `<option value="${n}" ${String(ball.kickTo) === n ? 'selected' : ''}>${lbl}</option>`;
         }
         document.getElementById('ball-carrier').innerHTML = carrierHtml;
         document.getElementById('pass-to').innerHTML = passHtml;
+        document.getElementById('kick-to').innerHTML = kickHtml;
+        // Kick-Art nur zeigen, wenn ein Kick gesetzt ist
+        const kickTypeSel = document.getElementById('kick-type');
+        kickTypeSel.style.display = ball.kickTo ? '' : 'none';
+        kickTypeSel.value = ball.kickType || 'hoch';
 
         // Add/Remove player dropdowns
         let addHtml = '<option value="">+ Spieler</option>';
@@ -1441,6 +1577,7 @@
         const ball = phases[currentPhase].ball || {};
         if (String(ball.carrier) === num) phases[currentPhase].ball.carrier = '';
         if (String(ball.passTo) === num) phases[currentPhase].ball.passTo = '';
+        if (String(ball.kickTo) === num) phases[currentPhase].ball.kickTo = '';
         plays[selectedPlayId].phases = phases;
         persistPlay(selectedPlayId);
         updateBallDropdowns();
@@ -1465,11 +1602,48 @@
         if (!phases[currentPhase].ball) phases[currentPhase].ball = {};
         const passTo = document.getElementById('pass-to').value;
         phases[currentPhase].ball.passTo = passTo;
+        // Pass und Kick schließen sich aus
+        if (passTo) {
+            phases[currentPhase].ball.kickTo = '';
+            updateBallDropdowns();
+        }
         // Auto-update next phase's carrier
         if (passTo && currentPhase < phases.length - 1) {
             if (!phases[currentPhase + 1].ball) phases[currentPhase + 1].ball = {};
             phases[currentPhase + 1].ball.carrier = passTo;
         }
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        drawField();
+    }
+
+    function setKickTo() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        if (!phases[currentPhase].ball) phases[currentPhase].ball = {};
+        const kickTo = document.getElementById('kick-to').value;
+        phases[currentPhase].ball.kickTo = kickTo;
+        if (kickTo) {
+            // Pass und Kick schließen sich aus
+            phases[currentPhase].ball.passTo = '';
+            if (!phases[currentPhase].ball.kickType) phases[currentPhase].ball.kickType = 'hoch';
+            // Auto-update next phase's carrier (Empfänger fängt/sichert den Ball)
+            if (currentPhase < phases.length - 1) {
+                if (!phases[currentPhase + 1].ball) phases[currentPhase + 1].ball = {};
+                phases[currentPhase + 1].ball.carrier = kickTo;
+            }
+        }
+        plays[selectedPlayId].phases = phases;
+        persistPlay(selectedPlayId);
+        updateBallDropdowns();
+        drawField();
+    }
+
+    function setKickType() {
+        if (!selectedPlayId) return;
+        const phases = getPhases(plays[selectedPlayId]);
+        if (!phases[currentPhase].ball) phases[currentPhase].ball = {};
+        phases[currentPhase].ball.kickType = document.getElementById('kick-type').value;
         plays[selectedPlayId].phases = phases;
         persistPlay(selectedPlayId);
         drawField();
