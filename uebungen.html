@@ -1218,6 +1218,254 @@
             ],
             animated: false,
             createdAt: Date.now()
+        },
+        {
+            name: 'Passstaffel mit Hütchen-Ansage',
+            category: 'handling',
+            description: 'Vierergruppen laufen in Staffel (diagonale Passlinie) den Kanal hoch, der Ball wandert per Pass die Linie entlang. Der Trainer steht vorne am Kanalende und hält ein farbiges Hütchen hoch. Der Passgeber muss die Farbe laut ansagen, BEVOR der Ball seine Hände verlässt. Zwingt beim Passen den Kopf hoch — Scannen und saubere Passtechnik gleichzeitig.',
+            rules: [
+                '4er-Gruppen in Staffel: jeder Empfänger leicht versetzt HINTER dem Passgeber',
+                'Gruppe läuft den Kanal hoch, Ball wandert per Pass von 1 zu 4 die Linie entlang',
+                'Trainer steht vorne und hält ein farbiges Hütchen hoch — wechselt laufend',
+                'Passgeber sagt die aktuelle Farbe laut an, BEVOR er passt',
+                'Falsche oder fehlende Ansage = Durchgang zählt nicht',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'Am Kanalende: umdrehen, Staffel neu ordnen, zurück in die andere Richtung',
+                'Steigerung: Trainer wechselt die Farbe mitten im Durchgang oder zeigt 2 Hütchen (Summe ansagen)'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.15, y: 0.02 }, { x: 0.85, y: 0.02 },
+                    { x: 0.15, y: 0.98 }, { x: 0.85, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.15, y1: 0.02, x2: 0.85, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Staffel (1–4)', color: '#e67e22',
+                        players: [
+                            { x: 0.25, y: 0.70 }, { x: 0.40, y: 0.76 },
+                            { x: 0.55, y: 0.82 }, { x: 0.70, y: 0.88 }
+                        ]
+                    },
+                    b: {
+                        label: 'Trainer (Hütchen)', color: '#f1c40f',
+                        players: [
+                            { x: 0.50, y: 0.08 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.25, y1: 0.70, x2: 0.40, y2: 0.76, dashed: true },
+                    { x1: 0.40, y1: 0.76, x2: 0.55, y2: 0.82, dashed: true },
+                    { x1: 0.55, y1: 0.82, x2: 0.70, y2: 0.88, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Scan when you can — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/scan-when-you-can' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Farbsignal-Pass (2 auf 3 oder 4)',
+            category: 'entscheidung',
+            description: 'Vierergruppe in Staffel, Positionen 1–4. Nummer 1 passt fix auf Nummer 2. Während der Ball fliegt, zeigt der Trainer eine von ZWEI Farben: Farbe A = Nummer 2 passt normal weiter auf 3, Farbe B = Nummer 2 spielt den Skip-Pass direkt auf 4. Nummer 2 muss also scannen, BEVOR sie fängt — die Entscheidung fällt im Lauf. Baut direkt auf der Passstaffel mit Hütchen-Ansage auf.',
+            rules: [
+                '4er-Staffel läuft den Kanal hoch, Positionen 1–4 sind fest nummeriert',
+                'Nummer 1 passt immer auf Nummer 2',
+                'Trainer zeigt beim ersten Pass eine von zwei Farben (z.B. Grün/Rot)',
+                'Grün = Nummer 2 passt normal auf 3, Rot = Skip-Pass direkt auf 4',
+                'Nummer 2 scannt VOR dem Fangen — erst Trainer anschauen, dann Ball',
+                'Nummer 3 muss beim Skip-Pass aktiv ducken/Laufweg freigeben und weiterlaufen (Täuschung!)',
+                'Pässe nur nach hinten (Rugby-Passregel)',
+                'Nach jedem Durchgang Positionen rotieren, damit jeder auf Position 2 kommt',
+                'Steigerung: Trainer zeigt die Farbe später (weniger Zeit) oder wechselt sie noch um'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.15, y: 0.02 }, { x: 0.85, y: 0.02 },
+                    { x: 0.15, y: 0.98 }, { x: 0.85, y: 0.98 }
+                ],
+                zones: [
+                    { x1: 0.15, y1: 0.02, x2: 0.85, y2: 0.02, color: '#2ecc71' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Staffel (1–4)', color: '#e67e22',
+                        players: [
+                            { x: 0.22, y: 0.68 }, { x: 0.38, y: 0.75 },
+                            { x: 0.54, y: 0.82 }, { x: 0.70, y: 0.89 }
+                        ]
+                    },
+                    b: {
+                        label: 'Trainer (2 Farben)', color: '#f1c40f',
+                        players: [
+                            { x: 0.50, y: 0.08 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 },
+                passLines: [
+                    { x1: 0.22, y1: 0.68, x2: 0.38, y2: 0.75, dashed: false },
+                    { x1: 0.38, y1: 0.75, x2: 0.54, y2: 0.82, dashed: true },
+                    { x1: 0.38, y1: 0.75, x2: 0.70, y2: 0.89, dashed: true }
+                ]
+            },
+            sources: [
+                { label: 'Colour call: Heads up decision making — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/attack/skills-to-help-speed-up-decision-making' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Schild-Schieben (Kontakt-Kondi 1v1)',
+            category: 'kondition',
+            description: 'Kontakt-Kondition in 3er-Gruppen: Einer schiebt, einer hält das Schild, einer pausiert. Der Arbeiter setzt an der Grundlinie am Schild an und schiebt den Schildhalter 5 Meter nach hinten, joggt zurück zur Grundlinie und setzt sofort wieder an — 45 Sekunden durchgehend. Dann rotieren die Rollen. Trainiert tiefe Körperposition, Beinarbeit und Arbeiten unter Ermüdung.',
+            rules: [
+                '3er-Gruppen: 1 Schieber, 1 Schildhalter, 1 Pause',
+                'Schieber startet an der Grundlinie in Kontaktposition am Schild',
+                'Auf Signal: Schildhalter 5 m nach hinten schieben (bis zur Markierung)',
+                'Zurück zur Grundlinie joggen, Schildhalter kommt nach — sofort wieder ansetzen',
+                '45 Sekunden Arbeit, dann Rollen rotieren (jeder 2–4 Durchgänge)',
+                'Technik vor Tempo: tiefe Hüfte, Rücken gerade, kurze treibende Schritte, Kopf hoch',
+                'Schildhalter gibt aktiven, aber kontrollierten Widerstand',
+                'NICHT mit gebeugtem Rücken oder gesenktem Kopf schieben — dann Tempo raus'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.20, y: 0.88 }, { x: 0.50, y: 0.88 }, { x: 0.80, y: 0.88 },
+                    { x: 0.20, y: 0.55 }, { x: 0.50, y: 0.55 }, { x: 0.80, y: 0.55 }
+                ],
+                zones: [
+                    { x1: 0.05, y1: 0.88, x2: 0.95, y2: 0.88, color: '#2ecc71' },
+                    { x1: 0.05, y1: 0.55, x2: 0.95, y2: 0.55, color: '#e67e22' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Schieber', color: '#c0392b',
+                        players: [
+                            { x: 0.20, y: 0.86 }, { x: 0.50, y: 0.86 }, { x: 0.80, y: 0.86 }
+                        ]
+                    },
+                    b: {
+                        label: 'Schildhalter', color: '#3498db',
+                        players: [
+                            { x: 0.20, y: 0.79 }, { x: 0.50, y: 0.79 }, { x: 0.80, y: 0.79 }
+                        ]
+                    },
+                    c: {
+                        label: 'Pause', color: '#95a5a6',
+                        players: [
+                            { x: 0.20, y: 0.96 }, { x: 0.50, y: 0.96 }, { x: 0.80, y: 0.96 }
+                        ]
+                    }
+                }
+            },
+            sources: [
+                { label: 'Rugby Ready: Contact — World Rugby', url: 'https://passport.world.rugby/rugby-ready/contact/' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Tackle-Technik 1v1 (Progression)',
+            category: 'kontakt',
+            description: 'Sichere Tackle-Progression in Paaren auf kleinem Feld (ca. 5×5 m): Stufe 1 kniend, Stufe 2 aus der Hocke im Gehen, Stufe 3 im Joggen. Fokus auf die Kernpunkte: Schulterkontakt am Oberschenkel, Kopf HINTER dem Ballträger („Wange ans Gesäß"), Arme ringen und ziehen, Beine nachtreiben. Tempo wird erst gesteigert, wenn die Technik sitzt.',
+            rules: [
+                'Paare mit ähnlicher Größe/Gewicht, kleines Feld ca. 5×5 m',
+                'Stufe 1: Tackler kniet, Ballträger geht — Schulter an Oberschenkel, Arme ringen, zur Seite drehen',
+                'Stufe 2: Tackler aus der Hocke, beide gehen — Kontakt, Beine treiben, oben landen',
+                'Stufe 3: Ballträger joggt gerade Linie — Tackler setzt tief an und vollendet',
+                'Kopf IMMER hinter bzw. seitlich am Ballträger, NIE vor dem Ballträger',
+                'Blick hoch, Rücken gerade, mit den Beinen durch den Kontakt arbeiten',
+                'Ballträger nach dem Tackle: kontrolliert fallen, Ball präsentieren (Vorbereitung Ruck)',
+                'Tackler nach dem Tackle: sofort aufstehen und über den Ball arbeiten',
+                'Rollen nach jedem Durchgang tauschen, Tempo nur bei sauberer Technik steigern'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.30, y: 0.30 }, { x: 0.70, y: 0.30 },
+                    { x: 0.30, y: 0.70 }, { x: 0.70, y: 0.70 }
+                ],
+                zones: [],
+                teams: {
+                    a: {
+                        label: 'Ballträger', color: '#e67e22',
+                        players: [
+                            { x: 0.50, y: 0.64 }
+                        ]
+                    },
+                    b: {
+                        label: 'Tackler', color: '#3498db',
+                        players: [
+                            { x: 0.50, y: 0.38 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 }
+            },
+            sources: [
+                { label: 'Tackle Ready — World Rugby', url: 'https://passport.world.rugby/injury-prevention-and-risk-management/tackle-ready/' },
+                { label: 'Tackling-Drills — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/tackling/' }
+            ],
+            animated: false,
+            createdAt: Date.now()
+        },
+        {
+            name: 'Ruck: Ablage + Clear-out (1+1)',
+            category: 'kontakt',
+            description: 'Ruck-Grundlagen in 3er-Gruppen mit Schild: Der Ballträger nimmt Kontakt am Schild, geht kontrolliert zu Boden und legt den Ball lang nach hinten ab (Long Place). Der Schildhalter beugt sich als „Jackal" über den Ball. Der Support-Spieler kommt tief von hinten durch das Gate und räumt das Schild über den Ball hinaus weg. Erst Technik einzeln, dann als flüssige Sequenz.',
+            rules: [
+                '3er-Gruppen: Ballträger, Support (Clear-out), Schildhalter',
+                'Ballträger: Kontakt am Schild, zu Boden, Körper quer zur Angriffsrichtung drehen',
+                'Lange Ballablage nach hinten mit gestreckten Armen (Long Place)',
+                'Schildhalter beugt sich über den Ball — simuliert den klauenden Gegner (Jackal)',
+                'Support: von HINTEN durch das Gate kommen, nie von der Seite',
+                'Tiefe Position („Schulter unter Schulter"), Kontakt unter dem Schild ansetzen',
+                'Beine treiben — Schild über den Ball hinaus nach hinten schieben',
+                'Kopf hoch, Rücken gerade, NIE mit dem Kopf voran in den Kontakt',
+                'Rollen nach jedem Durchgang rotieren',
+                'Steigerung: Tackle aus Stufe 2 davorschalten oder 2. Support-Spieler mit Entscheidung (Clear-out vs. Ball aufnehmen)'
+            ],
+            setup: {
+                cones: [
+                    { x: 0.30, y: 0.25 }, { x: 0.70, y: 0.25 },
+                    { x: 0.30, y: 0.80 }, { x: 0.70, y: 0.80 }
+                ],
+                zones: [
+                    { x1: 0.38, y1: 0.44, x2: 0.62, y2: 0.44, color: '#e67e22' }
+                ],
+                teams: {
+                    a: {
+                        label: 'Ballträger (am Boden)', color: '#e67e22',
+                        players: [
+                            { x: 0.50, y: 0.48 }
+                        ]
+                    },
+                    b: {
+                        label: 'Schild (Jackal)', color: '#3498db',
+                        players: [
+                            { x: 0.50, y: 0.36 }
+                        ]
+                    },
+                    c: {
+                        label: 'Support (Clear-out)', color: '#1b8a3e',
+                        players: [
+                            { x: 0.50, y: 0.68 }
+                        ]
+                    }
+                },
+                ball: { team: 'a', playerIndex: 0 }
+            },
+            sources: [
+                { label: 'Rugby Ready: The tackle, ruck and maul — World Rugby', url: 'https://passport.world.rugby/rugby-ready/the-tackle-ruck-and-maul/' },
+                { label: 'Rucking-Drills — Rugby Coach Weekly', url: 'https://www.rugbycoachweekly.net/rugby-drills-and-skills/rucking/' }
+            ],
+            animated: false,
+            createdAt: Date.now()
         }
     ];
 
