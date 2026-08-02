@@ -39,6 +39,7 @@
         .cat-standard { background: rgba(181,119,8,0.12); color: var(--warning); }
         .cat-gedraenge { background: rgba(208,48,48,0.12); color: var(--danger); }
         .cat-gasse { background: rgba(168,85,247,0.12); color: #7c3aed; }
+        .cat-kick { background: rgba(74,195,255,0.18); color: #0d7fb5; }
         .play-card-name { font-weight: 700; font-size: 0.95rem; }
         .play-card-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
         .play-card-actions { display: none; gap: 0.3rem; margin-top: 0.5rem; }
@@ -250,6 +251,7 @@
                 <button class="filter-btn" data-cat="standard">Standard</button>
                 <button class="filter-btn" data-cat="gedraenge">Gedränge</button>
                 <button class="filter-btn" data-cat="gasse">Gasse</button>
+                <button class="filter-btn" data-cat="kick">Kick</button>
             </div>
 
             <!-- Play Grid -->
@@ -333,6 +335,7 @@
                     <option value="standard">Standard</option>
                     <option value="gedraenge">Gedränge</option>
                     <option value="gasse">Gasse</option>
+                    <option value="kick">Kick</option>
                 </select>
             </div>
             <div class="form-group" id="fp-formation-group">
@@ -425,7 +428,7 @@
         }
     });
 
-    const catLabels = { angriff: 'Angriff', verteidigung: 'Verteidigung', standard: 'Standard', gedraenge: 'Gedränge', gasse: 'Gasse' };
+    const catLabels = { angriff: 'Angriff', verteidigung: 'Verteidigung', standard: 'Standard', gedraenge: 'Gedränge', gasse: 'Gasse', kick: 'Kick' };
 
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
@@ -655,6 +658,190 @@
         return FORMATIONS[formation || 'offen'].ballCarrier || '10';
     }
 
+    // --- SPIELZUG-VORLAGEN: Kick-Spielzüge aus dem "German Defence"-Deck (Sharks, 03.08.2026) ---
+    // Angriffsrichtung = oben (kleines y). Werden per Name-Check in Firebase gesät (wie SEED_DRILLS).
+    const SEED_PLAYS = (() => {
+        const P = o => JSON.parse(JSON.stringify(o));
+        // Alle Spieler (oder nur `only`) um dy Richtung gegnerisches Try schieben
+        const up = (players, dy, only) => {
+            const c = P(players);
+            for (const k of Object.keys(c)) {
+                if (only && !only.includes(k)) continue;
+                c[k].y = Math.max(0.03, +(c[k].y - dy).toFixed(3));
+            }
+            return c;
+        };
+        // Einzelne Spieler auf neue Positionen setzen
+        const mv = (players, deltas) => {
+            const c = P(players);
+            for (const [k, pos] of Object.entries(deltas)) c[k] = P(pos);
+            return c;
+        };
+        const FWD = ['1','2','3','4','5','6','7','8'];
+
+        const plays = [];
+
+        // 1) Birdie — kurzer hoher Ball aus dem Mittelfeld-Ruck
+        {
+            const base = {
+                1:{x:0.26,y:0.47},2:{x:0.30,y:0.46},3:{x:0.34,y:0.47},4:{x:0.28,y:0.52},5:{x:0.33,y:0.52},
+                6:{x:0.22,y:0.50},7:{x:0.38,y:0.50},8:{x:0.27,y:0.56},9:{x:0.33,y:0.54},10:{x:0.42,y:0.62},
+                11:{x:0.10,y:0.66},12:{x:0.52,y:0.66},13:{x:0.63,y:0.68},14:{x:0.80,y:0.62},15:{x:0.55,y:0.80}
+            };
+            plays.push({ name:'Birdie — kurzer hoher Ball', category:'kick', formation:'offen', phases:[
+                { players:P(base), ruck:{x:0.30,y:0.50}, ball:{carrier:'9',passTo:'10'}, notes:'Ruck im Mittelfeld — 9 spielt auf 10.' },
+                { players:mv(base,{10:{x:0.44,y:0.60},14:{x:0.80,y:0.55}}), ruck:{x:0.30,y:0.50}, ball:{carrier:'10',passTo:'',kickTo:'14',kickType:'hoch'}, notes:'10 setzt den kurzen hohen Ball (Birdie) hinter die erste Linie — 14 jagt.' },
+                { players:mv(up(base,0.08,FWD),{9:{x:0.36,y:0.48},10:{x:0.48,y:0.46},12:{x:0.56,y:0.42},13:{x:0.68,y:0.38},14:{x:0.78,y:0.30},11:{x:0.14,y:0.50},15:{x:0.55,y:0.62}}), ball:{carrier:'14',passTo:''}, notes:'14 klettert, Unterstützung kommt nach — Land & Bang.' }
+            ]});
+        }
+
+        // 2) RHS Arrow — Exit rechts aus der eigenen 22
+        {
+            const base = {
+                1:{x:0.68,y:0.75},2:{x:0.72,y:0.74},3:{x:0.76,y:0.75},4:{x:0.69,y:0.80},5:{x:0.75,y:0.80},
+                6:{x:0.64,y:0.78},7:{x:0.79,y:0.78},8:{x:0.72,y:0.83},9:{x:0.66,y:0.82},10:{x:0.58,y:0.86},
+                11:{x:0.14,y:0.82},12:{x:0.46,y:0.87},13:{x:0.36,y:0.86},14:{x:0.90,y:0.72},15:{x:0.42,y:0.93}
+            };
+            plays.push({ name:'RHS Arrow — Exit rechts', category:'kick', formation:'offen', phases:[
+                { players:P(base), ruck:{x:0.72,y:0.78}, ball:{carrier:'9',passTo:'10'}, notes:'Exit-Ruck rechts in der eigenen 22 — 9 auf 10.' },
+                { players:mv(base,{14:{x:0.90,y:0.68}}), ruck:{x:0.72,y:0.78}, ball:{carrier:'10',passTo:'',kickTo:'14',kickType:'lang'}, notes:'10 schlägt den langen Exit die rechte Linie entlang — 14 führt die Jagd („Pfeil").' },
+                { players:mv(up(base,0.15,FWD),{14:{x:0.88,y:0.42},13:{x:0.74,y:0.50},12:{x:0.62,y:0.52},10:{x:0.52,y:0.55},9:{x:0.60,y:0.60},7:{x:0.80,y:0.55},8:{x:0.72,y:0.58},11:{x:0.20,y:0.60},15:{x:0.45,y:0.75}}), ball:{carrier:'14',passTo:''}, notes:'Jagdlinie schiebt als Pfeil nach — Druck auf den Fänger.' }
+            ]});
+        }
+
+        // 3) 49 Tiger Bomb — Contestable aus der C-Zone
+        {
+            const base = {
+                1:{x:0.44,y:0.49},2:{x:0.48,y:0.48},3:{x:0.52,y:0.49},4:{x:0.45,y:0.54},5:{x:0.51,y:0.54},
+                6:{x:0.41,y:0.52},7:{x:0.55,y:0.52},8:{x:0.48,y:0.57},9:{x:0.52,y:0.56},10:{x:0.58,y:0.63},
+                11:{x:0.12,y:0.64},12:{x:0.40,y:0.66},13:{x:0.68,y:0.66},14:{x:0.85,y:0.60},15:{x:0.52,y:0.80}
+            };
+            plays.push({ name:'49 Tiger Bomb — Mittelfeld-Bomb', category:'kick', formation:'offen', phases:[
+                { players:P(base), ruck:{x:0.48,y:0.52}, ball:{carrier:'9',passTo:'10'}, notes:'„49"-Aufbau im Mittelfeld (C-Zone) — 9 auf 10.' },
+                { players:mv(base,{13:{x:0.68,y:0.62}}), ruck:{x:0.48,y:0.52}, ball:{carrier:'10',passTo:'',kickTo:'13',kickType:'hoch'}, notes:'10 steigt die Bomb — 13 und 14 attackieren den Ball in der Luft.' },
+                { players:mv(up(base,0.10,FWD),{13:{x:0.62,y:0.32},14:{x:0.80,y:0.34},12:{x:0.50,y:0.42},10:{x:0.54,y:0.48},9:{x:0.46,y:0.48},11:{x:0.16,y:0.50},15:{x:0.52,y:0.66}}), ball:{carrier:'13',passTo:''}, notes:'Ball zurückerobern oder sofort Druck — Scraps Loaded.' }
+            ]});
+        }
+
+        // 4) 56 Bulldoze Birdie — erst Carry, dann Kick
+        {
+            const base = {
+                1:{x:0.26,y:0.57},2:{x:0.30,y:0.56},3:{x:0.34,y:0.57},4:{x:0.28,y:0.62},5:{x:0.33,y:0.62},
+                6:{x:0.22,y:0.60},7:{x:0.38,y:0.60},8:{x:0.42,y:0.68},9:{x:0.33,y:0.64},10:{x:0.52,y:0.70},
+                11:{x:0.10,y:0.70},12:{x:0.62,y:0.72},13:{x:0.72,y:0.72},14:{x:0.86,y:0.66},15:{x:0.52,y:0.85}
+            };
+            const ruck2 = {
+                1:{x:0.46,y:0.53},2:{x:0.50,y:0.52},3:{x:0.54,y:0.53},4:{x:0.47,y:0.58},5:{x:0.53,y:0.58},
+                6:{x:0.43,y:0.56},7:{x:0.57,y:0.56},8:{x:0.50,y:0.60},9:{x:0.53,y:0.60},10:{x:0.62,y:0.66},
+                11:{x:0.12,y:0.66},12:{x:0.70,y:0.70},13:{x:0.78,y:0.70},14:{x:0.86,y:0.64},15:{x:0.52,y:0.82}
+            };
+            plays.push({ name:'56 Bulldoze Birdie — Carry + Kick', category:'kick', formation:'offen', phases:[
+                { players:P(base), ruck:{x:0.30,y:0.60}, ball:{carrier:'9',passTo:'8'}, notes:'„56 Bulldoze": 9 spielt den Crash-Ball auf 8.' },
+                { players:mv(base,{8:{x:0.46,y:0.62}}), ball:{carrier:'8',passTo:''}, notes:'8 planiert vorwärts — neuer Ruck entsteht.' },
+                { players:P(ruck2), ruck:{x:0.50,y:0.56}, ball:{carrier:'9',passTo:'10'}, notes:'Aus dem Folge-Ruck: 9 auf 10.' },
+                { players:mv(ruck2,{14:{x:0.86,y:0.60}}), ruck:{x:0.50,y:0.56}, ball:{carrier:'10',passTo:'',kickTo:'14',kickType:'hoch'}, notes:'10 setzt den Birdie — 14 geht hoch.' },
+                { players:mv(up(ruck2,0.10,FWD),{14:{x:0.82,y:0.32},13:{x:0.72,y:0.40},12:{x:0.60,y:0.44},10:{x:0.56,y:0.50},9:{x:0.48,y:0.50},11:{x:0.16,y:0.52},15:{x:0.52,y:0.66}}), ball:{carrier:'14',passTo:''}, notes:'Land & Bang — Druck übertragen.' }
+            ]});
+        }
+
+        // 5) + 6) Exits aus der Gasse (Dingaan direkt / Bull mit Maul)
+        {
+            const lineoutBase = {
+                2:{x:0.10,y:0.64},3:{x:0.12,y:0.68},1:{x:0.12,y:0.79},
+                4:{x:0.18,y:0.67},6:{x:0.18,y:0.70},5:{x:0.18,y:0.73},7:{x:0.18,y:0.76},8:{x:0.18,y:0.79},
+                9:{x:0.26,y:0.72},10:{x:0.38,y:0.76},11:{x:0.06,y:0.72},
+                12:{x:0.50,y:0.78},13:{x:0.62,y:0.78},14:{x:0.88,y:0.72},15:{x:0.45,y:0.90}
+            };
+            const landung = mv(up(lineoutBase,0.15,FWD),{11:{x:0.10,y:0.42},9:{x:0.30,y:0.56},10:{x:0.36,y:0.60},12:{x:0.46,y:0.62},13:{x:0.58,y:0.62},14:{x:0.86,y:0.58},15:{x:0.45,y:0.75}});
+            plays.push({ name:'49 Dingaan Birdie — Exit aus der Gasse', category:'kick', formation:'lineout', phases:[
+                { players:P(lineoutBase), ball:{carrier:'2',passTo:'4'}, notes:'Gasse in der eigenen Hälfte — Wurf auf 4.' },
+                { players:P(lineoutBase), ball:{carrier:'4',passTo:'9'}, notes:'Ablage von der Gasse — 9 verteilt.' },
+                { players:P(lineoutBase), ball:{carrier:'9',passTo:'10'}, notes:'9 auf 10 — Birdie vorbereiten.' },
+                { players:mv(lineoutBase,{11:{x:0.06,y:0.68}}), ball:{carrier:'10',passTo:'',kickTo:'11',kickType:'hoch'}, notes:'„Dingaan": kurzer hoher Exit über die kurze Seite — 11 jagt.' },
+                { players:P(landung), ball:{carrier:'11',passTo:''}, notes:'11 attackiert den Ball — Touch oder Gras.' }
+            ]});
+            const maulDrive = mv(up(lineoutBase,0.03,FWD),{2:{x:0.15,y:0.66},1:{x:0.15,y:0.72},3:{x:0.16,y:0.69},9:{x:0.26,y:0.72}});
+            plays.push({ name:'49 Bull Birdie — Exit aus der Gasse (Maul)', category:'kick', formation:'lineout', phases:[
+                { players:P(lineoutBase), ball:{carrier:'2',passTo:'4'}, notes:'Gasse eigene Hälfte — Wurf auf 4.' },
+                { players:P(maulDrive), ball:{carrier:'4',passTo:'9'}, notes:'„Bull": Maul formiert sich und schiebt — dann Ablage auf 9.' },
+                { players:P(maulDrive), ball:{carrier:'9',passTo:'10'}, notes:'9 auf 10.' },
+                { players:mv(maulDrive,{11:{x:0.06,y:0.68}}), ball:{carrier:'10',passTo:'',kickTo:'11',kickType:'hoch'}, notes:'Birdie über die kurze Seite — 11 geht hoch.' },
+                { players:P(landung), ball:{carrier:'11',passTo:''}, notes:'Ballrückgewinn oder sofortiger Druck.' }
+            ]});
+        }
+
+        // 7) LHS Buffalo — Exit links aus der eigenen 22
+        {
+            const base = {
+                1:{x:0.24,y:0.75},2:{x:0.28,y:0.74},3:{x:0.32,y:0.75},4:{x:0.25,y:0.80},5:{x:0.31,y:0.80},
+                6:{x:0.20,y:0.78},7:{x:0.35,y:0.78},8:{x:0.28,y:0.83},9:{x:0.34,y:0.81},10:{x:0.42,y:0.86},
+                11:{x:0.10,y:0.72},12:{x:0.54,y:0.87},13:{x:0.64,y:0.86},14:{x:0.88,y:0.82},15:{x:0.58,y:0.93}
+            };
+            plays.push({ name:'LHS Buffalo — Exit links', category:'kick', formation:'offen', phases:[
+                { players:P(base), ruck:{x:0.28,y:0.78}, ball:{carrier:'9',passTo:'10'}, notes:'Exit-Ruck links in der eigenen 22 — 9 auf 10.' },
+                { players:mv(base,{11:{x:0.10,y:0.68}}), ruck:{x:0.28,y:0.78}, ball:{carrier:'10',passTo:'',kickTo:'11',kickType:'lang'}, notes:'10 schlägt den „Buffalo"-Exit die linke Linie entlang — 11 jagt.' },
+                { players:mv(up(base,0.15,FWD),{11:{x:0.12,y:0.42},12:{x:0.30,y:0.52},13:{x:0.45,y:0.55},10:{x:0.40,y:0.60},9:{x:0.32,y:0.62},14:{x:0.84,y:0.62},15:{x:0.55,y:0.78}}), ball:{carrier:'11',passTo:''}, notes:'Forwards schieben als Block nach — Backfield sichert.' }
+            ]});
+        }
+
+        // 8) MS Park Birdie — Exit nach Scrum in der Feldmitte
+        {
+            const base = {
+                1:{x:0.46,y:0.70},2:{x:0.50,y:0.69},3:{x:0.54,y:0.70},4:{x:0.48,y:0.74},5:{x:0.52,y:0.74},
+                6:{x:0.44,y:0.76},7:{x:0.56,y:0.76},8:{x:0.50,y:0.79},9:{x:0.56,y:0.80},10:{x:0.48,y:0.86},
+                11:{x:0.12,y:0.85},12:{x:0.36,y:0.87},13:{x:0.66,y:0.86},14:{x:0.82,y:0.80},15:{x:0.50,y:0.93}
+            };
+            plays.push({ name:'MS Park Birdie — Exit Mittel-Scrum', category:'kick', formation:'scrum', phases:[
+                { players:P(base), ball:{carrier:'9',passTo:'10'}, notes:'Scrum in der Feldmitte — 9 auf 10.' },
+                { players:mv(base,{14:{x:0.82,y:0.76}}), ball:{carrier:'10',passTo:'',kickTo:'14',kickType:'hoch'}, notes:'„Park Birdie": Ball wird tief geparkt — 14 jagt, beide Flügel sichern tief.' },
+                { players:mv(up(base,0.12,FWD),{14:{x:0.80,y:0.45},13:{x:0.68,y:0.52},12:{x:0.50,y:0.56},10:{x:0.52,y:0.62},9:{x:0.44,y:0.62},11:{x:0.14,y:0.75},15:{x:0.50,y:0.85}}), ball:{carrier:'14',passTo:''}, notes:'Druck auf den Fänger — 15 bleibt als Absicherung.' }
+            ]});
+        }
+
+        // 9) Melbourne — langer Standard-Exit
+        {
+            const base = {
+                1:{x:0.30,y:0.74},2:{x:0.36,y:0.73},3:{x:0.42,y:0.74},4:{x:0.34,y:0.77},5:{x:0.40,y:0.77},
+                6:{x:0.26,y:0.76},7:{x:0.48,y:0.76},8:{x:0.54,y:0.74},9:{x:0.46,y:0.80},10:{x:0.52,y:0.85},
+                11:{x:0.12,y:0.82},12:{x:0.62,y:0.86},13:{x:0.70,y:0.85},14:{x:0.84,y:0.80},15:{x:0.50,y:0.93}
+            };
+            plays.push({ name:'Melbourne — langer Exit', category:'kick', formation:'offen', phases:[
+                { players:P(base), ball:{carrier:'9',passTo:'10'}, notes:'Standard-Exit ohne speziellen Aufbau — 9 auf 10.' },
+                { players:mv(base,{14:{x:0.84,y:0.76}}), ball:{carrier:'10',passTo:'',kickTo:'14',kickType:'lang'}, notes:'„Melbourne": langer Positions-Kick — Linie rückt geschlossen auf.' },
+                { players:mv(up(base,0.18,FWD),{14:{x:0.78,y:0.38},13:{x:0.66,y:0.50},12:{x:0.56,y:0.53},10:{x:0.54,y:0.58},9:{x:0.44,y:0.58},11:{x:0.18,y:0.55},15:{x:0.50,y:0.78}}), ball:{carrier:'14',passTo:''}, notes:'Aufrücken als Einheit — Territorium gewonnen.' }
+            ]});
+        }
+
+        return plays;
+    })();
+
+    let seededPlaysOnce = false;
+    function seedTemplatePlays() {
+        // Dedup: mehrfach gesäte Vorlagen entfernen (Race beim gleichzeitigen Laden) —
+        // gilt nur für Spielzüge, deren Name exakt einem Seed entspricht
+        const seedNames = new Set(SEED_PLAYS.map(sp => sp.name));
+        const seenSeed = {};
+        for (const [key, p] of Object.entries(plays)) {
+            if (!p || !seedNames.has(p.name)) continue;
+            if (seenSeed[p.name]) {
+                db.ref('spielzuege/' + key).remove();
+                delete plays[key];
+            } else {
+                seenSeed[p.name] = key;
+            }
+        }
+        // Säen nur einmal pro Seitenaufruf — der value-Listener feuert nach jedem set() erneut
+        if (seededPlaysOnce) return;
+        seededPlaysOnce = true;
+        SEED_PLAYS.forEach(sp => {
+            if (!seenSeed[sp.name]) {
+                const ref = db.ref('spielzuege').push();
+                ref.set(sp);
+                plays[ref.key] = JSON.parse(JSON.stringify(sp));
+            }
+        });
+    }
+
     // --- RENDER PLAY LIST ---
     function renderList() {
         const grid = document.getElementById('play-grid');
@@ -680,6 +867,7 @@
                     <div class="play-card-meta">${phases.length} Phase${phases.length !== 1 ? 'n' : ''}</div>
                     <div class="play-card-actions" onclick="event.stopPropagation()">
                         <button onclick="editPlayMeta('${id}')">Umbenennen</button>
+                        <button onclick="duplicatePlay('${id}')">Duplizieren</button>
                         <button onclick="deletePlay('${id}')" style="color:var(--danger)">Löschen</button>
                     </div>
                 </div>
@@ -1736,6 +1924,19 @@
         showSaved();
     }
 
+    function duplicatePlay(id) {
+        const src = plays[id];
+        if (!src) return;
+        const copy = JSON.parse(JSON.stringify(src));
+        copy.name = src.name + ' (Kopie)';
+        const ref = db.ref('spielzuege').push();
+        ref.set(copy);
+        plays[ref.key] = copy;
+        persist();
+        renderList();
+        showSaved('Spielzug dupliziert');
+    }
+
     function deletePlay(id) {
         if (!confirm('Spielzug wirklich löschen?')) return;
         db.ref('spielzuege/' + id).remove();
@@ -1798,6 +1999,8 @@
             } else {
                 plays = {};
             }
+            // Vorlagen-Spielzüge säen, falls sie fehlen (Name-Check wie bei den Drills)
+            seedTemplatePlays();
             persist();
             renderList();
             if (selectedPlayId && plays[selectedPlayId]) {
