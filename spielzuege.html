@@ -337,6 +337,14 @@
                     <option value="forwards">Nur Forwards (1-8)</option>
                     <option value="raute_salz">Viererraute "Salz" (ohne Verbinder)</option>
                     <option value="raute_pfeffer">Viererraute "Pfeffer" (mit Verbinder)</option>
+                    <option value="restart_50">Anstoß-Annahme (50m)</option>
+                    <option value="restart_22">Anstoß-Annahme (22m)</option>
+                    <option value="restart_goal">Anstoß-Annahme (Goal-Line)</option>
+                    <option value="scrumd_lhs_small">Scrum-Defence links (Small Blind)</option>
+                    <option value="scrumd_lhs_big">Scrum-Defence links (Big Blind)</option>
+                    <option value="scrumd_mitte">Scrum-Defence Mitte</option>
+                    <option value="scrumd_rhs_big">Scrum-Defence rechts (Big Blind)</option>
+                    <option value="scrumd_rhs_small">Scrum-Defence rechts (Small Blind)</option>
                 </select>
             </div>
             <div class="form-group" id="fp-ball-group">
@@ -518,6 +526,114 @@
                 22: {x:0.36, y:0.64},  // 2 Links
                 23: {x:0.54, y:0.64},  // 3 Rechts
                 24: {x:0.44, y:0.70}   // 4 Hinten
+            }
+        },
+        // ===== Aus "German Defence"-Deck (Sharks-System, 02.08.2026) =====
+        restart_50: {
+            label: 'Anstoß-Annahme (50m)',
+            ballCarrier: '15',
+            players: {
+                // Vordere Welle: Fänger-Paare 12+2 und 13+6, Flügel breit
+                11: {x:0.08, y:0.24},
+                12: {x:0.36, y:0.22}, 2:  {x:0.33, y:0.28},
+                13: {x:0.62, y:0.22}, 6:  {x:0.65, y:0.28},
+                14: {x:0.92, y:0.24},
+                // Hebe-Pods auf den 15m-Linien
+                5:  {x:0.12, y:0.42}, 1:  {x:0.09, y:0.48},
+                4:  {x:0.87, y:0.42}, 3:  {x:0.91, y:0.48},
+                // Mitte + Verteiler
+                15: {x:0.50, y:0.52},
+                9:  {x:0.33, y:0.68}, 10: {x:0.68, y:0.68},
+                // Tiefe Ecken
+                8:  {x:0.04, y:0.78}, 7:  {x:0.95, y:0.78}
+            }
+        },
+        restart_22: {
+            label: 'Anstoß-Annahme (22m)',
+            ballCarrier: '15',
+            players: {
+                12: {x:0.30, y:0.20}, 2:  {x:0.50, y:0.20}, 13: {x:0.72, y:0.20},
+                5:  {x:0.14, y:0.30}, 1:  {x:0.11, y:0.36},
+                4:  {x:0.86, y:0.31}, 3:  {x:0.90, y:0.36},
+                9:  {x:0.50, y:0.40},
+                6:  {x:0.16, y:0.46}, 8:  {x:0.85, y:0.46},
+                11: {x:0.04, y:0.55}, 14: {x:0.94, y:0.55},
+                15: {x:0.22, y:0.66}, 7:  {x:0.50, y:0.64}, 10: {x:0.80, y:0.66}
+            }
+        },
+        restart_goal: {
+            label: 'Anstoß-Annahme (Goal-Line)',
+            ballCarrier: '15',
+            players: {
+                // Kompakter Empfangsblock vor den Pfosten
+                12: {x:0.15, y:0.20}, 1:  {x:0.32, y:0.20}, 2:  {x:0.50, y:0.20},
+                3:  {x:0.68, y:0.20}, 13: {x:0.86, y:0.20},
+                5:  {x:0.15, y:0.52}, 9:  {x:0.50, y:0.51}, 4:  {x:0.86, y:0.52},
+                14: {x:0.95, y:0.55},
+                6:  {x:0.34, y:0.68}, 8:  {x:0.66, y:0.68},
+                11: {x:0.03, y:0.79},
+                15: {x:0.14, y:0.88}, 7:  {x:0.50, y:0.87}, 10: {x:0.84, y:0.88}
+            }
+        },
+        scrumd_lhs_small: {
+            label: 'Scrum-Defence links (Small Blind)',
+            ballCarrier: '9',
+            players: {
+                1:  {x:0.10, y:0.26}, 2:  {x:0.13, y:0.26}, 3:  {x:0.16, y:0.26},
+                7:  {x:0.08, y:0.30}, 4:  {x:0.11, y:0.30}, 5:  {x:0.14, y:0.30}, 6:  {x:0.17, y:0.30},
+                8:  {x:0.13, y:0.34},
+                9:  {x:0.18, y:0.23},
+                10: {x:0.30, y:0.42}, 12: {x:0.42, y:0.42}, 13: {x:0.55, y:0.42}, 14: {x:0.66, y:0.42},
+                11: {x:0.07, y:0.72}, 15: {x:0.46, y:0.73}
+            }
+        },
+        scrumd_lhs_big: {
+            label: 'Scrum-Defence links (Big Blind)',
+            ballCarrier: '9',
+            players: {
+                1:  {x:0.21, y:0.26}, 2:  {x:0.24, y:0.26}, 3:  {x:0.27, y:0.26},
+                7:  {x:0.19, y:0.30}, 4:  {x:0.22, y:0.30}, 5:  {x:0.25, y:0.30}, 6:  {x:0.28, y:0.30},
+                8:  {x:0.24, y:0.34},
+                9:  {x:0.24, y:0.40},
+                11: {x:0.12, y:0.52}, 10: {x:0.37, y:0.52}, 12: {x:0.47, y:0.52}, 13: {x:0.57, y:0.52},
+                14: {x:0.66, y:0.65}, 15: {x:0.22, y:0.72}
+            }
+        },
+        scrumd_mitte: {
+            label: 'Scrum-Defence Mitte',
+            ballCarrier: '9',
+            players: {
+                1:  {x:0.47, y:0.20}, 2:  {x:0.50, y:0.20}, 3:  {x:0.53, y:0.20},
+                6:  {x:0.45, y:0.24}, 4:  {x:0.48, y:0.24}, 5:  {x:0.52, y:0.24}, 7:  {x:0.55, y:0.24},
+                8:  {x:0.50, y:0.28},
+                9:  {x:0.50, y:0.35},
+                12: {x:0.27, y:0.48}, 10: {x:0.37, y:0.48}, 13: {x:0.67, y:0.48}, 14: {x:0.78, y:0.47},
+                11: {x:0.16, y:0.60}, 15: {x:0.62, y:0.68}
+            }
+        },
+        scrumd_rhs_big: {
+            label: 'Scrum-Defence rechts (Big Blind)',
+            ballCarrier: '9',
+            players: {
+                1:  {x:0.69, y:0.28}, 2:  {x:0.72, y:0.28}, 3:  {x:0.75, y:0.28},
+                6:  {x:0.67, y:0.32}, 4:  {x:0.70, y:0.32}, 5:  {x:0.73, y:0.32}, 7:  {x:0.76, y:0.32},
+                8:  {x:0.72, y:0.36},
+                9:  {x:0.72, y:0.44},
+                14: {x:0.88, y:0.46},
+                13: {x:0.33, y:0.52}, 12: {x:0.44, y:0.52}, 10: {x:0.56, y:0.52},
+                11: {x:0.21, y:0.62}, 15: {x:0.78, y:0.63}
+            }
+        },
+        scrumd_rhs_small: {
+            label: 'Scrum-Defence rechts (Small Blind)',
+            ballCarrier: '9',
+            players: {
+                1:  {x:0.87, y:0.26}, 2:  {x:0.90, y:0.26}, 3:  {x:0.93, y:0.26},
+                6:  {x:0.86, y:0.30}, 4:  {x:0.89, y:0.30}, 5:  {x:0.92, y:0.30}, 7:  {x:0.95, y:0.30},
+                8:  {x:0.90, y:0.34},
+                9:  {x:0.90, y:0.40},
+                11: {x:0.37, y:0.46}, 13: {x:0.50, y:0.46}, 12: {x:0.60, y:0.46}, 10: {x:0.72, y:0.46},
+                14: {x:0.90, y:0.63}, 15: {x:0.22, y:0.64}
             }
         }
     };
