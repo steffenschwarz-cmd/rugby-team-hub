@@ -273,29 +273,29 @@ async function main() {
             console.error('  Login-Button nicht klickbar. URL:', page.url(), '| Titel:', await page.title().catch(() => '?'));
             throw e;
         });
-        await page.waitForTimeout(3000);
+        // Warten bis der Login-POST durch ist: Ziel ist dashboard ODER select-team.
+        // (CI-Runner sind langsamer als der Mac — feste Timeouts haben hier gerissen)
+        await page.waitForURL(/\/(dashboard|site\/select-team)/, { timeout: 30000 }).catch(() => {});
+        await page.waitForTimeout(1000);
 
-        // Handle team selection page
-        if (page.url().includes('select-team')) {
-            console.log('  Team selection page — finding team links...');
-            const allLinks = await page.evaluate(() => {
-                return Array.from(document.querySelectorAll('a[href]')).map(a => ({
-                    href: a.href, text: a.textContent.trim().substring(0, 60), visible: a.offsetParent !== null
-                })).filter(l => l.text.length > 0);
-            });
-            console.log('  Links found:', JSON.stringify(allLinks.slice(0, 10)));
-            // Navigate directly to dashboard
-            await page.goto('https://www.spielerplus.de/dashboard/index', { waitUntil: 'networkidle' });
+        // Team-Selection-Page: SpielerPlus leitet NICHT von selbst weiter → aktiv zum Dashboard
+        for (let attempt = 1; attempt <= 3 && !page.url().includes('dashboard'); attempt++) {
+            if (page.url().includes('select-team')) {
+                console.log(`  Team selection page — navigating to dashboard (Versuch ${attempt}/3)...`);
+            } else {
+                const errorMsg = await page.locator('.alert, .error, .help-block').first().textContent().catch(() => '');
+                if (errorMsg) console.log('  Login-Hinweis:', errorMsg.trim());
+                console.log(`  Noch nicht im Dashboard (${page.url()}) — Versuch ${attempt}/3...`);
+            }
+            await page.goto('https://www.spielerplus.de/dashboard/index', { waitUntil: 'networkidle' }).catch(() => {});
             await page.waitForTimeout(2000);
         }
 
         if (!page.url().includes('dashboard')) {
+            console.error('  Titel:', await page.title().catch(() => '?'));
             const errorMsg = await page.locator('.alert, .error, .help-block').first().textContent().catch(() => '');
-            if (errorMsg) console.log('  Login error:', errorMsg.trim());
-            await page.waitForURL('**/dashboard/**', { timeout: 10000 }).catch(() => {});
-            if (!page.url().includes('dashboard')) {
-                throw new Error('Login failed — still on ' + page.url());
-            }
+            if (errorMsg) console.error('  Login error:', errorMsg.trim());
+            throw new Error('Login failed — still on ' + page.url());
         }
         console.log('  ✓ Login successful');
 
