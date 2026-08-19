@@ -34,15 +34,25 @@ jobs:
   spielerplus:
     name: SpielerPlus Trainingsbeteiligung
     runs-on: ubuntu-latest
+    # Ohne Limit lief ein hängender Install-Step am 19.08. 26 min weiter (Default waere 6 h)
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Playwright installieren
+        timeout-minutes: 12
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          npm install playwright
-          npx playwright install --with-deps chromium
+          npm install --no-audit --no-fund playwright
+          # --with-deps blieb am 19.08. mehrfach in der apt-Phase haengen → hart begrenzen,
+          # danach Fallback ohne System-Deps (ubuntu-latest bringt die Chromium-Libs mit)
+          if ! timeout 360 npx playwright install --with-deps chromium; then
+            echo "::warning::playwright install --with-deps fehlgeschlagen/timeout — Fallback ohne apt-Deps"
+            timeout 300 npx playwright install chromium
+          fi
       - name: Beteiligung scrapen und nach Firebase schreiben
         env:
           SPIELERPLUS_EMAIL: ${{ secrets.SPIELERPLUS_EMAIL }}
