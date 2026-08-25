@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-12T06:51:06Z",
+  "updatedAt": "2026-08-25T05:55:38Z",
   "bl": {
     "liga": "2. Bundesliga Nord/Ost",
     "saison": "2026/27",
@@ -65,17 +65,6 @@
         "round": 2,
         "home": "Hamburger Rugby-Club",
         "away": "VfR 06",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2026-09-12",
-        "time": "15:00",
-        "round": 2,
-        "home": "RC Leipzig",
-        "away": "FC St. Pauli",
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": false,
@@ -206,23 +195,23 @@
         "date": "2026-10-17",
         "time": "15:00",
         "round": 5,
-        "home": "VfR 06",
-        "away": "TSV Victoria Linden",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2026-10-17",
-        "time": "15:00",
-        "round": 5,
         "home": "SG Rugbyunion Hohen Neuendorf e.V.",
         "away": "RK 03 Berlin",
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": true,
         "homeGame": true
+      },
+      {
+        "date": "2026-10-17",
+        "time": "15:00",
+        "round": 5,
+        "home": "VfR 06",
+        "away": "TSV Victoria Linden",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": false,
+        "homeGame": false
       },
       {
         "date": "2026-11-07",
@@ -313,6 +302,17 @@
         "homeGame": false
       },
       {
+        "date": "2026-11-21",
+        "time": "14:00",
+        "round": 2,
+        "home": "RC Leipzig",
+        "away": "FC St. Pauli",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": false,
+        "homeGame": false
+      },
+      {
         "date": "2027-03-13",
         "time": "14:00",
         "round": 8,
@@ -349,22 +349,22 @@
         "date": "2027-03-20",
         "time": "14:00",
         "round": 9,
-        "home": "BSV 1892 Rugby",
-        "away": "SG Rugbyunion Hohen Neuendorf e.V.",
+        "home": "TSV Victoria Linden",
+        "away": "RK 03 Berlin",
         "scoreHome": null,
         "scoreAway": null,
-        "ourGame": true,
+        "ourGame": false,
         "homeGame": false
       },
       {
         "date": "2027-03-20",
         "time": "14:00",
         "round": 9,
-        "home": "FC St. Pauli",
-        "away": "RC Leipzig",
+        "home": "BSV 1892 Rugby",
+        "away": "SG Rugbyunion Hohen Neuendorf e.V.",
         "scoreHome": null,
         "scoreAway": null,
-        "ourGame": false,
+        "ourGame": true,
         "homeGame": false
       },
       {
@@ -382,8 +382,8 @@
         "date": "2027-03-20",
         "time": "14:00",
         "round": 9,
-        "home": "TSV Victoria Linden",
-        "away": "RK 03 Berlin",
+        "home": "FC St. Pauli",
+        "away": "RC Leipzig",
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": false,
@@ -437,30 +437,8 @@
         "date": "2027-04-10",
         "time": "15:00",
         "round": 11,
-        "home": "BSV 1892 Rugby",
-        "away": "RC Leipzig",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2027-04-10",
-        "time": "15:00",
-        "round": 11,
         "home": "TSV Victoria Linden",
         "away": "FC St. Pauli",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2027-04-10",
-        "time": "15:00",
-        "round": 11,
-        "home": "Hamburger Rugby-Club",
-        "away": "RK 03 Berlin",
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": false,
@@ -476,6 +454,28 @@
         "scoreAway": null,
         "ourGame": true,
         "homeGame": true
+      },
+      {
+        "date": "2027-04-10",
+        "time": "15:00",
+        "round": 11,
+        "home": "BSV 1892 Rugby",
+        "away": "RC Leipzig",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": false,
+        "homeGame": false
+      },
+      {
+        "date": "2027-04-10",
+        "time": "15:00",
+        "round": 11,
+        "home": "Hamburger Rugby-Club",
+        "away": "RK 03 Berlin",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": false,
+        "homeGame": false
       },
       {
         "date": "2027-04-17",
