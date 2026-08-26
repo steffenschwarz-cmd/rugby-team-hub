@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-25T05:55:38Z",
+  "updatedAt": "2026-08-26T05:57:23Z",
   "bl": {
     "liga": "2. Bundesliga Nord/Ost",
     "saison": "2026/27",
@@ -83,6 +83,17 @@
       },
       {
         "date": "2026-09-26",
+        "time": "14:00",
+        "round": 3,
+        "home": "Hamburger Rugby-Club",
+        "away": "SG Rugbyunion Hohen Neuendorf e.V.",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": false
+      },
+      {
+        "date": "2026-09-26",
         "time": "15:00",
         "round": 3,
         "home": "VfR 06",
@@ -90,17 +101,6 @@
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2026-09-26",
-        "time": "15:00",
-        "round": 3,
-        "home": "Hamburger Rugby-Club",
-        "away": "SG Rugbyunion Hohen Neuendorf e.V.",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": true,
         "homeGame": false
       },
       {
