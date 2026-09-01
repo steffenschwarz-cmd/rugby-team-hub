@@ -1,9 +1,20 @@
 {
-  "updatedAt": "2026-08-30T10:33:56Z",
+  "updatedAt": "2026-09-01T10:16:43Z",
   "bl": {
     "liga": "2. Bundesliga Nord/Ost",
     "saison": "2026/27",
     "spiele": [
+      {
+        "date": "2026-09-05",
+        "time": "13:00",
+        "round": 1,
+        "home": "BSV 1892 Rugby",
+        "away": "Hamburger Rugby-Club",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": false,
+        "homeGame": false
+      },
       {
         "date": "2026-09-05",
         "time": "15:00",
@@ -21,17 +32,6 @@
         "round": 1,
         "home": "VfR 06",
         "away": "RC Leipzig",
-        "scoreHome": null,
-        "scoreAway": null,
-        "ourGame": false,
-        "homeGame": false
-      },
-      {
-        "date": "2026-09-05",
-        "time": "15:00",
-        "round": 1,
-        "home": "BSV 1892 Rugby",
-        "away": "Hamburger Rugby-Club",
         "scoreHome": null,
         "scoreAway": null,
         "ourGame": false,
