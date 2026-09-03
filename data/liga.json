@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-01T10:16:43Z",
+  "updatedAt": "2026-09-03T09:59:00Z",
   "bl": {
     "liga": "2. Bundesliga Nord/Ost",
     "saison": "2026/27",
@@ -564,8 +564,63 @@
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
-    "spiele": [],
-    "tabelle": [],
-    "hinweis": "Saison noch nicht angelegt"
+    "spiele": [
+      {
+        "date": "2026-09-06",
+        "time": "15:00",
+        "round": 1,
+        "home": "SG Oberhavel Männer Regionalliga Ost",
+        "away": "Berliner Sport-Club e.V. Männer Regionalliga Ost",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": true
+      },
+      {
+        "date": "2026-09-27",
+        "time": "15:00",
+        "round": 3,
+        "home": "SG Oberhavel Männer Regionalliga Ost",
+        "away": "Berlin Irish RFC Männer Regionalliga Ost",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": true
+      },
+      {
+        "date": "2026-10-18",
+        "time": "15:00",
+        "round": 5,
+        "home": "SG Oberhavel Männer Regionalliga Ost",
+        "away": "USV Potsdam Männer Regionalliga Ost",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": true
+      },
+      {
+        "date": "2026-11-07",
+        "time": "12:00",
+        "round": 6,
+        "home": "SG Halle/Leipzig Männer Regionalliga Ost",
+        "away": "SG Oberhavel Männer Regionalliga Ost",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": false
+      },
+      {
+        "date": "2026-11-21",
+        "time": "14:00",
+        "round": 7,
+        "home": "SC Siemensstadt Männer Regionalliga Ost",
+        "away": "SG Oberhavel Männer Regionalliga Ost",
+        "scoreHome": null,
+        "scoreAway": null,
+        "ourGame": true,
+        "homeGame": false
+      }
+    ],
+    "tabelle": []
   }
 }
