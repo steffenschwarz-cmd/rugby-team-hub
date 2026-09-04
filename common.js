@@ -29,7 +29,9 @@ const ROLE_RAT = 'rat';
 const ROLE_TRAINER = 'trainer';
 const ROLE_LEVEL = { team: 1, rat: 2, trainer: 3 };
 
-// Team password hash (ScrumHN!2026 — for self-registration verification)
+// Hash des Team-Passworts für die Selbst-Registrierung.
+// NIE das Passwort im Klartext danebenschreiben — diese Datei ist öffentlich abrufbar.
+// Klartext steht ausschließlich in ZUGANGSDATEN.md (gitignored).
 const HASH_TEAM_PW = '33f84f2c5805511205b3326108feae31fbcff92b76a700ede20d94450a30a474';
 
 function getStoredRole() { return localStorage.getItem('sgrhn_role'); }
