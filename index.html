@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SG Rugbyunion Hohen Neuendorf — Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=8">
-    <script src="common.js?v=8"></script>
+    <link rel="stylesheet" href="common.css?v=9">
+    <script src="common.js?v=9"></script>
     <style>
         /* Hero */
         .hero {
@@ -72,26 +72,17 @@
 
 
         .countdown-section {
-            background: linear-gradient(135deg, rgba(208,48,48,0.10), rgba(208,48,48,0.03));
-            border: 1px solid rgba(208,48,48,0.30);
+            background: linear-gradient(135deg, rgba(26,95,180,0.10), rgba(26,95,180,0.03));
+            border: 1px solid rgba(26,95,180,0.30);
             border-radius: 12px;
             padding: 1.2rem;
             flex: 1;
             max-width: 340px;
         }
 
-        .countdown-section.rl {
-            background: linear-gradient(135deg, rgba(26,95,180,0.10), rgba(26,95,180,0.03));
-            border: 1px solid rgba(26,95,180,0.30);
-        }
-
-        .countdown-section.rl .countdown-label {
-            color: var(--accent-blue);
-        }
-
         .countdown-label {
             font-size: 0.85rem;
-            color: var(--danger);
+            color: var(--accent-blue);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -395,33 +386,10 @@
             color: var(--warning);
         }
 
-        .badge-bl {
-            background: rgba(27,138,62,0.12);
-            color: var(--accent);
-        }
-
-        .badge-rl {
-            background: rgba(26,95,180,0.12);
-            color: var(--accent-blue);
-        }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
         }
-
-        /* Liga badge */
-        .liga-badge {
-            font-size: 0.6rem;
-            padding: 0.15rem 0.4rem;
-            border-radius: 6px;
-            font-weight: 600;
-            margin-left: 0.4rem;
-            vertical-align: middle;
-        }
-
-        .liga-bl { background: rgba(27,138,62,0.12); color: var(--accent); }
-        .liga-rl { background: rgba(26,95,180,0.12); color: var(--accent-blue); }
 
         /* Goals */
         .goal-row {
@@ -601,7 +569,7 @@
         /* Mannschaften */
         .team-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 0.8rem;
         }
 
@@ -634,7 +602,6 @@
             .stats-grid { gap: 0.5rem; }
             .stat-number { font-size: 1.4rem; }
             .teamrat-grid { grid-template-columns: repeat(2, 1fr); }
-            .team-cards { grid-template-columns: 1fr; }
         }
 
         /* Login Gate overrides */
@@ -754,7 +721,7 @@
             <a href="#sec-massnahmen">Massnahmen</a>
             <a href="#sec-events">Events</a>
             <a href="#sec-rat">Mannschaftsrat</a>
-            <a href="#sec-teams">Teams</a>
+            <a href="#sec-teams">Mannschaft</a>
         </div>
     </div>
 
@@ -772,7 +739,7 @@
 
         <div class="countdown-wrapper">
             <div class="countdown-section">
-                <div class="countdown-label">1. XV — Nächstes Spiel</div>
+                <div class="countdown-label">Nächstes Spiel</div>
                 <div class="countdown-opponent" id="next-game-title">Spielplan wird geladen…</div>
                 <div class="countdown-location" id="next-game-location">&nbsp;</div>
                 <div class="countdown-grid">
@@ -786,25 +753,6 @@
                     </div>
                     <div class="countdown-item">
                         <span class="countdown-number" id="cd-trainings">--</span>
-                        <span class="countdown-unit">Trainings</span>
-                    </div>
-                </div>
-            </div>
-            <div class="countdown-section rl">
-                <div class="countdown-label">2. XV — Nächstes Spiel</div>
-                <div class="countdown-opponent" id="next-game-title-rl">Spielplan wird geladen…</div>
-                <div class="countdown-location" id="next-game-location-rl">&nbsp;</div>
-                <div class="countdown-grid">
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="cd-days-rl">--</span>
-                        <span class="countdown-unit">Tage</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="cd-hours-rl">--</span>
-                        <span class="countdown-unit">Std</span>
-                    </div>
-                    <div class="countdown-item">
-                        <span class="countdown-number" id="cd-trainings-rl">--</span>
                         <span class="countdown-unit">Trainings</span>
                     </div>
                 </div>
@@ -836,63 +784,24 @@
             <div class="motivation-author">— Jeder Einzelne zählt. Sei dabei.</div>
         </div>
 
-        <!-- 2. BUNDESLIGA NORD: Spielplan links, Tabelle rechts -->
+        <!-- REGIONALLIGA OST: Spielplan links, Tabelle rechts -->
         <section id="sec-spielplan">
 
         <div class="section-header" style="margin-bottom: 0.5rem;">
-            <div class="section-icon">&#127944;</div>
-            <div class="section-title" id="liga-name-bl">2. Bundesliga Nord/Ost</div>
+            <div class="section-icon">&#127941;</div>
+            <div class="section-title" id="liga-name">Regionalliga Ost</div>
         </div>
         <div class="liga-row">
             <div class="section">
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan</div>
-                <div class="card" id="spielplan-bl">
+                <div class="card" id="spielplan">
                     <div class="liga-placeholder">Spielplan wird geladen&hellip;</div>
                 </div>
             </div>
             <div class="section">
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle</div>
                 <div class="card">
-                    <table class="liga-table" id="tabelle-bl">
-                        <thead>
-                            <tr>
-                                <th class="num">#</th>
-                                <th>Team</th>
-                                <th class="num">Sp</th>
-                                <th class="num">S</th>
-                                <th class="num">U</th>
-                                <th class="num">N</th>
-                                <th class="num">Pkt</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="7" class="liga-placeholder">Tabelle wird geladen&hellip;</td></tr>
-                        </tbody>
-                    </table>
-                    <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-                        Stand: <span id="stand-bl">&mdash;</span> &middot;
-                        Quelle: <a href="https://www.rugbydeutschland.org/tabellen-81792v4/leagues/2162" target="_blank" style="color: var(--accent); text-decoration: none;">rugbydeutschland.org</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- REGIONALLIGA OST: Spielplan links, Tabelle rechts -->
-        <div class="section-header" style="margin-bottom: 0.5rem;">
-            <div class="section-icon">&#127941;</div>
-            <div class="section-title" id="liga-name-rl">Regionalliga Ost</div>
-        </div>
-        <div class="liga-row">
-            <div class="section">
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Spielplan SG Oberhavel</div>
-                <div class="card" id="spielplan-rl">
-                    <div class="liga-placeholder">Spielplan wird geladen&hellip;</div>
-                </div>
-            </div>
-            <div class="section">
-                <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;">Tabelle</div>
-                <div class="card">
-                    <table class="liga-table" id="tabelle-rl">
+                    <table class="liga-table" id="tabelle">
                         <thead>
                             <tr>
                                 <th class="num">#</th>
@@ -907,7 +816,7 @@
                         </tbody>
                     </table>
                     <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.6rem; text-align: center;">
-                        Stand: <span id="stand-rl">&mdash;</span> &middot;
+                        Stand: <span id="stand">&mdash;</span> &middot;
                         Quelle: <a href="https://bits-rugby-ls.de/rugby-regionalliga-nord-ost/" target="_blank" style="color: var(--accent-blue); text-decoration: none;">bits-rugby-ls.de</a>
                     </div>
                 </div>
@@ -1085,19 +994,9 @@
                     <div class="member-role">Vice-Captain</div>
                 </a>
                 <a href="mannschaftsrat.html" class="teamrat-member" style="text-decoration:none;color:inherit;">
-                    <div class="member-avatar">JH</div>
-                    <div class="member-name">Jonas Hinz</div>
-                    <div class="member-role">Vice-Captain</div>
-                </a>
-                <a href="mannschaftsrat.html" class="teamrat-member" style="text-decoration:none;color:inherit;">
                     <div class="member-avatar">AH</div>
                     <div class="member-name">Anton Hanetzok</div>
                     <div class="member-role">Vice-Captain</div>
-                </a>
-                <a href="mannschaftsrat.html" class="teamrat-member" style="text-decoration:none;color:inherit;">
-                    <div class="member-avatar">TL</div>
-                    <div class="member-name">Tom Lebus</div>
-                    <div class="member-role">Mannschaftsrat</div>
                 </a>
                 <a href="mannschaftsrat.html" class="teamrat-member" style="text-decoration:none;color:inherit;">
                     <div class="member-avatar">TS</div>
@@ -1111,20 +1010,14 @@
         <div class="section" id="sec-teams">
             <div class="section-header">
                 <div class="section-icon">&#127941;</div>
-                <div class="section-title">Unsere Mannschaften</div>
+                <div class="section-title">Unsere Mannschaft</div>
             </div>
             <div class="team-cards">
-                <div class="card" style="border-left: 3px solid var(--accent);">
-                    <div style="font-weight: 700; margin-bottom: 0.3rem;">1. Mannschaft</div>
-                    <div style="font-size: 0.8rem; color: var(--accent); font-weight: 600;">2. Bundesliga Nord/Ost</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Saison 2026/27: 14 Spiele</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">7 Heim / 7 Auswärts</div>
-                </div>
                 <div class="card" style="border-left: 3px solid var(--accent-blue);">
-                    <div style="font-weight: 700; margin-bottom: 0.3rem;">2. Mannschaft</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.2rem;">SG Oberhavel</div>
+                    <div style="font-weight: 700; margin-bottom: 0.3rem;">SG Oberhavel</div>
                     <div style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">Regionalliga Ost</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Saison 2026/27: Spielplan folgt</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Spielgemeinschaft Rugby Union Hohen Neuendorf &times; SV Stahl Hennigsdorf</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Saison <span id="team-card-season">2026/27</span>: <span id="team-card-games">Spielplan folgt</span></div>
                 </div>
             </div>
         </div>
@@ -1142,7 +1035,7 @@
         <br><br>
         <a href="https://www.rugbyunion.de" target="_blank">rugbyunion.de</a> &middot;
         <a href="https://www.rugby-hennigsdorf.de" target="_blank">rugby-hennigsdorf.de</a> &middot;
-        <a href="https://www.rugbybundesliga.de/spiele" target="_blank">Bundesliga Spielplan</a>
+        <a href="https://bits-rugby-ls.de/rugby-regionalliga-nord-ost/" target="_blank">Regionalliga Spielplan</a>
         <br><br>
         <a href="impressum.html" style="color:var(--text-muted);font-size:0.85rem;">Impressum</a> &middot;
         <a href="datenschutz.html" style="color:var(--text-muted);font-size:0.85rem;">Datenschutz</a>
@@ -1154,25 +1047,14 @@
     <script>
         const db = initFirebase();
 
-        // Spielpläne kommen aus data/liga.json (täglich von sync-liga.js aktualisiert).
-        // Bis das geladen ist, bleiben die Listen leer und die Karten zeigen ihren Platzhalter.
-        let games = [];   // 1. XV (2. Bundesliga Nord/Ost)
-        let gamesRL = []; // 2. XV (Regionalliga Ost, SG Oberhavel)
-        let allGames = [];
+        // Der Spielplan kommt aus data/liga.json (täglich von sync-liga.js aktualisiert).
+        // Bis das geladen ist, bleibt die Liste leer und die Karten zeigen ihren Platzhalter.
+        let games = []; // SG Oberhavel (Regionalliga Ost)
         let ligaLoaded = false;
 
         function getNextGame() {
             const now = new Date();
             for (const g of games) {
-                const d = new Date(g.date + 'T' + g.time + ':00');
-                if (d > now) return { ...g, dateObj: d };
-            }
-            return null;
-        }
-
-        function getNextGameRL() {
-            const now = new Date();
-            for (const g of gamesRL) {
                 const d = new Date(g.date + 'T' + g.time + ':00');
                 if (d > now) return { ...g, dateObj: d };
             }
@@ -1197,7 +1079,6 @@
             const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
             const now = new Date();
 
-            // 1. XV
             const next = getNextGame();
             if (next) {
                 const diff = next.dateObj - now;
@@ -1221,31 +1102,6 @@
                 document.getElementById('next-game-title').textContent =
                     games.length ? 'Saison beendet' : 'Spielplan noch nicht veröffentlicht';
                 document.getElementById('next-game-location').innerHTML = '&nbsp;';
-            }
-
-            // 2. XV
-            const nextRL = getNextGameRL();
-            if (nextRL) {
-                const diffRL = nextRL.dateObj - now;
-                const daysRL = Math.floor(diffRL / (1000*60*60*24));
-                const hoursRL = Math.floor((diffRL % (1000*60*60*24)) / (1000*60*60));
-                const trainingsRL = countTrainings(now, nextRL.dateObj);
-
-                document.getElementById('cd-days-rl').textContent = daysRL;
-                document.getElementById('cd-hours-rl').textContent = hoursRL;
-                document.getElementById('cd-trainings-rl').textContent = trainingsRL;
-
-                const dateStr = `${dayNames[nextRL.dateObj.getDay()]}. ${nextRL.dateObj.getDate()}. ${months[nextRL.dateObj.getMonth()]}`;
-                const prefix = nextRL.home ? 'vs' : 'bei';
-                document.getElementById('next-game-title-rl').textContent = `${dateStr} — ${prefix} ${nextRL.opponent}`;
-                document.getElementById('next-game-location-rl').textContent =
-                    nextRL.home ? `HEIMSPIEL — ${nextRL.time} Uhr` : `AUSWÄRTS — ${nextRL.time} Uhr`;
-                document.getElementById('next-game-location-rl').style.color =
-                    nextRL.home ? 'var(--home)' : 'var(--away)';
-            } else if (ligaLoaded) {
-                document.getElementById('next-game-title-rl').textContent =
-                    gamesRL.length ? 'Saison beendet' : 'Spielplan noch nicht veröffentlicht';
-                document.getElementById('next-game-location-rl').innerHTML = '&nbsp;';
             }
         }
 
@@ -1281,18 +1137,14 @@
                 d.setDate(d.getDate() + 1);
             }
 
-            // Add all games (both teams)
-            allGames.forEach(g => {
-                const gDate = new Date(g.date + 'T' + g.time + ':00');
-                const teamTag = g.team === '1. XV' ? 'BL' : 'RL';
+            // Spiele der Mannschaft dazunehmen
+            games.forEach(g => {
                 events.push({
-                    date: gDate,
+                    date: new Date(g.date + 'T' + g.time + ':00'),
                     title: (g.home ? 'vs ' : 'bei ') + g.opponent,
                     detail: `${g.time} Uhr — ${g.home ? 'HEIM' : 'Auswärts'}`,
                     type: 'game',
-                    home: g.home,
-                    team: g.team,
-                    teamTag: teamTag
+                    home: g.home
                 });
             });
 
@@ -1304,13 +1156,10 @@
             const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
 
             container.innerHTML = upcoming.map(e => {
-                let badgeClass, badgeText, teamBadge = '';
+                let badgeClass, badgeText;
                 if (e.type === 'game') {
                     badgeClass = e.home ? 'badge-home' : 'badge-away';
                     badgeText = e.home ? 'HEIM' : 'AUSWÄRTS';
-                    const tbClass = e.teamTag === 'BL' ? 'badge-bl' : 'badge-rl';
-                    const tbLabel = e.teamTag === 'BL' ? '1.XV' : '2.XV';
-                    teamBadge = `<div class="team-indicator ${tbClass}" style="width:38px;text-align:center;font-size:0.65rem;font-weight:700;padding:0.25rem 0.3rem;border-radius:6px;flex-shrink:0;">${tbLabel}</div>`;
                 } else if (e.type === 'training-social') {
                     badgeClass = 'badge-social';
                     badgeText = 'TEAMABEND';
@@ -1328,7 +1177,6 @@
                         <div class="game-daynum ${dayClass}">${e.date.getDate()}</div>
                         <div class="game-month">${months[e.date.getMonth()]}</div>
                     </div>
-                    ${teamBadge}
                     <div class="game-info">
                         <div class="game-title">${e.title}</div>
                         <div class="game-detail">${e.detail}</div>
@@ -1342,16 +1190,21 @@
 
         // Kurznamen für die schmalen Spielplan- und Tabellenspalten
         const TEAM_SHORT = {
-            'SG Rugbyunion Hohen Neuendorf e.V.': 'SG RU HN',
-            'SG Rugbyunion Hohen Neuendorf': 'SG RU HN',
-            'SG Oberhavel Männer Regionalliga Ost': 'SG Oberhavel',
-            'TSV Victoria Linden': 'TSV Vic. Linden',
-            'Hamburger Rugby-Club': 'Hamburger RC',
-            'BSV 1892 Rugby': 'BSV 1892',
             'RC Oranien Raptors II': 'Oranien Raptors',
             'SG Halle/Leipzig': 'SG Halle/Lpz.',
         };
-        function shortTeam(name) { return TEAM_SHORT[name] || name || ''; }
+
+        // Die Quelle liefert Namen mit Liga-Suffix ("… Männer Regionalliga Ost")
+        // und Rechtsform. Beides raus, danach erst in der Kurznamen-Tabelle nachschlagen.
+        function shortTeam(name) {
+            if (!name) return '';
+            if (TEAM_SHORT[name]) return TEAM_SHORT[name];
+            const clean = String(name)
+                .replace(/\s+(Männer|Frauen|Herren|Damen)\s+(Regionalliga|Bundesliga|Verbandsliga|Landesliga)\b.*$/i, '')
+                .replace(/\s+e\.\s?V\.?$/i, '')
+                .trim();
+            return TEAM_SHORT[clean] || clean;
+        }
 
         function esc(s) {
             return String(s).replace(/[&<>"]/g, c =>
@@ -1407,38 +1260,33 @@
             }).join('');
         }
 
-        // mode 'bl' = Spalten Sp/S/U/N/Pkt, mode 'rl' = Spalten Sp/+-/Pkt
-        function renderTabelle(tableId, rows, mode, hinweis) {
+        // Spalten: # / Team / Sp / +- / Pkt
+        function renderTabelle(tableId, rows, hinweis) {
             const table = document.getElementById(tableId);
             if (!table) return;
             const tbody = table.querySelector('tbody');
-            const colspan = mode === 'bl' ? 7 : 5;
             if (!rows || !rows.length) {
-                tbody.innerHTML = `<tr><td colspan="${colspan}" class="liga-placeholder">` +
+                tbody.innerHTML = `<tr><td colspan="5" class="liga-placeholder">` +
                     `${esc(hinweis || 'Tabelle noch nicht verfügbar')}</td></tr>`;
                 return;
             }
             tbody.innerHTML = rows.map(r => {
-                const cells = mode === 'bl'
-                    ? `<td class="num">${r.played}</td><td class="num">${r.won}</td>` +
-                      `<td class="num">${r.drawn}</td><td class="num">${r.lost}</td>`
-                    : `<td class="num">${r.played}</td>` +
-                      `<td class="num">${r.diff > 0 ? '+' : ''}${r.diff}</td>`;
                 return `<tr${r.our ? ' class="highlight-row"' : ''}>` +
                     `<td class="num">${r.pos}</td>` +
                     `<td class="team-name">${esc(shortTeam(r.team))}</td>` +
-                    `${cells}<td class="pts">${r.points}</td></tr>`;
+                    `<td class="num">${r.played}</td>` +
+                    `<td class="num">${r.diff > 0 ? '+' : ''}${r.diff}</td>` +
+                    `<td class="pts">${r.points}</td></tr>`;
             }).join('');
         }
 
         // Liga-Spiel → Eintrag im Format von Countdown und "Nächste Termine"
-        function toGameEntry(g, team) {
+        function toGameEntry(g) {
             return {
                 date: g.date,
                 time: g.time || '00:00',
                 opponent: shortTeam(g.homeGame ? g.away : g.home),
                 home: g.homeGame,
-                team: team,
             };
         }
 
@@ -1448,36 +1296,31 @@
         }
 
         function renderLiga(data) {
-            const saison = (data.bl && data.bl.saison) || (data.rl && data.rl.saison);
-            if (saison) {
-                setText('season-badge', 'Saison ' + saison);
-                setText('footer-season', saison);
+            const rl = (data && data.rl) || {};
+
+            if (rl.saison) {
+                setText('season-badge', 'Saison ' + rl.saison);
+                setText('footer-season', rl.saison);
+                setText('team-card-season', rl.saison);
             }
-            const stand = data.updatedAt
+            const stand = (data && data.updatedAt)
                 ? new Date(data.updatedAt).toLocaleDateString('de-DE',
                     { day: '2-digit', month: '2-digit', year: 'numeric' })
                 : '—';
 
-            const bl = data.bl || {};
-            if (bl.liga) setText('liga-name-bl', bl.liga);
-            renderSpielplan('spielplan-bl', bl.spiele, bl.hinweis);
-            renderTabelle('tabelle-bl', bl.tabelle, 'bl', bl.hinweis);
-            setText('stand-bl', stand);
-            games = (bl.spiele || []).filter(g => g.ourGame)
-                .sort((a, b) => ligaDate(a) - ligaDate(b))
-                .map(g => toGameEntry(g, '1. XV'));
+            if (rl.liga) setText('liga-name', rl.liga);
+            renderSpielplan('spielplan', rl.spiele, rl.hinweis);
+            renderTabelle('tabelle', rl.tabelle, rl.hinweis);
+            setText('stand', stand);
 
-            const rl = data.rl || {};
-            if (rl.liga) setText('liga-name-rl', rl.liga);
-            renderSpielplan('spielplan-rl', rl.spiele, rl.hinweis);
-            renderTabelle('tabelle-rl', rl.tabelle, 'rl', rl.hinweis);
-            setText('stand-rl', stand);
-            gamesRL = (rl.spiele || []).filter(g => g.ourGame)
+            games = (rl.spiele || []).filter(g => g.ourGame)
                 .sort((a, b) => ligaDate(a) - ligaDate(b))
-                .map(g => toGameEntry(g, '2. XV'));
+                .map(g => toGameEntry(g));
 
-            allGames = [...games, ...gamesRL];
-            setText('stat-games', allGames.length || '—');
+            setText('stat-games', games.length || '—');
+            setText('team-card-games', games.length
+                ? games.length + (games.length === 1 ? ' Spiel angesetzt' : ' Spiele angesetzt')
+                : 'Spielplan folgt');
             ligaLoaded = true;
 
             updateCountdown();

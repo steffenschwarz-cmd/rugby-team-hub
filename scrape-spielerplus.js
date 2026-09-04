@@ -36,33 +36,33 @@ const NAME_MAP = {
     'Angelo': 'Angelo Galster',
     'Anton': 'Anton Hanetzok',
     'Basti': 'Sebastian Hildebrandt',
-    'Ben Johnston': 'Ben Johnston',
+    'Ben Johnston': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Ben Johnston
     'Bernhard': null, // Admin/Trainer, skip
     'Berni': null, // Admin/Trainer (Bernhard), skip
     'Chris': 'Christopher Bunge',
-    'Connor': 'Connor Peise',
-    'Connor P.': 'Connor Peise',
+    'Connor': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Connor Peise
+    'Connor P.': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Connor Peise
     'Daniel': 'Daniel Kainer',
     'Enrico': 'Enrico Marco Stenzel',
     'Enrico Stenzel': 'Enrico Marco Stenzel',
-    'Fabian': 'Fabian Wendt',
-    'Felix': 'Felix Berg',
-    'Felix Berg': 'Felix Berg',
-    'Florian': 'Florian Neumann',
-    'Florian N': 'Florian Neumann',
-    'Fynn': 'Fynn Lauer',
+    'Fabian': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Fabian Wendt
+    'Felix': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Felix Berg
+    'Felix Berg': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Felix Berg
+    'Florian': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Florian Neumann
+    'Florian N': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Florian Neumann
+    'Fynn': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Fynn Lauer
     'Gustav': 'Gustav Palm',
-    'Hannes': 'Hannes Bartelt',
-    'Jonas': 'Jonas Hinz',
+    'Hannes': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Hannes Bartelt
+    'Jonas': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Jonas Hinz
     'Josh': 'Joshua Walker',
     'Joshua': 'Joshua Walker',
     'Julius': 'Julius Laetsch',
     'Kai': 'Kai Friesicke',
-    'Keno': 'Keno Filietz',
+    'Keno': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Keno Filietz
     'Kevin': 'Kevin Pilz',
     'Kimi': 'Kimi Döpke',
-    'Luca': 'Luca Karim Borgwardt',
-    'Lucas': 'Lucas Eichler',
+    'Luca': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Luca Karim Borgwardt
+    'Lucas': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Lucas Eichler
     'Lukas Laetsch': 'Lukas Laetsch',
     'Lukas R.': 'Lukas Rathke',
     'Lukas R': 'Lukas Rathke',
@@ -82,14 +82,14 @@ const NAME_MAP = {
     'Norman': 'Norman Guido Kranert',
     'Oli T.': 'Oliver Tschetsch',
     'Oliver T.': 'Oliver Tschetsch',
-    'Paul C.': 'Paul Chukwu',
+    'Paul C.': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Paul Chukwu
     'Paul Z.': 'Paul Zyparth',
     'Philip': 'Philip Simon',
     'Rico': 'Rico Schomacker',
     'Robert': 'Robert Woelki',
     'Rooney': 'Ronny Sager',
     'Sarvan': 'Sarvan Aziz',
-    'Sascha': 'Sascha Kosanke',
+    'Sascha': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Sascha Kosanke
     'Schmarni (JFK)': 'Julius Kayser', // Neu seit Juli 2026, Flanker/8 (3. Reihe), Jg. 2009
     'Schmarni': 'Julius Kayser',
     'Sebastian': 'Sebastian Hildebrandt',
@@ -103,8 +103,8 @@ const NAME_MAP = {
     'Tim': 'Tim Förster',
     'Timo': 'Timo Schmidt',
     'Tobi': 'Tobias Ehrlich',
-    'Tom K.': 'Tom König',
-    'Tom L.': 'Tom Lebus',
+    'Tom K.': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Tom König
+    'Tom L.': null, // nicht mehr im Kader (Zusammenlegung 04.09.2026) — Tom Lebus
     'Tristan': 'Tristan Schöntag',
     'Woelki': 'Robert Woelki',
     'Wolfi': 'Wolf-Dietrich Hildebrandt',

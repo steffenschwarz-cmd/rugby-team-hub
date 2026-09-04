@@ -433,19 +433,15 @@ function showSaved(text) {
 
 // --- 8. Kader (for registration dropdown) ---
 const KADER = [
-    'Angelo Galster','Anton Hanetzok','Ben Johnston','Christopher Bunge','Connor Peise',
-    'Daniel Kainer','Enrico Marco Stenzel','Fabian Wendt','Felix Berg','Florian Neumann',
-    'Fynn Lauer','Gustav Palm','Hannes Bartelt','Jonas Hinz','Joshua Walker',
-    'Julius Kayser','Julius Laetsch','Kai Friesicke','Keno Filietz','Kevin Pilz','Kimi D\u00f6pke',
-    'Luca Karim Borgwardt','Lucas Eichler','Lukas Laetsch','Lukas Rathke','Marcel Grabow',
-    'Matti Erik Eschwe','Maurice Peter Sankeralli','Max Langer','Maximilian Hildebrandt',
-    'Michael Galster','Moritz Gollnick','Moritz Janosch','Norman Guido Kranert',
-    'Oliver Herrmann','Oliver Tschetsch','Paul Chukwu','Paul Zyparth','Philip Simon',
-    'Rico Schomacker','Robert Woelki','Ronny Sager','Sarvan Aziz','Sascha Kosanke',
+    'Angelo Galster','Anton Hanetzok','Christopher Bunge','Daniel Kainer','Enrico Marco Stenzel',
+    'Gustav Palm','Joshua Walker','Julius Kayser','Julius Laetsch','Kai Friesicke',
+    'Kevin Pilz','Kimi D\u00f6pke','Lukas Laetsch','Lukas Rathke','Marcel Grabow',
+    'Matti Erik Eschwe','Maurice Peter Sankeralli','Max Langer','Maximilian Hildebrandt','Michael Galster',
+    'Moritz Gollnick','Moritz Janosch','Norman Guido Kranert','Oliver Tschetsch','Paul Zyparth',
+    'Philip Simon','Rico Schomacker','Robert Woelki','Ronny Sager','Sarvan Aziz',
     'Sebastian Hildebrandt','Shawn Ahrens','Silas Rathke','Simon Csehan','Simon Reichelt',
     'Steffen Schwarz','Steven M\u00fcller','Theo Schmidt','Tim F\u00f6rster','Timo Schmidt',
-    'Tobias Ehrlich','Tom K\u00f6nig','Tom Lebus','Tristan Sch\u00f6ntag',
-    'Wolf-Dietrich Hildebrandt','Xavier Mbrim A Fiediek'
+    'Tobias Ehrlich','Tristan Sch\u00f6ntag','Wolf-Dietrich Hildebrandt','Xavier Mbrim A Fiediek'
 ].sort((a, b) => a.localeCompare(b, 'de'));
 
 // --- 9. Admin Functions (Trainer only) ---

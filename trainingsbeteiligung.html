@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainingsbeteiligung — SG Rugby Team Hub</title>
-    <link rel="stylesheet" href="common.css?v=8">
-    <script src="common.js?v=8"></script>
+    <link rel="stylesheet" href="common.css?v=9">
+    <script src="common.js?v=9"></script>
     <style>
         /* LOGIN GATE overrides */
         .login-gate {
@@ -457,22 +457,28 @@
 
     // Full name → kader player ID (for linking)
     const KADER_IDS = {
-        'Angelo Galster':18, 'Anton Hanetzok':24, 'Ben Johnston':68, 'Christopher Bunge':6,
-        'Connor Peise':46, 'Daniel Kainer':31, 'Enrico Marco Stenzel':59, 'Fabian Wendt':64,
-        'Felix Berg':4, 'Florian Neumann':44, 'Fynn Lauer':40, 'Gustav Palm':45,
-        'Hannes Bartelt':3, 'Jonas Hinz':29, 'Joshua Walker':63, 'Julius Laetsch':37,
-        'Kai Friesicke':15, 'Keno Filietz':14, 'Kevin Pilz':47, 'Kimi Döpke':10,
-        'Luca Karim Borgwardt':5, 'Lucas Eichler':11, 'Lukas Laetsch':38, 'Lukas Rathke':70, 'Marcel Grabow':21,
-        'Matti Erik Eschwe':13, 'Maurice Peter Sankeralli':52, 'Max Langer':39,
-        'Maximilian Hildebrandt':28, 'Michael Galster':17, 'Moritz Gollnick':19, 'Moritz Janosch':30,
-        'Norman Guido Kranert':35, 'Oliver Herrmann':25, 'Oliver Tschetsch':61,
-        'Paul Chukwu':7, 'Paul Zyparth':67, 'Philip Simon':58, 'Rico Schomacker':55,
-        'Robert Woelki':66, 'Ronny Sager':51, 'Sarvan Aziz':2, 'Sascha Kosanke':34,
-        'Sebastian Hildebrandt':26, 'Shawn Ahrens':1, 'Silas Rathke':49, 'Simon Csehan':8,
-        'Simon Reichelt':69, 'Steffen Schwarz':57, 'Steven Müller':43, 'Theo Schmidt':53, 'Tim Förster':16,
-        'Timo Schmidt':54, 'Tobias Ehrlich':12, 'Tom König':33, 'Tom Lebus':41,
+        'Angelo Galster':18, 'Anton Hanetzok':24, 'Christopher Bunge':6, 'Daniel Kainer':31,
+        'Enrico Marco Stenzel':59, 'Gustav Palm':45, 'Joshua Walker':63, 'Julius Laetsch':37,
+        'Kai Friesicke':15, 'Kevin Pilz':47, 'Kimi Döpke':10, 'Lukas Laetsch':38,
+        'Lukas Rathke':70, 'Marcel Grabow':21, 'Matti Erik Eschwe':13, 'Maurice Peter Sankeralli':52,
+        'Max Langer':39, 'Maximilian Hildebrandt':28, 'Michael Galster':17, 'Moritz Gollnick':19,
+        'Moritz Janosch':30, 'Norman Guido Kranert':35, 'Oliver Tschetsch':61, 'Paul Zyparth':67,
+        'Philip Simon':58, 'Rico Schomacker':55, 'Robert Woelki':66, 'Ronny Sager':51,
+        'Sarvan Aziz':2, 'Sebastian Hildebrandt':26, 'Shawn Ahrens':1, 'Silas Rathke':49,
+        'Simon Csehan':8, 'Simon Reichelt':69, 'Steffen Schwarz':57, 'Steven Müller':43,
+        'Theo Schmidt':53, 'Tim Förster':16, 'Timo Schmidt':54, 'Tobias Ehrlich':12,
         'Tristan Schöntag':56, 'Wolf-Dietrich Hildebrandt':27, 'Xavier Mbrim A Fiediek':42,
     };
+
+    // Nicht mehr im Kader (Zusammenlegung zu einem Team, 04.09.2026).
+    // Ihre Historie bleibt in den Trainings-/Spiel-Karten sichtbar, sie zählen aber
+    // nicht mehr ins Ranking und nicht in den Beteiligungs-Schnitt.
+    const EHEMALIGE = new Set([
+        'Ben Johnston', 'Connor Peise', 'Fabian Wendt', 'Felix Berg',
+        'Florian Neumann', 'Fynn Lauer', 'Hannes Bartelt', 'Jonas Hinz',
+        'Keno Filietz', 'Luca Karim Borgwardt', 'Lucas Eichler', 'Oliver Herrmann',
+        'Paul Chukwu', 'Sascha Kosanke', 'Tom König', 'Tom Lebus',
+    ]);
 
     // --- DATA ---
     const SEED_DATA = {
@@ -663,7 +669,7 @@
     function buildRoster() {
         allPlayers = new Set();
         for (const s of Object.values(sessions)) {
-            if (s.present) Object.keys(s.present).forEach(p => allPlayers.add(p));
+            if (s.present) Object.keys(s.present).forEach(p => { if (!EHEMALIGE.has(p)) allPlayers.add(p); });
         }
     }
 
@@ -697,7 +703,9 @@
 
         if (totalSessions > 0 && allPlayers.size > 0) {
             let totalPresent = 0;
-            entries.forEach(s => { totalPresent += Object.keys(s.present || {}).length; });
+            entries.forEach(s => {
+                totalPresent += Object.keys(s.present || {}).filter(n => allPlayers.has(n)).length;
+            });
             const avg = Math.round((totalPresent / (totalSessions * allPlayers.size)) * 100);
             document.getElementById('stat-avg').textContent = avg + '%';
         } else {
