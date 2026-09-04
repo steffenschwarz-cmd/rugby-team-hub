@@ -19,23 +19,6 @@
             display: none;
         }
 
-        /* Team Selector */
-        .team-selector {
-            display: flex; gap: 0.5rem; justify-content: center;
-            padding: 1rem; max-width: 700px; margin: 0 auto;
-        }
-        .team-btn {
-            padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid rgba(0,0,0,0.12);
-            background: transparent; color: var(--text-muted); font-size: 0.85rem;
-            font-weight: 600; cursor: pointer; transition: all 0.2s;
-        }
-        .team-btn.active-1 {
-            background: rgba(27,138,62,0.12); border-color: rgba(27,138,62,0.45); color: var(--accent);
-        }
-        .team-btn.active-2 {
-            background: rgba(26,95,180,0.12); border-color: rgba(26,95,180,0.40); color: var(--accent-blue);
-        }
-
         /* Container */
         .aufstellung-container {
             max-width: 740px; margin: 0 auto; padding: 0 0.8rem 2rem;
@@ -265,12 +248,6 @@
         <div class="subtitle">SG Rugbyunion Hohen Neuendorf &times; SV Stahl Hennigsdorf</div>
     </header>
 
-    <!-- TEAM SELECTOR -->
-    <div class="team-selector app-content">
-        <button class="team-btn active-1" id="btn-team-1">1. XV — 2. Bundesliga</button>
-        <button class="team-btn" id="btn-team-2">2. XV — Regionalliga</button>
-    </div>
-
     <!-- HISTORY (Trainer only) -->
     <div class="history-bar app-content" id="history-bar">
         <div class="history-select-wrap">
@@ -400,33 +377,57 @@
         fh:'Fly Half', ct:'Center', wg:'Wings', fb:'Fullback'
     };
 
-    // --- GAMES ---
-    const games1 = [
-        { date: '2026-03-14', time: '14:00', opponent: 'TSV Victoria Linden', home: true },
-        { date: '2026-03-21', time: '14:00', opponent: 'Rugby Klub 03 Berlin', home: false },
-        { date: '2026-03-28', time: '13:00', opponent: 'Hamburger Rugby-Club', home: false },
-        { date: '2026-04-18', time: '15:00', opponent: 'BSV 1892 Rugby', home: false },
-        { date: '2026-04-25', time: '14:00', opponent: 'Rugby Club Leipzig', home: true },
-        { date: '2026-05-02', time: '15:00', opponent: 'Hamburger Rugby-Club', home: true },
-        { date: '2026-05-09', time: '15:00', opponent: 'FC St. Pauli Rugby', home: false },
-    ];
-    const games2 = [
-        { date: '2026-03-14', time: '12:00', opponent: 'RC Dresden', home: true },
-        { date: '2026-03-29', time: '15:00', opponent: 'Oranien Raptors', home: false },
-        { date: '2026-04-12', time: '15:00', opponent: 'SC Siemensstadt', home: true },
-        { date: '2026-04-19', time: '15:00', opponent: 'USV Potsdam', home: false },
-        { date: '2026-04-26', time: '15:00', opponent: 'Berliner RC II', home: true },
-    ];
+    // --- SPIELE ---
+    // Kommen aus data/liga.json (taeglich von sync-liga.js aktualisiert), nicht mehr
+    // hartkodiert. Faellt der Abruf aus (file:// oder fehlende Datei), bleibt die Liste
+    // leer und die Seite zeigt "Keine weiteren Spiele geplant".
+    let games = [];
+
+    const TEAM_SHORT = {
+        'RC Oranien Raptors II': 'Oranien Raptors',
+        'SG Halle/Leipzig': 'SG Halle/Lpz.',
+    };
+
+    // Die Quelle liefert Namen mit Liga-Suffix ("… Maenner Regionalliga Ost") und
+    // Rechtsform. Beides raus, danach erst in der Kurznamen-Tabelle nachschlagen.
+    function shortTeam(name) {
+        if (!name) return '';
+        if (TEAM_SHORT[name]) return TEAM_SHORT[name];
+        const clean = String(name)
+            .replace(/\s+(Männer|Frauen|Herren|Damen)\s+(Regionalliga|Bundesliga|Verbandsliga|Landesliga)\b.*$/i, '')
+            .replace(/\s+e\.\s?V\.?$/i, '')
+            .trim();
+        return TEAM_SHORT[clean] || clean;
+    }
+
+    async function loadGames() {
+        try {
+            const res = await fetch('data/liga.json', { cache: 'no-store' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            const spiele = (data && data.rl && data.rl.spiele) || [];
+            games = spiele.filter(g => g.ourGame).map(g => ({
+                date: g.date,
+                time: g.time || '15:00',
+                opponent: shortTeam(g.homeGame ? g.away : g.home),
+                home: !!g.homeGame,
+            })).sort((a, b) => a.date.localeCompare(b.date));
+        } catch (e) {
+            console.warn('Spielplan nicht geladen:', e.message);
+        }
+    }
 
     // --- STATE ---
-    let activeTeam = '1';
+    // Seit der Zusammenlegung (04.09.2026) gibt es nur noch EIN Team. Der Firebase-
+    // Schluessel '1' bleibt bestehen, damit veroeffentlichte Aufstellungen und Entwuerfe
+    // erhalten bleiben — er bezeichnet jetzt schlicht die Mannschaft, keine Auswahl mehr.
+    const TEAM_KEY = '1';
     let lineup = { '1': {}, '2': {} };
     let historyMode = false;
     let savedLineup = null;
 
     // --- HELPERS ---
-    function getNextGame(team) {
-        const games = team === '1' ? games1 : games2;
+    function getNextGame() {
         const now = new Date();
         for (const g of games) {
             if (new Date(g.date + 'T' + g.time + ':00') > now) return g;
@@ -437,7 +438,7 @@
     function fullName(p) { return p.v + ' ' + p.n; }
 
     function placedIds() {
-        return new Set(Object.values(lineup[activeTeam]).filter(Boolean).map(Number));
+        return new Set(Object.values(lineup[TEAM_KEY]).filter(Boolean).map(Number));
     }
 
     // --- DRAFT/PUBLISH STATE ---
@@ -576,10 +577,9 @@
 
     // --- HISTORY ---
     function getNextGameDate() {
-        const allGames = [...games1, ...games2];
+        const allGames = [...games].sort((a, b) => a.date.localeCompare(b.date));
         const now = new Date();
         const cutoff = new Date(now.getTime() - 48 * 3600 * 1000);
-        allGames.sort((a, b) => a.date.localeCompare(b.date));
         for (const g of allGames) {
             if (new Date(g.date + 'T23:59:59') > cutoff) return g.date;
         }
@@ -588,11 +588,10 @@
 
     function saveToHistory(overrideDate) {
         const dateKey = overrideDate || getNextGameDate();
-        const game1 = games1.find(g => g.date === dateKey);
-        const game2 = games2.find(g => g.date === dateKey);
+        const game = games.find(g => g.date === dateKey);
         return db.ref('lineup_history/' + dateKey).set({
             lineup: JSON.parse(JSON.stringify(lineup)),
-            games: { '1': game1 || null, '2': game2 || null },
+            games: { '1': game || null },
             publishedAt: Date.now()
         }).then(() => loadHistoryDropdown());
     }
@@ -609,29 +608,24 @@
                 const entry = data[d];
                 const parts = d.split('-');
                 const label = parts[2] + '.' + parts[1] + '.' + parts[0];
-                const opponents = [];
-                if (entry.games && entry.games['1']) opponents.push((entry.games['1'].home ? 'vs ' : 'bei ') + entry.games['1'].opponent);
-                if (entry.games && entry.games['2']) opponents.push((entry.games['2'].home ? 'vs ' : 'bei ') + entry.games['2'].opponent);
-                select.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + (opponents.join(' / ') || 'Spieltag') + '</option>';
+                const g = entry.games && (entry.games['1'] || entry.games['2']);
+                const gegner = g ? (g.home ? 'vs ' : 'bei ') + g.opponent : 'Spieltag';
+                select.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + gegner + '</option>';
             }
 
             // Save-for-game dropdown (all games, unsaved ones marked)
             if (isTrainer()) {
                 const saveSelect = document.getElementById('history-save-select');
                 const saveBtn = document.getElementById('history-save-btn');
-                const allDates = new Set([...games1.map(g => g.date), ...games2.map(g => g.date)]);
-                const sortedDates = [...allDates].sort().reverse();
+                const sortedDates = [...new Set(games.map(g => g.date))].sort().reverse();
                 saveSelect.innerHTML = '<option value="">F\u00fcr Spieltag speichern...</option>';
                 for (const d of sortedDates) {
                     const parts = d.split('-');
                     const label = parts[2] + '.' + parts[1] + '.' + parts[0];
-                    const g1 = games1.find(g => g.date === d);
-                    const g2 = games2.find(g => g.date === d);
-                    const opponents = [];
-                    if (g1) opponents.push((g1.home ? 'vs ' : 'bei ') + g1.opponent);
-                    if (g2) opponents.push((g2.home ? 'vs ' : 'bei ') + g2.opponent);
+                    const g = games.find(x => x.date === d);
+                    const gegner = g ? (g.home ? 'vs ' : 'bei ') + g.opponent : '';
                     const saved = savedDates.includes(d) ? ' \u2713' : '';
-                    saveSelect.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + opponents.join(' / ') + saved + '</option>';
+                    saveSelect.innerHTML += '<option value="' + d + '">' + label + ' \u2014 ' + gegner + saved + '</option>';
                 }
                 saveSelect.style.display = '';
                 saveBtn.style.display = '';
@@ -714,7 +708,7 @@
 
     // --- RENDER ---
     function renderMatchInfo() {
-        const game = getNextGame(activeTeam);
+        const game = getNextGame();
         const titleEl = document.getElementById('match-title');
         const infoEl = document.getElementById('match-info');
 
@@ -735,8 +729,8 @@
 
     function renderStatus() {
         const placed = placedIds();
-        const starterCount = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].filter(n => lineup[activeTeam][n]).length;
-        const benchCount = [16,17,18,19,20,21,22].filter(n => lineup[activeTeam][n]).length;
+        const starterCount = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].filter(n => lineup[TEAM_KEY][n]).length;
+        const benchCount = [16,17,18,19,20,21,22].filter(n => lineup[TEAM_KEY][n]).length;
         document.getElementById('status-bar').innerHTML = `
             <div class="status-chip"><strong>${starterCount}/15</strong> Starter</div>
             <div class="status-chip"><strong>${benchCount}/7</strong> Ersatz</div>
@@ -745,7 +739,7 @@
     }
 
     function renderTable() {
-        const current = lineup[activeTeam];
+        const current = lineup[TEAM_KEY];
         const placed = placedIds();
         const container = document.getElementById('lineup-table');
 
@@ -848,24 +842,10 @@
         renderTable();
     }
 
-    // --- TEAM SWITCH ---
-    document.getElementById('btn-team-1').addEventListener('click', () => {
-        activeTeam = '1';
-        document.getElementById('btn-team-1').className = 'team-btn active-1';
-        document.getElementById('btn-team-2').className = 'team-btn';
-        renderAll();
-    });
-    document.getElementById('btn-team-2').addEventListener('click', () => {
-        activeTeam = '2';
-        document.getElementById('btn-team-1').className = 'team-btn';
-        document.getElementById('btn-team-2').className = 'team-btn active-2';
-        renderAll();
-    });
-
     // --- CLEAR ---
     document.getElementById('btn-clear').addEventListener('click', () => {
-        if (confirm('Aufstellung für ' + (activeTeam === '1' ? '1. XV' : '2. XV') + ' wirklich leeren?')) {
-            lineup[activeTeam] = {};
+        if (confirm('Aufstellung wirklich leeren?')) {
+            lineup[TEAM_KEY] = {};
             saveLineup();
             renderAll();
         }
@@ -875,34 +855,26 @@
     document.getElementById('history-select').addEventListener('change', e => viewHistory(e.target.value));
 
     // --- LOGIN ---
-    setupLogin({ db, onUnlock() {
+    setupLogin({ db, async onUnlock() {
         document.getElementById('login-gate').classList.add('hidden');
         document.querySelectorAll('.app-content').forEach(el => el.classList.add('visible'));
+
+        // Spielplan zuerst holen — Spieltag-Auswahl und Match-Kopfzeile brauchen ihn.
+        await loadGames();
 
         if (isTrainer()) {
             // Show draft banner, enable editing
             document.getElementById('draft-banner').style.display = 'block';
             document.getElementById('aufstellung-main').classList.remove('readonly-mode');
             document.getElementById('btn-clear').style.display = '';
-            // Populate save-for-game dropdown immediately
+            // Spieltag-Auswahl fuellen (eine Liste, keine Team-Gruppen mehr)
             const saveSelect = document.getElementById('history-save-select');
             saveSelect.innerHTML = '<option value="">F\u00fcr Spieltag speichern...</option>';
-            // 1. XV games
-            saveSelect.innerHTML += '<optgroup label="1. XV \u2014 2. Bundesliga">';
-            for (const g of [...games1].reverse()) {
+            for (const g of [...games].reverse()) {
                 const parts = g.date.split('-');
                 const label = parts[2] + '.' + parts[1] + '.' + parts[0];
                 saveSelect.innerHTML += '<option value="' + g.date + '">' + label + ' \u2014 ' + (g.home ? 'vs ' : 'bei ') + g.opponent + '</option>';
             }
-            saveSelect.innerHTML += '</optgroup>';
-            // 2. XV games
-            saveSelect.innerHTML += '<optgroup label="2. XV \u2014 Regionalliga">';
-            for (const g of [...games2].reverse()) {
-                const parts = g.date.split('-');
-                const label = parts[2] + '.' + parts[1] + '.' + parts[0];
-                saveSelect.innerHTML += '<option value="' + g.date + '">' + label + ' \u2014 ' + (g.home ? 'vs ' : 'bei ') + g.opponent + '</option>';
-            }
-            saveSelect.innerHTML += '</optgroup>';
         } else {
             // Read-only for team — hide history & save controls
             document.getElementById('history-bar').style.display = 'none';
