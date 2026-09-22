@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-04T11:56:48Z",
+  "updatedAt": "2026-09-22T10:08:31Z",
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
@@ -10,8 +10,8 @@
         "round": 1,
         "home": "SG Oberhavel Männer Regionalliga Ost",
         "away": "Berliner Sport-Club e.V. Männer Regionalliga Ost",
-        "scoreHome": null,
-        "scoreAway": null,
+        "scoreHome": 80,
+        "scoreAway": 7,
         "ourGame": true,
         "homeGame": true
       },
