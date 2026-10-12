@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-30T11:15:14Z",
+  "updatedAt": "2026-10-12T13:21:21Z",
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
@@ -64,13 +64,13 @@
       {
         "pos": 1,
         "team": "SC Siemensstadt",
-        "played": 3,
+        "played": 4,
         "won": 2,
         "drawn": 1,
-        "lost": 0,
-        "pf": 69,
-        "pa": 39,
-        "diff": 30,
+        "lost": 1,
+        "pf": 81,
+        "pa": 75,
+        "diff": 6,
         "points": 12,
         "our": false
       },
@@ -103,18 +103,31 @@
       {
         "pos": 4,
         "team": "SG Halle/Leipzig",
-        "played": 2,
+        "played": 3,
         "won": 1,
-        "drawn": 0,
+        "drawn": 1,
         "lost": 1,
-        "pf": 84,
-        "pa": 46,
+        "pf": 104,
+        "pa": 66,
         "diff": 38,
-        "points": 7,
+        "points": 9,
         "our": false
       },
       {
         "pos": 5,
+        "team": "RK03 Berlin",
+        "played": 2,
+        "won": 1,
+        "drawn": 0,
+        "lost": 1,
+        "pf": 58,
+        "pa": 46,
+        "diff": 12,
+        "points": 6,
+        "our": false
+      },
+      {
+        "pos": 6,
         "team": "RC Oranien Raptors II",
         "played": 2,
         "won": 1,
@@ -127,7 +140,7 @@
         "our": false
       },
       {
-        "pos": 6,
+        "pos": 7,
         "team": "Berlin Irish",
         "played": 3,
         "won": 1,
@@ -140,7 +153,20 @@
         "our": false
       },
       {
-        "pos": 7,
+        "pos": 8,
+        "team": "RC Dresden",
+        "played": 3,
+        "won": 0,
+        "drawn": 1,
+        "lost": 2,
+        "pf": 52,
+        "pa": 77,
+        "diff": -25,
+        "points": 3,
+        "our": false
+      },
+      {
+        "pos": 9,
         "team": "Berliner SC",
         "played": 2,
         "won": 0,
@@ -153,7 +179,7 @@
         "our": false
       },
       {
-        "pos": 8,
+        "pos": 10,
         "team": "SG RP/BSV",
         "played": 1,
         "won": 0,
@@ -162,32 +188,6 @@
         "pf": 24,
         "pa": 35,
         "diff": -11,
-        "points": 1,
-        "our": false
-      },
-      {
-        "pos": 9,
-        "team": "RK03 Berlin",
-        "played": 1,
-        "won": 0,
-        "drawn": 0,
-        "lost": 1,
-        "pf": 22,
-        "pa": 34,
-        "diff": -12,
-        "points": 1,
-        "our": false
-      },
-      {
-        "pos": 10,
-        "team": "RC Dresden",
-        "played": 2,
-        "won": 0,
-        "drawn": 0,
-        "lost": 2,
-        "pf": 32,
-        "pa": 57,
-        "diff": -25,
         "points": 1,
         "our": false
       }
