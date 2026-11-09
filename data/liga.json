@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-20T10:14:10Z",
+  "updatedAt": "2026-11-09T14:07:54Z",
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
@@ -32,8 +32,8 @@
         "round": 6,
         "home": "SG Halle/Leipzig",
         "away": "SG Oberhavel",
-        "scoreHome": null,
-        "scoreAway": null,
+        "scoreHome": 14,
+        "scoreAway": 29,
         "ourGame": true,
         "homeGame": false
       },
@@ -52,6 +52,32 @@
     "tabelle": [
       {
         "pos": 1,
+        "team": "RK03 Berlin",
+        "played": 4,
+        "won": 3,
+        "drawn": 0,
+        "lost": 1,
+        "pf": 153,
+        "pa": 65,
+        "diff": 88,
+        "points": 16,
+        "our": false
+      },
+      {
+        "pos": 2,
+        "team": "SG Oberhavel",
+        "played": 3,
+        "won": 3,
+        "drawn": 0,
+        "lost": 0,
+        "pf": 140,
+        "pa": 31,
+        "diff": 109,
+        "points": 15,
+        "our": true
+      },
+      {
+        "pos": 3,
         "team": "Berliner RC II",
         "played": 3,
         "won": 3,
@@ -64,7 +90,7 @@
         "our": false
       },
       {
-        "pos": 2,
+        "pos": 4,
         "team": "SC Siemensstadt",
         "played": 5,
         "won": 2,
@@ -77,41 +103,15 @@
         "our": false
       },
       {
-        "pos": 3,
-        "team": "RK03 Berlin",
-        "played": 3,
-        "won": 2,
-        "drawn": 0,
-        "lost": 1,
-        "pf": 103,
-        "pa": 46,
-        "diff": 57,
-        "points": 11,
-        "our": false
-      },
-      {
-        "pos": 4,
-        "team": "SG Oberhavel",
-        "played": 2,
-        "won": 2,
-        "drawn": 0,
-        "lost": 0,
-        "pf": 111,
-        "pa": 17,
-        "diff": 94,
-        "points": 10,
-        "our": true
-      },
-      {
         "pos": 5,
         "team": "SG Halle/Leipzig",
-        "played": 3,
+        "played": 4,
         "won": 1,
         "drawn": 1,
-        "lost": 1,
-        "pf": 104,
-        "pa": 66,
-        "diff": 38,
+        "lost": 2,
+        "pf": 118,
+        "pa": 95,
+        "diff": 23,
         "points": 9,
         "our": false
       },
@@ -144,13 +144,13 @@
       {
         "pos": 8,
         "team": "RC Oranien Raptors II",
-        "played": 2,
+        "played": 3,
         "won": 1,
         "drawn": 0,
-        "lost": 1,
-        "pf": 46,
-        "pa": 59,
-        "diff": -13,
+        "lost": 2,
+        "pf": 65,
+        "pa": 109,
+        "diff": -44,
         "points": 5,
         "our": false
       },
