@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T14:07:54Z",
+  "updatedAt": "2026-11-12T13:53:41Z",
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
@@ -117,6 +117,19 @@
       },
       {
         "pos": 6,
+        "team": "SG RP/BSV",
+        "played": 3,
+        "won": 2,
+        "drawn": 0,
+        "lost": 1,
+        "pf": 61,
+        "pa": 61,
+        "diff": 0,
+        "points": 9,
+        "our": false
+      },
+      {
+        "pos": 7,
         "team": "Berlin Irish",
         "played": 4,
         "won": 1,
@@ -126,19 +139,6 @@
         "pa": 126,
         "diff": -56,
         "points": 6,
-        "our": false
-      },
-      {
-        "pos": 7,
-        "team": "SG RP/BSV",
-        "played": 2,
-        "won": 1,
-        "drawn": 0,
-        "lost": 1,
-        "pf": 42,
-        "pa": 49,
-        "diff": -7,
-        "points": 5,
         "our": false
       },
       {
@@ -157,14 +157,14 @@
       {
         "pos": 9,
         "team": "RC Dresden",
-        "played": 3,
+        "played": 4,
         "won": 0,
         "drawn": 1,
-        "lost": 2,
-        "pf": 52,
-        "pa": 77,
-        "diff": -25,
-        "points": 3,
+        "lost": 3,
+        "pf": 64,
+        "pa": 96,
+        "diff": -32,
+        "points": 4,
         "our": false
       },
       {
