@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T13:53:41Z",
+  "updatedAt": "2026-11-22T13:29:34Z",
   "rl": {
     "liga": "Regionalliga Ost",
     "saison": "2026/27",
@@ -43,8 +43,8 @@
         "round": 7,
         "home": "SC Siemensstadt",
         "away": "SG Oberhavel",
-        "scoreHome": null,
-        "scoreAway": null,
+        "scoreHome": 19,
+        "scoreAway": 56,
         "ourGame": true,
         "homeGame": false
       }
@@ -52,6 +52,19 @@
     "tabelle": [
       {
         "pos": 1,
+        "team": "SG Oberhavel",
+        "played": 4,
+        "won": 4,
+        "drawn": 0,
+        "lost": 0,
+        "pf": 196,
+        "pa": 50,
+        "diff": 146,
+        "points": 20,
+        "our": true
+      },
+      {
+        "pos": 2,
         "team": "RK03 Berlin",
         "played": 4,
         "won": 3,
@@ -62,19 +75,6 @@
         "diff": 88,
         "points": 16,
         "our": false
-      },
-      {
-        "pos": 2,
-        "team": "SG Oberhavel",
-        "played": 3,
-        "won": 3,
-        "drawn": 0,
-        "lost": 0,
-        "pf": 140,
-        "pa": 31,
-        "diff": 109,
-        "points": 15,
-        "our": true
       },
       {
         "pos": 3,
@@ -92,13 +92,13 @@
       {
         "pos": 4,
         "team": "SC Siemensstadt",
-        "played": 5,
+        "played": 6,
         "won": 2,
         "drawn": 1,
-        "lost": 2,
-        "pf": 100,
-        "pa": 108,
-        "diff": -8,
+        "lost": 3,
+        "pf": 119,
+        "pa": 164,
+        "diff": -45,
         "points": 12,
         "our": false
       },
